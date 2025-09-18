@@ -5,19 +5,24 @@
 	"main": "src/index.ts",
 	"private": true,
 	"scripts": {
-		"check": "biome check --write"
+		"check": "biome check --write",
+		"gen": "lex gen-server ./src/lexicons ./lexicons/win/tomo-x/**/*.json"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "MIT",
 	"packageManager": "pnpm@10.15.1",
 	"dependencies": {
-		"@evex/xrpc-hono": "jsr:^0.2.4",
+		"@atproto/lexicon": "^0.5.1",
+		"@evex/xrpc-hono": "jsr:^0.3.0",
 		"hono": "^4.9.8"
 	},
 	"devDependencies": {
 		"@atproto/lex-cli": "^0.9.5",
+		"@atproto/xrpc-server": "^0.9.5",
 		"@biomejs/biome": "2.2.3",
+		"@cloudflare/workers-types": "^4.20250918.0",
+		"@types/node": "^24.5.2",
 		"wrangler": "^4.37.1"
 	},
 	"pnpm": {

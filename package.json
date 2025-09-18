@@ -6,7 +6,10 @@
 	"private": true,
 	"scripts": {
 		"check": "biome check --write",
-		"gen": "lex gen-server ./src/lexicons ./lexicons/win/tomo-x/**/*.json"
+		"gen": "lex gen-server ./src/lexicons ./lexicons/win/tomo-x/**/*.json",
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy --minify",
+		"cf-typegen": "wrangler types ./src/worker.d.ts --env-interface CloudflareBindings"
 	},
 	"keywords": [],
 	"author": "",
@@ -32,5 +35,6 @@
 			"sharp",
 			"workerd"
 		]
-	}
+	},
+	"type": "module"
 }

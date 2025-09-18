@@ -1,5 +1,8 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
 	"extends": ["./shared/biome.jsonc"],
-	"linter": { "rules": { "complexity": { "noBannedTypes": "off" }, "suspicious": { "noConfusingVoidType": "off" } } }
+	"linter": { "rules": { "complexity": { "noBannedTypes": "off" }, "suspicious": { "noConfusingVoidType": "off" } } },
+	"overrides": [
+		{ "includes": ["src/worker.d.ts"], "linter": { "enabled": false }, "formatter": { "enabled": false } }
+	]
 }

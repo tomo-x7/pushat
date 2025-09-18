@@ -1,19 +1,16 @@
 import { Hono } from "hono";
-import { D1Database } from "@cloudflare/workers-types";
 import { createXRPCHono } from "@evex/xrpc-hono";
 import { schemas } from "./lexicons/lexicons";
 
 type Env = {
-	Bindings: {
-		db: D1Database;
-	};
+	Bindings: CloudflareBindings;
 	Variables: {};
 };
+
 const server = createXRPCHono<Env>(schemas);
 
 server.addMethod("win.tomo-x.pushat.pushNotify", {
 	handler: async (req) => {
-		req.c.env.db;
 		return { status: 200 };
 	},
 });

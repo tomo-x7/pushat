@@ -17,16 +17,15 @@
 	"packageManager": "pnpm@10.15.1",
 	"dependencies": {
 		"@atproto/lexicon": "^0.5.1",
-		"@evex/xrpc-hono": "jsr:^0.3.0",
+		"@evex/xrpc-hono": "jsr:^0.3.1",
 		"hono": "^4.9.8"
 	},
 	"devDependencies": {
 		"@atproto/lex-cli": "^0.9.5",
-		"@atproto/xrpc-server": "^0.9.5",
 		"@biomejs/biome": "2.2.3",
 		"@cloudflare/workers-types": "^4.20250918.0",
 		"@types/node": "^24.5.2",
-		"wrangler": "^4.37.1"
+		"wrangler": "^4.38.0"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [

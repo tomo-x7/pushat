@@ -1,6 +1,6 @@
 {
 	"$schema": "https://unpkg.com/wrangler@latest/config-schema.json",
-	"name": "hono",
+	"name": "pushat",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-09-18",
 	"compatibility_flags": ["nodejs_compat"]

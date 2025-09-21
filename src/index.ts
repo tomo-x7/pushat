@@ -1,7 +1,8 @@
 import { createXRPCHono } from "@evex/xrpc-hono";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { schemas } from "./lexicons/lexicons";
-import { HandlerOutput } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
+import type { HandlerOutput } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
 
 type Env = {
 	Bindings: CloudflareBindings;
@@ -26,6 +27,7 @@ server.addMethod("win.tomo-x.pushat.pushNotify", {
 });
 const inner = server.createApp();
 const app = new Hono<Env>();
+app.use(cors({ origin: "*", allowHeaders: ["*", "Authorization"] }));
 app.use(async (c, next) => {
 	// ORMインスタンス作成
 	next();

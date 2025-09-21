@@ -21,6 +21,13 @@
 		"run_worker_first": ["/xrpc/*"]
 	},
 	"build": {
-		"command": "cd web && pnpm run build"
-	}
+		"command": "cd web && pnpm i --frozen-lockfile && pnpm run build"
+	},
+	"workers_dev": false,
+	"routes": [
+		{
+			"pattern": "pushat.tomo-x.win",
+			"custom_domain": true
+		}
+	]
 }

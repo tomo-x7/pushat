@@ -30,7 +30,7 @@ const app = new Hono<Env>();
 app.use(cors({ origin: "*", allowHeaders: ["*", "Authorization"] }));
 app.use(async (c, next) => {
 	// ORMインスタンス作成
-	next();
+	await next();
 });
 app.route("/", inner);
 app.get("/xrpc/", (c) => c.text("Hello World!"));

@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@atproto/identity':
+        specifier: ^0.4.9
+        version: 0.4.9
       '@atproto/lexicon':
         specifier: ^0.5.1
         version: 0.5.1
+      '@atproto/syntax':
+        specifier: ^0.4.1
+        version: 0.4.1
       '@evex/xrpc-hono':
-        specifier: jsr:^0.3.1
-        version: '@jsr/evex__xrpc-hono@0.3.1'
+        specifier: jsr:^0.3.3
+        version: '@jsr/evex__xrpc-hono@0.3.3'
       hono:
         specifier: ^4.9.8
         version: 4.9.8
@@ -30,6 +36,9 @@ importers:
       '@types/node':
         specifier: ^24.5.2
         version: 24.5.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
       wrangler:
         specifier: ^4.38.0
         version: 4.38.0(@cloudflare/workers-types@4.20250918.0)
@@ -38,6 +47,14 @@ packages:
 
   '@atproto/common-web@0.4.3':
     resolution: {integrity: sha512-nRDINmSe4VycJzPo6fP/hEltBcULFxt9Kw7fQk6405FyAWZiTluYHlXOnU7GkQfeUK44OENG1qFTBcmCJ7e8pg==}
+
+  '@atproto/crypto@0.4.4':
+    resolution: {integrity: sha512-Yq9+crJ7WQl7sxStVpHgie5Z51R05etaK9DLWYG/7bR5T4bhdcIgF6IfklLShtZwLYdVVj+K15s0BqW9a8PSDA==}
+    engines: {node: '>=18.7.0'}
+
+  '@atproto/identity@0.4.9':
+    resolution: {integrity: sha512-pRYCaeaEJMZ4vQlRQYYTrF3cMiRp21n/k/pUT1o7dgKby56zuLErDmFXkbKfKWPf7SgWRgamSaNmsGLqAOD7lQ==}
+    engines: {node: '>=18.7.0'}
 
   '@atproto/lex-cli@0.9.5':
     resolution: {integrity: sha512-zun4jhD1dbjD7IHtLIjh/1UsMx+6E8+OyOT2GXYAKIj9N6wmLKM/v2OeQBKxcyqUmtRi57lxWnGikWjjU7pplQ==}
@@ -427,8 +444,16 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@jsr/evex__xrpc-hono@0.3.1':
-    resolution: {integrity: sha512-IICP3izCYDC8XMgVJfQAG2JyzrPOtuTb+Zbw4w1KLw7QnPLidXS5H70q3RzySt/3xUdizInhf4N/jJKRed5Z6A==, tarball: https://npm.jsr.io/~/11/@jsr/evex__xrpc-hono/0.3.1.tgz}
+  '@jsr/evex__xrpc-hono@0.3.3':
+    resolution: {integrity: sha512-zMzxK4sbyN2nOY1iYC5d4n4jkYwS/JdMEPcerAFZgjE/BM05pW/fHVAm5TiYIdL33P6wORcRLmBJ5/myHPo0wA==, tarball: https://npm.jsr.io/~/11/@jsr/evex__xrpc-hono/0.3.3.tgz}
+
+  '@noble/curves@1.9.7':
+    resolution: {integrity: sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@1.8.0':
+    resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
+    engines: {node: ^14.21.3 || >=16}
 
   '@poppinss/colors@4.1.5':
     resolution: {integrity: sha512-FvdDqtcRCtz6hThExcFOgW0cWX+xwSMWcRuQe5ZEb2m7cVQOAVZOIMt+/v9RxGiD9/OY16qJBXK4CVKWAPalBw==}
@@ -657,6 +682,11 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
+  typescript@5.9.2:
+    resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
@@ -723,6 +753,17 @@ snapshots:
       multiformats: 9.9.0
       uint8arrays: 3.0.0
       zod: 3.25.76
+
+  '@atproto/crypto@0.4.4':
+    dependencies:
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+      uint8arrays: 3.0.0
+
+  '@atproto/identity@0.4.9':
+    dependencies:
+      '@atproto/common-web': 0.4.3
+      '@atproto/crypto': 0.4.4
 
   '@atproto/lex-cli@0.9.5':
     dependencies:
@@ -988,12 +1029,18 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@jsr/evex__xrpc-hono@0.3.1':
+  '@jsr/evex__xrpc-hono@0.3.3':
     dependencies:
       '@atproto/lexicon': 0.4.14
       '@atproto/xrpc': 0.7.5
       hono: 4.9.8
       http-errors: 2.0.0
+
+  '@noble/curves@1.9.7':
+    dependencies:
+      '@noble/hashes': 1.8.0
+
+  '@noble/hashes@1.8.0': {}
 
   '@poppinss/colors@4.1.5':
     dependencies:
@@ -1231,6 +1278,8 @@ snapshots:
 
   tslib@2.8.1:
     optional: true
+
+  typescript@5.9.2: {}
 
   ufo@1.6.1: {}
 

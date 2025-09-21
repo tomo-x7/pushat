@@ -1,0 +1,16 @@
+import { DidResolver, getDid, HandleResolver, MemoryCache,getHandle,getKey } from "@atproto/identity";
+import { isValidHandle, } from "@atproto/syntax";
+import { handle } from "hono/cloudflare-pages";
+
+const didResolver = new DidResolver({ didCache: new MemoryCache() });
+const handleResolver = new HandleResolver({});
+export async function getDidDoc(did: string) {
+	const rawdoc=await didResolver.resolve(did);
+	const doc=didResolver.validateDidDoc(did, rawdoc);
+	const handle=getHandle(doc);
+	const key=getKey(doc);
+	if(key==null)return null;
+	return {
+		did,handle,key,doc
+	}		
+}

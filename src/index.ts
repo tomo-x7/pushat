@@ -1,6 +1,7 @@
-import { Hono } from "hono";
 import { createXRPCHono } from "@evex/xrpc-hono";
+import { Hono } from "hono";
 import { schemas } from "./lexicons/lexicons";
+import { HandlerOutput } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
 
 type Env = {
 	Bindings: CloudflareBindings;
@@ -10,8 +11,17 @@ type Env = {
 const server = createXRPCHono<Env>(schemas);
 
 server.addMethod("win.tomo-x.pushat.pushNotify", {
+	auth: ({ ctx }) => {
+		return { credentials: undefined };
+	},
 	handler: async (req) => {
-		return { status: 200 };
+		req.auth?.credentials;
+		return {
+			encoding: "application/json",
+			body: { success: true, token: req.c.req.header("Authorization") },
+		} satisfies HandlerOutput & {
+			[key: string]: unknown;
+		};
 	},
 });
 const inner = server.createApp();
@@ -21,5 +31,6 @@ app.use(async (c, next) => {
 	next();
 });
 app.route("/", inner);
+app.get("/xrpc/", (c) => c.text("Hello World!"));
 
 export default app;

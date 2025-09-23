@@ -2,24 +2,21 @@ import { createXRPCHono } from "@evex/xrpc-hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { schemas } from "./lexicons/lexicons";
-import type { HandlerOutput } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
-
-type Env = {
-	Bindings: CloudflareBindings;
-	Variables: {};
-};
+import type { HandlerOutput,HandlerInput,QueryParams } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
+import type { Env } from "./types";
+import { BearerAuthResult, verifyBearerAuth } from "./auth";
 
 const server = createXRPCHono<Env>(schemas);
 
-server.addMethod("win.tomo-x.pushat.pushNotify", {
+server.addMethod<QueryParams,HandlerInput,HandlerOutput,BearerAuthResult>("win.tomo-x.pushat.pushNotify", {
 	auth: ({ ctx }) => {
-		return { credentials: undefined };
+		return verifyBearerAuth(ctx.req.header("Authorization"), "win.tomo-x.pushat.pushNotify");
 	},
 	handler: async (req) => {
-		req.auth?.credentials;
 		return {
 			encoding: "application/json",
 			body: { success: true, token: req.c.req.header("Authorization") },
+			credentials:req.auth.credentials,
 		} satisfies HandlerOutput & {
 			[key: string]: unknown;
 		};

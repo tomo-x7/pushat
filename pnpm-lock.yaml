@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@atproto/crypto':
+        specifier: ^0.4.4
+        version: 0.4.4
       '@atproto/identity':
         specifier: ^0.4.9
         version: 0.4.9
@@ -18,8 +21,8 @@ importers:
         specifier: ^0.4.1
         version: 0.4.1
       '@evex/xrpc-hono':
-        specifier: jsr:^0.3.3
-        version: '@jsr/evex__xrpc-hono@0.3.3'
+        specifier: jsr:^0.3.6
+        version: '@jsr/evex__xrpc-hono@0.3.6'
       hono:
         specifier: ^4.9.8
         version: 4.9.8
@@ -444,8 +447,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@jsr/evex__xrpc-hono@0.3.3':
-    resolution: {integrity: sha512-zMzxK4sbyN2nOY1iYC5d4n4jkYwS/JdMEPcerAFZgjE/BM05pW/fHVAm5TiYIdL33P6wORcRLmBJ5/myHPo0wA==, tarball: https://npm.jsr.io/~/11/@jsr/evex__xrpc-hono/0.3.3.tgz}
+  '@jsr/evex__xrpc-hono@0.3.6':
+    resolution: {integrity: sha512-H3yFfAn3KKmZB+2wZGz9pm1Cu/u+GxxA1rMzBWMmNDdMT8r3PeZIuXjKoOKmbi40s9lOzNky6TJoRLMP5nSBFA==, tarball: https://npm.jsr.io/~/11/@jsr/evex__xrpc-hono/0.3.6.tgz}
 
   '@noble/curves@1.9.7':
     resolution: {integrity: sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==}
@@ -1029,7 +1032,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@jsr/evex__xrpc-hono@0.3.3':
+  '@jsr/evex__xrpc-hono@0.3.6':
     dependencies:
       '@atproto/lexicon': 0.4.14
       '@atproto/xrpc': 0.7.5

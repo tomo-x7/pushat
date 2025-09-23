@@ -1,6 +1,6 @@
 import { DidResolver, getHandle, getKey, HandleResolver, MemoryCache } from "@atproto/identity";
 
-const didResolver = new DidResolver({ didCache: new MemoryCache() });
+const didResolver = new DidResolver({ didCache: new MemoryCache(), timeout: 10 * 1000 });
 const handleResolver = new HandleResolver({});
 export async function getDidDoc(did: string) {
 	const rawdoc = await didResolver.resolve(did);

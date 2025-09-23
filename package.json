@@ -16,10 +16,11 @@
 	"license": "MIT",
 	"packageManager": "pnpm@10.15.1",
 	"dependencies": {
+		"@atproto/crypto": "^0.4.4",
 		"@atproto/identity": "^0.4.9",
 		"@atproto/lexicon": "^0.5.1",
 		"@atproto/syntax": "^0.4.1",
-		"@evex/xrpc-hono": "jsr:^0.3.3",
+		"@evex/xrpc-hono": "jsr:^0.3.6",
 		"hono": "^4.9.8"
 	},
 	"devDependencies": {

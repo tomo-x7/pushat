@@ -1,5 +1,5 @@
 import { verifySignature } from "@atproto/crypto";
-import type { ErrorResult } from "@evex/xrpc-hono";
+import type { ErrorResult } from "@evex-dev/xrpc-hono";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";
 

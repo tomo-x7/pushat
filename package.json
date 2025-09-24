@@ -20,7 +20,7 @@
 		"@atproto/identity": "^0.4.9",
 		"@atproto/lexicon": "^0.5.1",
 		"@atproto/syntax": "^0.4.1",
-		"@evex-dev/xrpc-hono": "^1.0.2",
+		"@evex-dev/xrpc-hono": "^1.0.3",
 		"hono": "^4.9.8"
 	},
 	"devDependencies": {

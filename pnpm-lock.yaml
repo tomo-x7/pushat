@@ -21,8 +21,8 @@ importers:
         specifier: ^0.4.1
         version: 0.4.1
       '@evex-dev/xrpc-hono':
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^1.0.3
+        version: 1.0.3
       hono:
         specifier: ^4.9.8
         version: 4.9.8
@@ -329,8 +329,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@evex-dev/xrpc-hono@1.0.2':
-    resolution: {integrity: sha512-hYqhN2pqr8ANT4bMbnnn05hRK/rV19cePNuXtEIVDANKnD4vPGQDfeYpfpUCcuYk+Nl3gCI3nJMxjMmMrVeqQg==}
+  '@evex-dev/xrpc-hono@1.0.3':
+    resolution: {integrity: sha512-NmRBLGg8doF0TepB6C86DmN0067xfyokuuHwIQZyjpAlbKsBF32Hg4ucAWJtopw7FLzXNfyMLAOk5LrApiHQVw==}
     hasBin: true
 
   '@img/sharp-darwin-arm64@0.33.5':
@@ -967,7 +967,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.4':
     optional: true
 
-  '@evex-dev/xrpc-hono@1.0.2':
+  '@evex-dev/xrpc-hono@1.0.3':
     dependencies:
       '@atproto/lexicon': 0.5.1
       '@atproto/syntax': 0.4.1

@@ -9,7 +9,8 @@
 		"gen": "gen-xrpc-hono ./src/lexicons ./lexicons/win/tomo-x/**/*.json",
 		"dev": "wrangler dev",
 		"deploy": "wrangler deploy --minify",
-		"cf-typegen": "wrangler types ./src/worker.d.ts --env-interface CloudflareBindings"
+		"cf-typegen": "wrangler types ./src/worker.d.ts --env-interface CloudflareBindings",
+		"migrate": "drizzle-kit generate && drizzle-kit migrate"
 	},
 	"keywords": [],
 	"author": "",
@@ -21,6 +22,8 @@
 		"@atproto/lexicon": "^0.5.1",
 		"@atproto/syntax": "^0.4.1",
 		"@evex-dev/xrpc-hono": "^1.0.3",
+		"dotenv": "^17.2.2",
+		"drizzle-orm": "^0.44.5",
 		"hono": "^4.9.8"
 	},
 	"devDependencies": {
@@ -28,6 +31,7 @@
 		"@biomejs/biome": "2.2.3",
 		"@cloudflare/workers-types": "^4.20250918.0",
 		"@types/node": "^24.5.2",
+		"drizzle-kit": "^0.31.4",
 		"typescript": "^5.9.2",
 		"wrangler": "^4.38.0"
 	},

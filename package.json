@@ -6,7 +6,7 @@
 	"private": true,
 	"scripts": {
 		"check": "biome check --write",
-		"gen": "lex gen-server ./src/lexicons ./lexicons/win/tomo-x/**/*.json",
+		"gen": "gen-xrpc-hono ./src/lexicons ./lexicons/win/tomo-x/**/*.json",
 		"dev": "wrangler dev",
 		"deploy": "wrangler deploy --minify",
 		"cf-typegen": "wrangler types ./src/worker.d.ts --env-interface CloudflareBindings"
@@ -20,7 +20,7 @@
 		"@atproto/identity": "^0.4.9",
 		"@atproto/lexicon": "^0.5.1",
 		"@atproto/syntax": "^0.4.1",
-		"@evex/xrpc-hono": "jsr:^0.3.6",
+		"@evex-dev/xrpc-hono": "^1.0.2",
 		"hono": "^4.9.8"
 	},
 	"devDependencies": {

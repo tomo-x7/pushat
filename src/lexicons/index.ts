@@ -1,30 +1,28 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-type Auth = AuthResult | undefined;
-
 import {
-	type AuthResult,
+	type Auth,
 	createXRPCHono as createXrpcServer,
 	type HonoConfigOrHandler,
-	// type Auth,
+	type HonoXRPCOptions as XrpcOptions,
 	type XRPCHono as XrpcServer,
 } from "@evex-dev/xrpc-hono";
 import type { Env } from "hono";
 import { schemas } from "./lexicons.js";
 import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
 
-export function createServer<E extends Env = Env>(): Server<E> {
-	return new Server();
+export function createServer<E extends Env = Env>(options?: XrpcOptions<E>): Server<E> {
+	return new Server<E>(options);
 }
 
 export class Server<E extends Env> {
 	xrpc: XrpcServer<E>;
 	win: WinNS<E>;
 
-	constructor() {
-		this.xrpc = createXrpcServer(schemas);
-		this.win = new WinNS(this);
+	constructor(options?: XrpcOptions<E>) {
+		this.xrpc = createXrpcServer<E>(schemas, options);
+		this.win = new WinNS<E>(this);
 	}
 }
 
@@ -34,7 +32,7 @@ export class WinNS<E extends Env> {
 
 	constructor(server: Server<E>) {
 		this._server = server;
-		this.tomoX = new WinTomoXNS(server);
+		this.tomoX = new WinTomoXNS<E>(server);
 	}
 }
 
@@ -44,7 +42,7 @@ export class WinTomoXNS<E extends Env> {
 
 	constructor(server: Server<E>) {
 		this._server = server;
-		this.pushat = new WinTomoXPushatNS(server);
+		this.pushat = new WinTomoXPushatNS<E>(server);
 	}
 }
 
@@ -65,6 +63,6 @@ export class WinTomoXPushatNS<E extends Env> {
 		>,
 	) {
 		const nsid = "win.tomo-x.pushat.pushNotify";
-		return this._server.xrpc.method(nsid, cfg);
+		return this._server.xrpc.addMethod(nsid, cfg);
 	}
 }

@@ -2,9 +2,10 @@ import { drizzle } from "drizzle-orm/d1";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { verifyBearerAuth } from "./auth";
+import { devicesTable } from "./db/schema";
 import { createServer } from "./lexicons";
 import type { HandlerOutput } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
-import type { Env, RegisterRequest } from "./types";
+import type { Env } from "./types";
 
 const app = new Hono<Env>();
 app.use(cors({ origin: "*", allowHeaders: ["*", "Authorization"] }));
@@ -33,6 +34,19 @@ server.win.tomoX.pushat.pushNotify({
 		} satisfies HandlerOutput & {
 			[key: string]: unknown;
 		};
+	},
+});
+server.win.tomoX.pushat.registerToken({
+	auth: async ({ ctx }) => {
+		return verifyBearerAuth(ctx.req.header("Authorization"), "win.tomo-x.pushat.registerToken");
+	},
+	handler: async ({ c, input, auth }) => {
+		const result = await c
+			.get("db")
+			.insert(devicesTable)
+			.values({ did: auth.credentials.did, token: input.body.token })
+			.onConflictDoUpdate({ set: { token: input.body.token }, target: devicesTable.did });
+		return { encoding: "application/json", body: { success: result.success } };
 	},
 });
 const inner = server.xrpc.createApp();

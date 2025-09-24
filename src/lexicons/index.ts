@@ -11,6 +11,7 @@ import {
 import type { Env } from "hono";
 import { schemas } from "./lexicons.js";
 import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
+import type * as WinTomoXPushatRegisterToken from "./types/win/tomo-x/pushat/registerToken.js";
 
 export function createServer<E extends Env = Env>(options?: XrpcOptions<E>): Server<E> {
 	return new Server<E>(options);
@@ -63,6 +64,19 @@ export class WinTomoXPushatNS<E extends Env> {
 		>,
 	) {
 		const nsid = "win.tomo-x.pushat.pushNotify";
+		return this._server.xrpc.addMethod(nsid, cfg);
+	}
+
+	registerToken<A extends Auth = undefined>(
+		cfg: HonoConfigOrHandler<
+			E,
+			A,
+			WinTomoXPushatRegisterToken.QueryParams,
+			WinTomoXPushatRegisterToken.HandlerInput,
+			WinTomoXPushatRegisterToken.HandlerOutput
+		>,
+	) {
+		const nsid = "win.tomo-x.pushat.registerToken";
 		return this._server.xrpc.addMethod(nsid, cfg);
 	}
 }

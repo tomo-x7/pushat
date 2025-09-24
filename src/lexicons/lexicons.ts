@@ -36,6 +36,38 @@ export const schemaDict = {
 			},
 		},
 	},
+	WinTomoXPushatRegisterToken: {
+		lexicon: 1,
+		id: "win.tomo-x.pushat.registerToken",
+		defs: {
+			main: {
+				type: "procedure",
+				input: {
+					encoding: "application/json",
+					schema: {
+						type: "object",
+						required: ["token"],
+						properties: {
+							token: {
+								type: "string",
+							},
+						},
+					},
+				},
+				output: {
+					encoding: "application/json",
+					schema: {
+						type: "object",
+						properties: {
+							success: {
+								type: "boolean",
+							},
+						},
+					},
+				},
+			},
+		},
+	},
 } as const satisfies Record<string, LexiconDoc>;
 export const schemas = Object.values(schemaDict) satisfies LexiconDoc[];
 export const lexicons: Lexicons = new Lexicons(schemas);
@@ -65,4 +97,5 @@ export function validate(v: unknown, id: string, hash: string, requiredType?: bo
 
 export const ids = {
 	WinTomoXPushatPushNotify: "win.tomo-x.pushat.pushNotify",
+	WinTomoXPushatRegisterToken: "win.tomo-x.pushat.registerToken",
 } as const;

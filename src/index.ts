@@ -6,12 +6,20 @@ import { devicesTable } from "./db/schema";
 import { createServer } from "./lexicons";
 import type { HandlerOutput } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
 import type { Env } from "./types";
+import { initializeApp,cert } from "firebase-admin/app";
 
 const app = new Hono<Env>();
 app.use(cors({ origin: "*", allowHeaders: ["*", "Authorization"] }));
 app.use(async (c, next) => {
 	const db = drizzle(c.env.DB);
+	const firebaseApp=initializeApp({credential:cert({
+		projectId: c.env.FIREBASE_PROJECT_ID,
+		clientEmail: c.env.FIREBASE_CLIENT_EMAIL,
+		privateKey: c.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+	})})
 	c.set("db", db);
+	c.set("firebase", firebaseApp);
+
 	// ORMインスタンス作成
 	try {
 		await next();

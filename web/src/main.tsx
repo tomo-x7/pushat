@@ -5,7 +5,7 @@ import { App } from "./App.tsx";
 import { AtpBaseClient } from "./lexicons/index.ts";
 import { Provider } from "./Provider.tsx";
 try{
-const client = await BrowserOAuthClient.load({ clientId: "https://pushat.tomo-x.win/client-metadata.json" });
+const client = await BrowserOAuthClient.load({ clientId: "https://pushat.tomo-x.win/client-metadata.json",handleResolver:"https://public.api.bsky.app/" });
 const res = await client.init();
 const agentSession = ((session: OAuthSession | undefined) => {
 	if (session == null) return null;
@@ -19,4 +19,4 @@ createRoot(document.getElementById("root")!).render(
 		</Provider>
 	</StrictMode>,
 );
-}catch(e){window.alert(e)}
+}catch(e){window.alert(e);throw e;}

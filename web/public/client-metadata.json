@@ -1,0 +1,13 @@
+{
+	"$schema": "https://skytools.tomo-x.win/oauth-client-metadata-schema.json",
+	"client_id": "https://pushat.tomo-x.win/client-metadata.json",
+	"client_name": "pushat",
+	"client_uri": "https://pushat.tomo-x.win/",
+	"redirect_uris": ["https://pushat.tomo-x.win/"],
+	"scope": "atproto transition:generic",
+	"grant_types": ["authorization_code", "refresh_token"],
+	"response_types": ["code"],
+	"application_type": "web",
+	"token_endpoint_auth_method": "none",
+	"dpop_bound_access_tokens": true
+}

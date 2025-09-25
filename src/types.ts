@@ -1,9 +1,9 @@
 import type { DrizzleD1Database } from "drizzle-orm/d1";
-import { App } from "firebase-admin/app";
+import type { App } from "firebase-admin/app";
 
 export type Env = {
 	Bindings: CloudflareBindings;
-	Variables: { db: DrizzleD1Database,firebase:App };
+	Variables: { db: DrizzleD1Database; firebase: App };
 };
 
 export type RegisterRequest = {

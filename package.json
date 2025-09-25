@@ -28,7 +28,6 @@
 		"hono": "^4.9.8"
 	},
 	"devDependencies": {
-		"@atproto/lex-cli": "^0.9.5",
 		"@biomejs/biome": "2.2.3",
 		"@cloudflare/workers-types": "^4.20250918.0",
 		"@types/node": "^24.5.2",

@@ -6,8 +6,8 @@ export function App() {
 	const login = async () => {
 		const handle = window.prompt("enter your handle");
 		if (!handle) return;
-		await client.signIn(handle,{
-			ui_locales:"ja"
+		await client.signIn(handle, {
+			ui_locales: "ja",
 		});
 	};
 	return (

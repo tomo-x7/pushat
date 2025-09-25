@@ -9,8 +9,8 @@ const client = await BrowserOAuthClient.load({ clientId: "https://pushat.tomo-x.
 const res = await client.init();
 const agentSession = ((session: OAuthSession | undefined) => {
 	if (session == null) return null;
-	const agent=new AtpBaseClient(session.fetchHandler);
-	return {agent,session}
+	const agent = new AtpBaseClient(session.fetchHandler);
+	return { agent, session };
 })(res?.session);
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>

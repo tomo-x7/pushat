@@ -3,10 +3,12 @@ import { useAgentSession, useClient } from "./Provider";
 export function App() {
 	const client = useClient();
 	const agentSession = useAgentSession();
-	const login = () => {
+	const login = async () => {
 		const handle = window.prompt("enter your handle");
 		if (!handle) return;
-		client.authorize(handle);
+		await client.signIn(handle,{
+			ui_locales:"ja"
+		});
 	};
 	return (
 		<>

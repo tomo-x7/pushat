@@ -5,6 +5,13 @@ import { App } from "./App.tsx";
 import { AtpBaseClient } from "./lexicons/index.ts";
 import { Provider } from "./Provider.tsx";
 
+(() => {
+	var src = "//cdn.jsdelivr.net/npm/eruda";
+	if (!/eruda=true/.test(window.location.href) && localStorage.getItem("active-eruda") !== "true") return;
+	document.write("<scr" + 'ipt src="' + src + '"></scr' + "ipt>");
+	document.write("<scr" + "ipt>eruda.init();</scr" + "ipt>");
+})();
+
 const client = await BrowserOAuthClient.load({ clientId: "https://pushat.tomo-x.win/client-metadata.json" });
 const res = await client.init();
 const agentSession = ((session: OAuthSession | undefined) => {

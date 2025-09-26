@@ -4,11 +4,6 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";
 import { AtpBaseClient } from "./lexicons/index.ts";
 import { Provider } from "./Provider.tsx";
-import { initializeApp } from "firebase/app";
-import { getMessaging, getToken } from "firebase/messaging";
-import { FIREBASE_CONFIG, VAPID_KEY } from "./const.ts";
-
-const sw = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
 
 const client = await BrowserOAuthClient.load({
 	clientId: "https://pushat.tomo-x.win/client-metadata.json",
@@ -21,13 +16,6 @@ const agentSession = ((session: OAuthSession | undefined) => {
 	const agent = new AtpBaseClient(session.fetchHandler);
 	return { agent, session };
 })(res?.session);
-
-const app = initializeApp(FIREBASE_CONFIG);
-const messaging = getMessaging(app);
-getToken(messaging, {
-	serviceWorkerRegistration: sw,
-	vapidKey: VAPID_KEY,
-});
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>

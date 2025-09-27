@@ -46,7 +46,7 @@ export async function getTokenWithRequestPermission() {
 }
 
 const TokenContext = createContext<string | null>(null);
-const RequestTokenContext = createContext<() => Promise<boolean>>(async () => false);
+const RequestTokenContext = createContext<() => Promise<string | null>>(async () => null);
 
 export function useToken() {
 	return useContext(TokenContext);
@@ -61,13 +61,14 @@ export function TokenProvider({ children }: PropsWithChildren) {
 		getTokenWithoutRequestPermission().then(setToken);
 	}, []);
 	const requestToken = useCallback(async () => {
-		if (token) return true;
+		if (token) return token;
 		const result = await getTokenWithRequestPermission();
 		if (result != null && "token" in result && result.token != null) {
 			setToken(result.token);
-			return true;
+			return result.token;
 		}
-		return false;
+		console.warn(result.error);
+		return null;
 	}, [token]);
 	return (
 		<RequestTokenContext value={requestToken}>

@@ -20,9 +20,11 @@ let getTokenPromiseCache: Promise<string | null | undefined | void> | undefined;
 async function getTokenWithoutRequestPermission() {
 	if (messaging == null) throw new Error("messaging not initialized");
 	if (getTokenPromiseCache == null)
-		getTokenPromiseCache = getToken(messaging, { vapidKey: VAPID_KEY }).finally(() => {
-			getTokenPromiseCache = undefined;
-		});
+		getTokenPromiseCache = getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: sw }).finally(
+			() => {
+				getTokenPromiseCache = undefined;
+			},
+		);
 	const token = await getTokenPromiseCache;
 	if (token) {
 		return token;

@@ -1,8 +1,8 @@
 import { BrowserOAuthClient, type OAuthSession } from "@atproto/oauth-client-browser";
 import { type ReactNode, useEffect, useState } from "react";
+import { useErrorBoundary } from "react-error-boundary";
 import { initFcm } from "./fcm";
 import { AtpBaseClient } from "./lexicons";
-import { useErrorBoundary } from "react-error-boundary";
 
 type ChildATPProps = {
 	agentSession: {
@@ -16,7 +16,6 @@ export function InitLoad({ children }: { children: (props: ChildATPProps) => Rea
 	const [initFcmDone, setInitFcmDone] = useState(false);
 	const { showBoundary } = useErrorBoundary();
 	useEffect(() => {
-		if (atpProps != null) return;
 		BrowserOAuthClient.load({
 			clientId: "https://pushat.tomo-x.win/client-metadata.json",
 			handleResolver: "https://public.api.bsky.app/",
@@ -33,7 +32,7 @@ export function InitLoad({ children }: { children: (props: ChildATPProps) => Rea
 		return () => {
 			setAtpProps(null);
 		};
-	}, [showBoundary, atpProps]);
+	}, [showBoundary]);
 	useEffect(() => {
 		initFcm()
 			.then(() => setInitFcmDone(true))

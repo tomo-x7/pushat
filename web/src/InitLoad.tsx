@@ -23,7 +23,8 @@ export function InitLoad({ children }: { children: (props: ChildATPProps) => Rea
 			.then((client) =>
 				client.init().then((res) => {
 					if (res?.session == null) return { client, agentSession: null };
-					const agent = new AtpBaseClient(res.session.fetchHandler);
+					const agent = new AtpBaseClient((...params) => res.session.fetchHandler(...params));
+					agent.setHeader("atproto-proxy", "did:web:pushat.tomo-x.win#pushat");
 					return { client, agentSession: { agent, session: res.session } };
 				}),
 			)

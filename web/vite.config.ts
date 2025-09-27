@@ -15,4 +15,5 @@ export default defineConfig({
 			injectRegister: false,
 		}),
 	],
+	build: { minify: false },
 });

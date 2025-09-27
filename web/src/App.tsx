@@ -16,6 +16,7 @@ export function App() {
 		<>
 			<h1>Pushat</h1>
 			<div>state:{agentSession?.session.did ?? "logged out"}</div>
+			<div>token:{token ?? "null"}</div>
 			<button type="button" onClick={login}>
 				login
 			</button>
@@ -31,6 +32,7 @@ function RegisterPush() {
 	const onClick = async () => {
 		if (agent == null) return;
 		const token = await requestToken();
+		console.log(token);
 		if (token == null) return;
 		const res = await agent.win.tomoX.pushat.registerToken({ token });
 		res.data.success ? alert("registered") : alert(`failed:${res}`);

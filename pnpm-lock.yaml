@@ -23,6 +23,9 @@ importers:
       '@evex-dev/xrpc-hono':
         specifier: ^1.0.3
         version: 1.0.3
+      '@tomo-x/resolvers':
+        specifier: ^0.0.2
+        version: 0.0.2
       dotenv:
         specifier: ^17.2.2
         version: 17.2.2
@@ -732,6 +735,9 @@ packages:
 
   '@speed-highlight/core@1.2.7':
     resolution: {integrity: sha512-0dxmVj4gxg3Jg879kvFS/msl4s9F3T9UXC1InxgOf7t5NvcPD97u/WTA5vL/IxWHMn7qSxBozqrnnE2wvl1m8g==}
+
+  '@tomo-x/resolvers@0.0.2':
+    resolution: {integrity: sha512-os/Hv94kqLMK9vYycBxa9Pz8suJHGDdqurTrPxUZB93GmYGzW0NMCLgYTK/yPKNuMAlM5zkJCXCzmuBlY1dOxA==}
 
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -2143,6 +2149,8 @@ snapshots:
   '@sindresorhus/is@7.1.0': {}
 
   '@speed-highlight/core@1.2.7': {}
+
+  '@tomo-x/resolvers@0.0.2': {}
 
   '@tootallnate/once@2.0.0':
     optional: true

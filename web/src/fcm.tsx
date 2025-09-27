@@ -3,6 +3,7 @@ import { getMessaging, getToken, isSupported, type Messaging } from "firebase/me
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import { FIREBASE_CONFIG, VAPID_KEY } from "./const";
 import { MessagingNotSupportedError, ServiceWorkerNotSupportedError } from "./Error";
+import { useAgent } from "./Provider";
 
 let app: FirebaseApp | undefined;
 let messaging: Messaging | undefined;
@@ -59,10 +60,17 @@ export function useRequestToken() {
 
 export function TokenProvider({ children }: PropsWithChildren) {
 	const [token, setToken] = useState<string | null>(null);
+	const agent = useAgent();
 	useEffect(() => {
 		// 未認可の場合エラーになるが問題ないので握りつぶす
-		getTokenWithoutRequestPermission().then(setToken).catch();
-	}, []);
+		if (agent == null) return;
+		getTokenWithoutRequestPermission()
+			.then((token) => {
+				setToken(token);
+				if (token != null) agent.win.tomoX.pushat.registerToken({ token }).catch(() => {});
+			})
+			.catch(() => {});
+	}, [agent]);
 	const requestToken = useCallback(async () => {
 		if (token) return token;
 		const result = await getTokenWithRequestPermission();

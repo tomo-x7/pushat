@@ -1,5 +1,5 @@
-import { drizzle } from "drizzle-orm/d1";
-import { cert, initializeApp } from "firebase-admin/app";
+import { drizzle, DrizzleD1Database } from "drizzle-orm/d1";
+import { App, cert, initializeApp } from "firebase-admin/app";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { verifyBearerAuth } from "./auth";
@@ -7,22 +7,27 @@ import { devicesTable } from "./db/schema";
 import { createServer } from "./lexicons";
 import type { HandlerOutput } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
 import type { Env } from "./types";
+import { getMessaging } from "firebase-admin/messaging";
 
 const app = new Hono<Env>();
+let db: DrizzleD1Database;
+let firebaseApp: App;
 app.use(cors({ origin: "*", allowHeaders: ["*", "Authorization"] }));
 app.use(async (c, next) => {
-	const db = drizzle(c.env.DB);
-	const firebaseApp = initializeApp({
-		credential: cert({
-			projectId: c.env.FIREBASE_PROJECT_ID,
-			clientEmail: c.env.FIREBASE_CLIENT_EMAIL,
-			privateKey: c.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-		}),
-	});
+	if (db == null) {
+		db = drizzle(c.env.DB);
+	}
+	if (firebaseApp == null) {
+		firebaseApp = initializeApp({
+			credential: cert({
+				projectId: c.env.FIREBASE_PROJECT_ID,
+				clientEmail: c.env.FIREBASE_CLIENT_EMAIL,
+				privateKey: c.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+			}),
+		});
+	}
 	c.set("db", db);
 	c.set("firebase", firebaseApp);
-
-	// ORMインスタンス作成
 	try {
 		await next();
 	} finally {
@@ -36,11 +41,18 @@ server.win.tomoX.pushat.pushNotify({
 	auth: ({ ctx }) => {
 		return verifyBearerAuth(ctx.req.header("Authorization"), "win.tomo-x.pushat.pushNotify");
 	},
-	handler: async (req) => {
+	handler: async ({ c, auth }) => {
+		const firebaseApp = c.get("firebase");
+		const messaging = getMessaging(firebaseApp);
+		messaging.send({
+			token: "",
+			notification: {},
+			webpush: { fcmOptions: { link: "" }, notification: {} },
+		});
 		return {
 			encoding: "application/json",
-			body: { success: true, token: req.c.req.header("Authorization") },
-			credentials: req.auth.credentials,
+			body: { success: true, token: c.req.header("Authorization") },
+			credentials: auth.credentials,
 		} satisfies HandlerOutput & {
 			[key: string]: unknown;
 		};

@@ -1,24 +1,28 @@
 import { type FirebaseApp, initializeApp } from "firebase/app";
 import { getMessaging, getToken, isSupported, type Messaging } from "firebase/messaging";
-import { useCallback, useEffect, useState } from "react";
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import { FIREBASE_CONFIG, VAPID_KEY } from "./const";
+import { MessagingNotSupportedError, ServiceWorkerNotSupportedError } from "./Error";
 
 let app: FirebaseApp | undefined;
 let messaging: Messaging | undefined;
 let sw: ServiceWorkerRegistration | undefined;
-let getTokenPromiseCache: Promise<string | null | undefined | void> | undefined;
 
-
-export async function init() {
+export async function initFcm() {
 	await assertSupport();
+	if (app != null && messaging != null && sw != null) return;
 	app = initializeApp(FIREBASE_CONFIG);
 	messaging = getMessaging(app);
 	sw = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
 }
+
+let getTokenPromiseCache: Promise<string | null | undefined | void> | undefined;
 async function getTokenWithoutRequestPermission() {
 	if (messaging == null) throw new Error("messaging not initialized");
 	if (getTokenPromiseCache == null)
-		getTokenPromiseCache = getToken(messaging, { vapidKey: VAPID_KEY }).catch(console.error).finally(()=>{getTokenPromiseCache=undefined;});
+		getTokenPromiseCache = getToken(messaging, { vapidKey: VAPID_KEY }).finally(() => {
+			getTokenPromiseCache = undefined;
+		});
 	const token = await getTokenPromiseCache;
 	if (token) {
 		return token;
@@ -29,11 +33,9 @@ async function getTokenWithoutRequestPermission() {
 export async function getTokenWithRequestPermission() {
 	if (messaging == null) throw new Error("messaging not initialized");
 	if (sw == null) throw new Error("sw not initialized");
-	const result = await Notification.requestPermission().catch(console.error);
+	const result = await Notification.requestPermission();
 	if (result === "granted") {
-		const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: sw }).catch(
-			console.error,
-		);
+		const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: sw });
 		if (token) {
 			return { token };
 		} else {
@@ -43,7 +45,17 @@ export async function getTokenWithRequestPermission() {
 	return { error: "not granted" };
 }
 
+const TokenContext = createContext<string | null>(null);
+const RequestTokenContext = createContext<() => Promise<boolean>>(async () => false);
+
 export function useToken() {
+	return useContext(TokenContext);
+}
+export function useRequestToken() {
+	return useContext(RequestTokenContext);
+}
+
+export function TokenProvider({ children }: PropsWithChildren) {
 	const [token, setToken] = useState<string | null>(null);
 	useEffect(() => {
 		getTokenWithoutRequestPermission().then(setToken);
@@ -55,14 +67,17 @@ export function useToken() {
 			setToken(result.token);
 			return true;
 		}
-		return result.error;
+		return false;
 	}, [token]);
-	return [token, requestToken] as const;
+	return (
+		<RequestTokenContext value={requestToken}>
+			<TokenContext value={token}>{children}</TokenContext>
+		</RequestTokenContext>
+	);
 }
-export class MessagingNotSupportedError extends Error {}
-export class ServiceWorkerNotSupportedError extends Error {}
-async function assertSupport(){
-	if(await isSupported()===false)throw new MessagingNotSupportedError()
-	if(!("navigator" in window))throw new ServiceWorkerNotSupportedError()
-	if(!("serviceWorker" in navigator))throw new ServiceWorkerNotSupportedError()
+
+async function assertSupport() {
+	if ((await isSupported()) === false) throw new MessagingNotSupportedError();
+	if (!("navigator" in window)) throw new ServiceWorkerNotSupportedError();
+	if (!("serviceWorker" in navigator)) throw new ServiceWorkerNotSupportedError();
 }

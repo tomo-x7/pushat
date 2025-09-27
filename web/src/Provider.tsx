@@ -1,5 +1,6 @@
 import type { BrowserOAuthClient, OAuthSession } from "@atproto/oauth-client-browser";
 import { createContext, type PropsWithChildren, useContext } from "react";
+import { TokenProvider } from "./fcm";
 import type { AtpBaseClient } from "./lexicons";
 
 const ClientContext = createContext<BrowserOAuthClient>(null!);
@@ -27,7 +28,9 @@ export function Provider({
 }>) {
 	return (
 		<ClientContext value={client}>
-			<AgentSessionContext value={agentSession}>{children}</AgentSessionContext>
+			<AgentSessionContext value={agentSession}>
+				<TokenProvider>{children}</TokenProvider>
+			</AgentSessionContext>
 		</ClientContext>
 	);
 }

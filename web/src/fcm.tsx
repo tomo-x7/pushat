@@ -58,7 +58,8 @@ export function useRequestToken() {
 export function TokenProvider({ children }: PropsWithChildren) {
 	const [token, setToken] = useState<string | null>(null);
 	useEffect(() => {
-		getTokenWithoutRequestPermission().then(setToken);
+		// 未認可の場合エラーになるが問題ないので握りつぶす
+		getTokenWithoutRequestPermission().then(setToken).catch();
 	}, []);
 	const requestToken = useCallback(async () => {
 		if (token) return token;

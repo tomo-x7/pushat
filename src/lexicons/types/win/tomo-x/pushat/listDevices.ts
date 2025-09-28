@@ -13,7 +13,7 @@ export interface OutputSchema {
 	devices: WinTomoXPushatDefs.DeviceList;
 }
 
-export type HandlerInput = void;
+export type HandlerInput = undefined;
 
 export interface HandlerSuccess {
 	encoding: "application/json";

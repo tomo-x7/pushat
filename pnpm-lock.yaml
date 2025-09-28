@@ -21,8 +21,8 @@ importers:
         specifier: ^0.4.1
         version: 0.4.1
       '@evex-dev/xrpc-hono':
-        specifier: ^1.0.3
-        version: 1.0.3
+        specifier: ^1.0.4
+        version: 1.0.4
       '@tomo-x/resolvers':
         specifier: ^0.0.2
         version: 0.0.2
@@ -479,8 +479,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@evex-dev/xrpc-hono@1.0.3':
-    resolution: {integrity: sha512-NmRBLGg8doF0TepB6C86DmN0067xfyokuuHwIQZyjpAlbKsBF32Hg4ucAWJtopw7FLzXNfyMLAOk5LrApiHQVw==}
+  '@evex-dev/xrpc-hono@1.0.4':
+    resolution: {integrity: sha512-r4MCDxQyRpUUU0l3tiaMiW+NvNBuCVhgbtQ5cgg+oKmJ/XeWVpDnwQYDh2p7KQ91AJSvpEiOnIgLwhIMfn1+JQ==}
     hasBin: true
 
   '@fastify/busboy@3.2.0':
@@ -1872,7 +1872,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.4':
     optional: true
 
-  '@evex-dev/xrpc-hono@1.0.3':
+  '@evex-dev/xrpc-hono@1.0.4':
     dependencies:
       '@atproto/lexicon': 0.5.1
       '@atproto/syntax': 0.4.1

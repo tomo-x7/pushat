@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { createCallable } from "react-call";
 import { FiX } from "react-icons/fi";
 
@@ -175,7 +176,3 @@ export const showTextInput = textInputCallable.call;
 export const showConfirm = confirmCallable.call;
 export const TextInputRoot = textInputCallable.Root;
 export const ConfirmRoot = confirmCallable.Root;
-
-// 後方互換性のためのエイリアス
-export const showTextInputModal = showTextInput;
-export const showConfirmModal = showConfirm;

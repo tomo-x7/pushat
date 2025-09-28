@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { FiLogOut, FiSmartphone, FiTrash2, FiPlus } from "react-icons/fi";
+import { FiLogOut, FiPlus, FiSmartphone, FiTrash2 } from "react-icons/fi";
 import { useAgent, useClient, useSession } from "./atproto";
 import { useToken } from "./fcm";
 import { Loading } from "./Loading";
-import { showTextInputModal, showConfirmModal } from "./Modal";
 import type { WinTomoXPushatDefs, WinTomoXPushatGetDevices } from "./lexicons";
 import { isRegisteredDevice } from "./lexicons/types/win/tomo-x/pushat/getDevices";
 

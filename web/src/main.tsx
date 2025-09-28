@@ -5,7 +5,7 @@ import { App } from "./App";
 import { ATPProvider } from "./atproto";
 import { ErrorBoundary } from "./Error";
 import { FcmBaseProvider, FcmTokenProvider } from "./fcm";
-import { TextInputRoot, ConfirmRoot } from "./Modal";
+import { ConfirmRoot, TextInputRoot } from "./Modal";
 import "./globals.css";
 
 createRoot(document.getElementById("root")!).render(

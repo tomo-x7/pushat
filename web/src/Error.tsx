@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { ErrorBoundary as LibErrorBoundary } from "react-error-boundary";
-import { FiAlertTriangle, FiWifi, FiRefreshCw } from "react-icons/fi";
+import { FiAlertTriangle, FiRefreshCw, FiWifi } from "react-icons/fi";
 
 // カスタムエラー
 export class MessagingNotSupportedError extends Error {}

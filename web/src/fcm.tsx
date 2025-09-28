@@ -116,7 +116,7 @@ function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<Requ
 		try {
 			const result = await requestToken();
 			if (!result.ok) {
-				alert("通知の許可に失敗しました: " + result.error);
+				alert(`通知の許可に失敗しました: ${result.error}`);
 			}
 		} finally {
 			setIsRequesting(false);

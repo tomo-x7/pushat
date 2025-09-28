@@ -2,7 +2,6 @@ import { BrowserOAuthClient, type OAuthSession } from "@atproto/oauth-client-bro
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { Loading } from "./Loading";
-import { showTextInputModal } from "./Modal";
 import { AtpBaseClient } from "./lexicons";
 
 const ClientContext = createContext<BrowserOAuthClient>(null!);
@@ -64,7 +63,7 @@ function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 			});
 			setShowHandleModal(false);
 		} catch (error) {
-			alert("ログインに失敗しました: " + String(error));
+			alert(`ログインに失敗しました: ${String(error)}`);
 			console.error(error);
 		} finally {
 			setIsLoggingIn(false);

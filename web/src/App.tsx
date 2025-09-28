@@ -1,9 +1,12 @@
 import { useRequestToken, useToken } from "./fcm";
-import { useAgent, useAgentSession, useClient } from "./Provider";
+import { useAgent, useClient, useSession } from "./atproto";
+import { useEffect, useState } from "react";
+import type { WinTomoXPushatDefs } from "./lexicons";
+import { Loading } from "./Loading";
 
 export function App() {
 	const client = useClient();
-	const agentSession = useAgentSession();
+	const session = useSession();
 	const token = useToken();
 	const login = async () => {
 		const handle = window.prompt("enter your handle");
@@ -15,31 +18,38 @@ export function App() {
 	return (
 		<>
 			<h1>Pushat</h1>
-			<div>state:{agentSession?.session.did ?? "logged out"}</div>
-			<div>token:{token ?? "null"}</div>
+			<div>state:{session.did}</div>
+			<div>token:{token}</div>
 			<button type="button" onClick={login}>
 				login
 			</button>
-			{agentSession != null && token == null && <RegisterPush />}
 		</>
 	);
 }
 
-function RegisterPush() {
+function Device() {
 	const agent = useAgent();
-	const requestToken = useRequestToken();
-	const token = useToken();
-	const onClick = async () => {
-		if (agent == null) return;
-		const token = await requestToken();
-		console.log(token);
-		if (token == null) return;
-		const res = await agent.win.tomoX.pushat.registerToken({ token });
-		res.data.success ? alert("registered") : alert(`failed:${res}`);
+	const [deviceList, setDeviceList] = useState<WinTomoXPushatDefs.DeviceList | null>(null);
+	useEffect(() => {
+		agent.win.tomoX.pushat.listDevices().then((res) => {
+			setDeviceList(res.data.devices);
+		});
+	}, [agent]);
+	const deleteDevice = (id: string) => async () => {
+		await agent.win.tomoX.pushat.deleteDevice({ id }).catch(window.alert);
 	};
+
+	if (deviceList == null) return <Loading />;
 	return (
-		<button type="button" onClick={onClick}>
-			Register
-		</button>
+		<div>
+			{deviceList.map((d) => (
+				<div key={d.id}>
+					<div>{d.name}</div>
+					<button type="button" onClick={deleteDevice(d.id)}>
+						delete
+					</button>
+				</div>
+			))}
+		</div>
 	);
 }

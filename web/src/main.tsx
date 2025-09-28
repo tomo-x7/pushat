@@ -1,20 +1,22 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./App.tsx";
-import { ErrorBoundary } from "./Error.tsx";
-import { InitLoad } from "./InitLoad.tsx";
-import { Provider } from "./Provider.tsx";
+import { App } from "./App";
+import { ATPProvider } from "./atproto";
+import { ErrorBoundary } from "./Error";
+import { FcmBaseProvider, FcmTokenProvider } from "./fcm";
+import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<ErrorBoundary>
-			<InitLoad>
-				{({ agentSession, client }) => (
-					<Provider client={client} agentSession={agentSession}>
+			<FcmBaseProvider>
+				<ATPProvider>
+					<FcmTokenProvider>
 						<App />
-					</Provider>
-				)}
-			</InitLoad>
+					</FcmTokenProvider>
+				</ATPProvider>
+			</FcmBaseProvider>
+			<Toaster position="top-right" />
 		</ErrorBoundary>
 	</StrictMode>,
 );

@@ -1,25 +1,48 @@
-import { type FirebaseApp, initializeApp } from "firebase/app";
-import { getMessaging, getToken, isSupported, type Messaging } from "firebase/messaging";
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, isSupported } from "firebase/messaging";
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { useAgent } from "./atproto";
 import { FIREBASE_CONFIG, VAPID_KEY } from "./const";
 import { MessagingNotSupportedError, ServiceWorkerNotSupportedError } from "./Error";
-import { useAgent } from "./Provider";
+import { Loading } from "./Loading";
 
-let app: FirebaseApp | undefined;
-let messaging: Messaging | undefined;
-let sw: ServiceWorkerRegistration | undefined;
+async function assertSupport() {
+	if ((await isSupported()) === false) throw new MessagingNotSupportedError();
+	if (!("navigator" in window)) throw new ServiceWorkerNotSupportedError();
+	if (!("serviceWorker" in navigator)) throw new ServiceWorkerNotSupportedError();
+}
 
-export async function initFcm() {
-	await assertSupport();
-	if (app != null && messaging != null && sw != null) return;
-	app = initializeApp(FIREBASE_CONFIG);
-	messaging = getMessaging(app);
-	sw = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+let sw: ServiceWorkerRegistration | null = null;
+export function FcmBaseProvider({ children }: PropsWithChildren) {
+	const alreadyLoaded = useRef(false);
+	const [loadFinished, setLoadFinished] = useState(false);
+	const { showBoundary } = useErrorBoundary();
+
+	useEffect(() => {
+		if (alreadyLoaded.current) return;
+		if (sw != null) return;
+		alreadyLoaded.current = true;
+		assertSupport()
+			.then(() => {
+				initializeApp(FIREBASE_CONFIG);
+				return navigator.serviceWorker.register("/sw.js", { scope: "/" });
+			})
+			.then((newSw) => {
+				sw = newSw;
+				setLoadFinished(true);
+			})
+			.catch(showBoundary);
+	}, [showBoundary]);
+
+	if (!loadFinished) return <Loading />;
+	return <>{children}</>;
 }
 
 let getTokenPromiseCache: Promise<string | null | undefined | void> | undefined;
 async function getTokenWithoutRequestPermission() {
-	if (messaging == null) throw new Error("messaging not initialized");
+	if (sw == null) throw new Error("sw is null");
+	const messaging = getMessaging();
 	if (getTokenPromiseCache == null)
 		getTokenPromiseCache = getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: sw }).finally(
 			() => {
@@ -34,8 +57,8 @@ async function getTokenWithoutRequestPermission() {
 }
 // クリックイベントでしか呼ばれないのでキャッシュ不要
 export async function getTokenWithRequestPermission() {
-	if (messaging == null) throw new Error("messaging not initialized");
-	if (sw == null) throw new Error("sw not initialized");
+	if (sw == null) throw new Error("sw is null");
+	const messaging = getMessaging();
 	const result = await Notification.requestPermission();
 	if (result === "granted") {
 		const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: sw });
@@ -52,44 +75,47 @@ const TokenContext = createContext<string | null>(null);
 const RequestTokenContext = createContext<() => Promise<string | null>>(async () => null);
 
 export function useToken() {
-	return useContext(TokenContext);
+	const token = useContext(TokenContext);
+	if (token == null) throw new Error("token is null");
+	return token;
 }
 export function useRequestToken() {
 	return useContext(RequestTokenContext);
 }
 
-export function TokenProvider({ children }: PropsWithChildren) {
-	const [token, setToken] = useState<string | null>(null);
-	const agent = useAgent();
+export function FcmTokenProvider({ children }: PropsWithChildren) {
+	const [token, setToken] = useState<string | "loading" | "notGranted">("loading");
 	useEffect(() => {
-		// 未認可の場合エラーになるが問題ないので握りつぶす
-		if (agent == null) return;
 		getTokenWithoutRequestPermission()
 			.then((token) => {
-				setToken(token);
-				if (token != null) agent.win.tomoX.pushat.registerToken({ token }).catch(() => {});
+				if (token) setToken(token);
+				else setToken("notGranted");
 			})
 			.catch(() => {});
-	}, [agent]);
-	const requestToken = useCallback(async () => {
-		if (token) return token;
+	}, []);
+	const requestToken = useCallback<() => Promise<RequestTokenResult>>(async () => {
+		if (token) return { ok: true };
 		const result = await getTokenWithRequestPermission();
 		if (result != null && "token" in result && result.token != null) {
 			setToken(result.token);
-			return result.token;
+			return { ok: true };
 		}
 		console.warn(result.error);
-		return null;
+		return { ok: false, error: result.error };
 	}, [token]);
-	return (
-		<RequestTokenContext value={requestToken}>
-			<TokenContext value={token}>{children}</TokenContext>
-		</RequestTokenContext>
-	);
+	if (token === "loading") return <Loading />;
+	if (token === "notGranted") return <RequestTokenScreen requestToken={requestToken} />;
+	return <TokenContext value={token}>{children}</TokenContext>;
 }
-
-async function assertSupport() {
-	if ((await isSupported()) === false) throw new MessagingNotSupportedError();
-	if (!("navigator" in window)) throw new ServiceWorkerNotSupportedError();
-	if (!("serviceWorker" in navigator)) throw new ServiceWorkerNotSupportedError();
+type RequestTokenResult = { ok: true } | { ok: false; error: string };
+function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<RequestTokenResult> }) {
+	const onClick = async () => {
+		const result = await requestToken();
+		if (!result.ok) alert(result.error);
+	};
+	return (
+		<button type="button" onClick={onClick}>
+			allow push notifications
+		</button>
+	);
 }

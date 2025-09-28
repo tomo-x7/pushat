@@ -1,4 +1,4 @@
-import { customType, index, int, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { customType, index, int, primaryKey, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 
 const isoDateTime = customType<{
 	data: Date; // type of TypeScript
@@ -12,8 +12,9 @@ const isoDateTime = customType<{
 export const devicesTable = sqliteTable(
 	"devices",
 	{
-		id: int().primaryKey({ autoIncrement: true }),
 		did: text().notNull(),
+		id: text().notNull().primaryKey(),
+		name: text().notNull(),
 		token: text().notNull(),
 		createdAt: isoDateTime("created_at")
 			.notNull()
@@ -23,5 +24,5 @@ export const devicesTable = sqliteTable(
 			.$defaultFn(() => new Date())
 			.$onUpdateFn(() => new Date()),
 	},
-	(table) => [index("devices_did_idx").on(table.did), unique().on(table.did)],
+	(table) => [unique().on(table.did, table.token), index("devices_did_idx").on(table.did)],
 );

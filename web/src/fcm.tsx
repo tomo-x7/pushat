@@ -92,7 +92,9 @@ export function FcmTokenProvider({ children }: PropsWithChildren) {
 				if (token) setToken(token);
 				else setToken("notGranted");
 			})
-			.catch(() => {});
+			.catch(() => {
+				setToken("notGranted");
+			});
 	}, []);
 	const requestToken = useCallback<() => Promise<RequestTokenResult>>(async () => {
 		if (token) return { ok: true };

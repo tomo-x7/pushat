@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, isSupported } from "firebase/messaging";
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useErrorBoundary } from "react-error-boundary";
+import { FiBell } from "react-icons/fi";
 import { FIREBASE_CONFIG, VAPID_KEY } from "./const";
 import { MessagingNotSupportedError, ServiceWorkerNotSupportedError } from "./Error";
 import { Loading } from "./Loading";
@@ -108,13 +109,35 @@ export function FcmTokenProvider({ children }: PropsWithChildren) {
 }
 type RequestTokenResult = { ok: true } | { ok: false; error: string };
 function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<RequestTokenResult> }) {
+	const [isRequesting, setIsRequesting] = useState(false);
+
 	const onClick = async () => {
-		const result = await requestToken();
-		if (!result.ok) alert(result.error);
+		setIsRequesting(true);
+		try {
+			const result = await requestToken();
+			if (!result.ok) {
+				alert("通知の許可に失敗しました: " + result.error);
+			}
+		} finally {
+			setIsRequesting(false);
+		}
 	};
+
 	return (
-		<button type="button" onClick={onClick}>
-			allow push notifications
-		</button>
+		<div className="full-center">
+			<div className="card">
+				<div className="card-body text-center">
+					<FiBell size={48} className="text-blue-600 mb-4 mx-auto" />
+					<h2 className="text-lg font-semibold mb-2">プッシュ通知を許可</h2>
+					<p className="text-gray-600 text-sm mb-6">
+						重要な通知を受け取るために、プッシュ通知を許可してください
+					</p>
+					<button type="button" onClick={onClick} className="btn btn-primary" disabled={isRequesting}>
+						<FiBell size={16} />
+						通知を許可
+					</button>
+				</div>
+			</div>
+		</div>
 	);
 }

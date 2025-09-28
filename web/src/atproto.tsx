@@ -2,6 +2,7 @@ import { BrowserOAuthClient, type OAuthSession } from "@atproto/oauth-client-bro
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { Loading } from "./Loading";
+import { TextInputModal } from "./Modal";
 import { AtpBaseClient } from "./lexicons";
 
 const ClientContext = createContext<BrowserOAuthClient>(null!);
@@ -52,16 +53,52 @@ export function ATPProvider({ children }: PropsWithChildren) {
 }
 
 function LoginScreen({ client }: { client: BrowserOAuthClient }) {
-	const login = async () => {
-		const handle = window.prompt("enter your handle");
-		if (!handle) return;
-		await client.signIn(handle, {
-			ui_locales: "ja",
-		});
+	const [showHandleModal, setShowHandleModal] = useState(false);
+	const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+	const login = async (handle: string) => {
+		setIsLoggingIn(true);
+		try {
+			await client.signIn(handle, {
+				ui_locales: "ja",
+			});
+			setShowHandleModal(false);
+		} catch (error) {
+			alert("ログインに失敗しました: " + String(error));
+			console.error(error);
+		} finally {
+			setIsLoggingIn(false);
+		}
 	};
+
 	return (
-		<button type="button" onClick={login}>
-			login
-		</button>
+		<div className="full-center">
+			<div className="card">
+				<div className="card-body text-center">
+					<h1 className="text-2xl font-semibold mb-2">Pushat</h1>
+					<p className="text-gray-600 text-sm mb-6">
+						BlueSkyアカウントでログインしてプッシュ通知を設定します
+					</p>
+					<button
+						type="button"
+						onClick={() => setShowHandleModal(true)}
+						className="btn btn-primary"
+						disabled={isLoggingIn}
+					>
+						ログイン
+					</button>
+				</div>
+			</div>
+
+			<TextInputModal
+				isOpen={showHandleModal}
+				onClose={() => setShowHandleModal(false)}
+				onSubmit={login}
+				title="ログイン"
+				placeholder="ハンドル名を入力 (例: alice.bsky.social)"
+				submitText="ログイン"
+				isLoading={isLoggingIn}
+			/>
+		</div>
 	);
 }

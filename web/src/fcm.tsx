@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, isSupported } from "firebase/messaging";
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { useAgent } from "./atproto";
 import { FIREBASE_CONFIG, VAPID_KEY } from "./const";
 import { MessagingNotSupportedError, ServiceWorkerNotSupportedError } from "./Error";
 import { Loading } from "./Loading";

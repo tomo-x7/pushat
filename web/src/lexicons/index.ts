@@ -5,13 +5,13 @@ import { type FetchHandler, type FetchHandlerOptions, XrpcClient } from "@atprot
 import { schemas } from "./lexicons.js";
 import * as WinTomoXPushatAddDevice from "./types/win/tomo-x/pushat/addDevice.js";
 import type * as WinTomoXPushatDeleteDevice from "./types/win/tomo-x/pushat/deleteDevice.js";
-import type * as WinTomoXPushatListDevices from "./types/win/tomo-x/pushat/listDevices.js";
+import type * as WinTomoXPushatGetDevices from "./types/win/tomo-x/pushat/getDevices.js";
 import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
 
 export * as WinTomoXPushatAddDevice from "./types/win/tomo-x/pushat/addDevice.js";
 export * as WinTomoXPushatDefs from "./types/win/tomo-x/pushat/defs.js";
 export * as WinTomoXPushatDeleteDevice from "./types/win/tomo-x/pushat/deleteDevice.js";
-export * as WinTomoXPushatListDevices from "./types/win/tomo-x/pushat/listDevices.js";
+export * as WinTomoXPushatGetDevices from "./types/win/tomo-x/pushat/getDevices.js";
 export * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
 
 export class AtpBaseClient extends XrpcClient {
@@ -71,11 +71,11 @@ export class WinTomoXPushatNS {
 		return this._client.call("win.tomo-x.pushat.deleteDevice", opts?.qp, data, opts);
 	}
 
-	listDevices(
-		params?: WinTomoXPushatListDevices.QueryParams,
-		opts?: WinTomoXPushatListDevices.CallOptions,
-	): Promise<WinTomoXPushatListDevices.Response> {
-		return this._client.call("win.tomo-x.pushat.listDevices", params, undefined, opts);
+	getDevices(
+		data?: WinTomoXPushatGetDevices.InputSchema,
+		opts?: WinTomoXPushatGetDevices.CallOptions,
+	): Promise<WinTomoXPushatGetDevices.Response> {
+		return this._client.call("win.tomo-x.pushat.getDevices", opts?.qp, data, opts);
 	}
 
 	pushNotify(

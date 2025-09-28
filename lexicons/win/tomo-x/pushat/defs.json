@@ -11,7 +11,7 @@
 		},
 		"deviceListItem": {
 			"type": "object",
-			"required": ["name", "id"],
+			"required": ["name", "id", "current"],
 			"properties": {
 				"name": {
 					"type": "string",
@@ -21,6 +21,10 @@
 				"id": {
 					"type": "string",
 					"format": "tid"
+				},
+				"current": {
+					"type": "boolean",
+					"default": false
 				}
 			}
 		}

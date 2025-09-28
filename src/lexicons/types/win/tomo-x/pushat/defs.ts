@@ -11,6 +11,7 @@ export interface DeviceListItem {
 	$type?: "win.tomo-x.pushat.defs#deviceListItem";
 	name: string;
 	id: string;
+	current: boolean;
 }
 
 const hashDeviceListItem = "deviceListItem";

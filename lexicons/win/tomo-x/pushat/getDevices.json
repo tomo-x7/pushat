@@ -1,0 +1,56 @@
+{
+	"lexicon": 1,
+	"id": "win.tomo-x.pushat.getDevices",
+	"defs": {
+		"main": {
+			"type": "procedure",
+			"input": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["token"],
+					"properties": {
+						"token": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"output": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["devices", "current"],
+					"properties": {
+						"devices": {
+							"type": "ref",
+							"ref": "win.tomo-x.pushat.defs#deviceList"
+						},
+						"current": {
+							"type": "union",
+							"refs": ["#registeredDevice", "#unregisteredDevice"]
+						}
+					}
+				}
+			}
+		},
+		"registeredDevice": {
+			"type": "object",
+			"properties": {}
+		},
+		"unregisteredDevice": {
+			"type": "object",
+			"required": ["id", "name"],
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string",
+					"maxGraphemes": 30,
+					"maxLength": 300
+				}
+			}
+		}
+	}
+}

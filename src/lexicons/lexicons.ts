@@ -62,7 +62,7 @@ export const schemaDict = {
 			},
 			deviceListItem: {
 				type: "object",
-				required: ["name", "id"],
+				required: ["name", "id", "current"],
 				properties: {
 					name: {
 						type: "string",
@@ -72,6 +72,10 @@ export const schemaDict = {
 					id: {
 						type: "string",
 						format: "tid",
+					},
+					current: {
+						type: "boolean",
+						default: false,
 					},
 				},
 			},
@@ -106,27 +110,60 @@ export const schemaDict = {
 			},
 		},
 	},
-	WinTomoXPushatListDevices: {
+	WinTomoXPushatGetDevices: {
 		lexicon: 1,
-		id: "win.tomo-x.pushat.listDevices",
+		id: "win.tomo-x.pushat.getDevices",
 		defs: {
 			main: {
-				type: "query",
-				parameters: {
-					type: "params",
-					properties: {},
+				type: "procedure",
+				input: {
+					encoding: "application/json",
+					schema: {
+						type: "object",
+						required: ["token"],
+						properties: {
+							token: {
+								type: "string",
+							},
+						},
+					},
 				},
 				output: {
 					encoding: "application/json",
 					schema: {
 						type: "object",
-						required: ["devices"],
+						required: ["devices", "current"],
 						properties: {
 							devices: {
 								type: "ref",
 								ref: "lex:win.tomo-x.pushat.defs#deviceList",
 							},
+							current: {
+								type: "union",
+								refs: [
+									"lex:win.tomo-x.pushat.getDevices#registeredDevice",
+									"lex:win.tomo-x.pushat.getDevices#unregisteredDevice",
+								],
+							},
 						},
+					},
+				},
+			},
+			registeredDevice: {
+				type: "object",
+				properties: {},
+			},
+			unregisteredDevice: {
+				type: "object",
+				required: ["id", "name"],
+				properties: {
+					id: {
+						type: "string",
+					},
+					name: {
+						type: "string",
+						maxGraphemes: 30,
+						maxLength: 300,
 					},
 				},
 			},
@@ -202,6 +239,6 @@ export const ids = {
 	WinTomoXPushatAddDevice: "win.tomo-x.pushat.addDevice",
 	WinTomoXPushatDefs: "win.tomo-x.pushat.defs",
 	WinTomoXPushatDeleteDevice: "win.tomo-x.pushat.deleteDevice",
-	WinTomoXPushatListDevices: "win.tomo-x.pushat.listDevices",
+	WinTomoXPushatGetDevices: "win.tomo-x.pushat.getDevices",
 	WinTomoXPushatPushNotify: "win.tomo-x.pushat.pushNotify",
 } as const;

@@ -12,7 +12,7 @@ import type { Env } from "hono";
 import { schemas } from "./lexicons.js";
 import type * as WinTomoXPushatAddDevice from "./types/win/tomo-x/pushat/addDevice.js";
 import type * as WinTomoXPushatDeleteDevice from "./types/win/tomo-x/pushat/deleteDevice.js";
-import type * as WinTomoXPushatListDevices from "./types/win/tomo-x/pushat/listDevices.js";
+import type * as WinTomoXPushatGetDevices from "./types/win/tomo-x/pushat/getDevices.js";
 import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
 
 export function createServer<E extends Env = Env>(options?: XrpcOptions<E>): Server<E> {
@@ -82,16 +82,16 @@ export class WinTomoXPushatNS<E extends Env> {
 		return this._server.xrpc.addMethod(nsid, cfg);
 	}
 
-	listDevices<A extends Auth = undefined>(
+	getDevices<A extends Auth = undefined>(
 		cfg: HonoConfigOrHandler<
 			E,
 			A,
-			WinTomoXPushatListDevices.QueryParams,
-			WinTomoXPushatListDevices.HandlerInput,
-			WinTomoXPushatListDevices.HandlerOutput
+			WinTomoXPushatGetDevices.QueryParams,
+			WinTomoXPushatGetDevices.HandlerInput,
+			WinTomoXPushatGetDevices.HandlerOutput
 		>,
 	) {
-		const nsid = "win.tomo-x.pushat.listDevices";
+		const nsid = "win.tomo-x.pushat.getDevices";
 		return this._server.xrpc.addMethod(nsid, cfg);
 	}
 

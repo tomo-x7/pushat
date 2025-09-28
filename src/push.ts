@@ -1,5 +1,7 @@
+import { eq } from "drizzle-orm";
 import { getMessaging } from "firebase-admin/messaging";
 import { normalAuthLxm } from "./auth";
+import { devicesTable } from "./db/schema";
 import type { Server } from "./lexicons";
 import type { Env } from "./types";
 
@@ -7,12 +9,17 @@ export function pushMethods(server: Server<Env>) {
 	server.win.tomoX.pushat.pushNotify({
 		auth: normalAuthLxm("win.tomo-x.pushat.pushNotify"),
 		handler: async ({ auth, c, input }) => {
+			const did = auth.credentials.did;
+			const db = c.get("db");
+			const tokens = (await db.select().from(devicesTable).where(eq(devicesTable.did, did))).map((d) => d.token);
+
 			const firebaseApp = c.get("firebase");
 			const messaging = getMessaging(firebaseApp);
-			messaging.send({
-				token: "",
-				notification: {},
-				webpush: { fcmOptions: { link: "" }, notification: {} },
+			const { body, icon, title, link } = input.body;
+			await messaging.sendEachForMulticast({
+				tokens,
+				notification: { title, body, imageUrl: icon },
+				webpush: { fcmOptions: { link: link }, notification: {} },
 			});
 			return { encoding: "application/json", body: { success: true } };
 		},

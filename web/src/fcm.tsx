@@ -97,7 +97,7 @@ export function FcmTokenProvider({ children }: PropsWithChildren) {
 			});
 	}, []);
 	const requestToken = useCallback<() => Promise<RequestTokenResult>>(async () => {
-		if (token) return { ok: true };
+		if (token !== "loading" && token !== "notGranted") return { ok: true };
 		const result = await getTokenWithRequestPermission();
 		if (result != null && "token" in result && result.token != null) {
 			setToken(result.token);
@@ -110,6 +110,7 @@ export function FcmTokenProvider({ children }: PropsWithChildren) {
 	if (token === "notGranted") return <RequestTokenScreen requestToken={requestToken} />;
 	return <TokenContext value={token}>{children}</TokenContext>;
 }
+
 type RequestTokenResult = { ok: true } | { ok: false; error: string };
 function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<RequestTokenResult> }) {
 	const [isRequesting, setIsRequesting] = useState(false);

@@ -8,17 +8,15 @@ import { is$typed as _is$typed } from "../../../../util";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.registerToken";
+const id = "win.tomo-x.pushat.deleteDevice";
 
 export type QueryParams = {};
 
 export interface InputSchema {
-	token: string;
+	id: string;
 }
 
-export interface OutputSchema {
-	success?: boolean;
-}
+export type OutputSchema = {};
 
 export interface CallOptions {
 	signal?: AbortSignal;

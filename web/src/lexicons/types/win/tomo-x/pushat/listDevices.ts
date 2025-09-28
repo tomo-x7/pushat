@@ -5,27 +5,22 @@
 import type { HeadersMap } from "@atproto/xrpc";
 import { validate as _validate } from "../../../../lexicons";
 import { is$typed as _is$typed } from "../../../../util";
+import type * as WinTomoXPushatDefs from "./defs.js";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.pushNotify";
+const id = "win.tomo-x.pushat.listDevices";
 
 export type QueryParams = {};
+export type InputSchema = undefined;
 
-export interface InputSchema {
-	title: string;
-	body: string;
-	icon: string;
-	link?: string;
+export interface OutputSchema {
+	devices: WinTomoXPushatDefs.DeviceList;
 }
-
-export type OutputSchema = {};
 
 export interface CallOptions {
 	signal?: AbortSignal;
 	headers?: HeadersMap;
-	qp?: QueryParams;
-	encoding?: "application/json";
 }
 
 export interface Response {

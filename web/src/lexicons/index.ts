@@ -3,11 +3,16 @@
  */
 import { type FetchHandler, type FetchHandlerOptions, XrpcClient } from "@atproto/xrpc";
 import { schemas } from "./lexicons.js";
+import * as WinTomoXPushatAddDevice from "./types/win/tomo-x/pushat/addDevice.js";
+import type * as WinTomoXPushatDeleteDevice from "./types/win/tomo-x/pushat/deleteDevice.js";
+import type * as WinTomoXPushatListDevices from "./types/win/tomo-x/pushat/listDevices.js";
 import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
-import type * as WinTomoXPushatRegisterToken from "./types/win/tomo-x/pushat/registerToken.js";
 
+export * as WinTomoXPushatAddDevice from "./types/win/tomo-x/pushat/addDevice.js";
+export * as WinTomoXPushatDefs from "./types/win/tomo-x/pushat/defs.js";
+export * as WinTomoXPushatDeleteDevice from "./types/win/tomo-x/pushat/deleteDevice.js";
+export * as WinTomoXPushatListDevices from "./types/win/tomo-x/pushat/listDevices.js";
 export * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
-export * as WinTomoXPushatRegisterToken from "./types/win/tomo-x/pushat/registerToken.js";
 
 export class AtpBaseClient extends XrpcClient {
 	win: WinNS;
@@ -50,17 +55,33 @@ export class WinTomoXPushatNS {
 		this._client = client;
 	}
 
+	addDevice(
+		data?: WinTomoXPushatAddDevice.InputSchema,
+		opts?: WinTomoXPushatAddDevice.CallOptions,
+	): Promise<WinTomoXPushatAddDevice.Response> {
+		return this._client.call("win.tomo-x.pushat.addDevice", opts?.qp, data, opts).catch((e) => {
+			throw WinTomoXPushatAddDevice.toKnownErr(e);
+		});
+	}
+
+	deleteDevice(
+		data?: WinTomoXPushatDeleteDevice.InputSchema,
+		opts?: WinTomoXPushatDeleteDevice.CallOptions,
+	): Promise<WinTomoXPushatDeleteDevice.Response> {
+		return this._client.call("win.tomo-x.pushat.deleteDevice", opts?.qp, data, opts);
+	}
+
+	listDevices(
+		params?: WinTomoXPushatListDevices.QueryParams,
+		opts?: WinTomoXPushatListDevices.CallOptions,
+	): Promise<WinTomoXPushatListDevices.Response> {
+		return this._client.call("win.tomo-x.pushat.listDevices", params, undefined, opts);
+	}
+
 	pushNotify(
 		data?: WinTomoXPushatPushNotify.InputSchema,
 		opts?: WinTomoXPushatPushNotify.CallOptions,
 	): Promise<WinTomoXPushatPushNotify.Response> {
 		return this._client.call("win.tomo-x.pushat.pushNotify", opts?.qp, data, opts);
-	}
-
-	registerToken(
-		data?: WinTomoXPushatRegisterToken.InputSchema,
-		opts?: WinTomoXPushatRegisterToken.CallOptions,
-	): Promise<WinTomoXPushatRegisterToken.Response> {
-		return this._client.call("win.tomo-x.pushat.registerToken", opts?.qp, data, opts);
 	}
 }

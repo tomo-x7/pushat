@@ -10,8 +10,10 @@ import {
 } from "@evex-dev/xrpc-hono";
 import type { Env } from "hono";
 import { schemas } from "./lexicons.js";
+import type * as WinTomoXPushatAddDevice from "./types/win/tomo-x/pushat/addDevice.js";
+import type * as WinTomoXPushatDeleteDevice from "./types/win/tomo-x/pushat/deleteDevice.js";
+import type * as WinTomoXPushatListDevices from "./types/win/tomo-x/pushat/listDevices.js";
 import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
-import type * as WinTomoXPushatRegisterToken from "./types/win/tomo-x/pushat/registerToken.js";
 
 export function createServer<E extends Env = Env>(options?: XrpcOptions<E>): Server<E> {
 	return new Server<E>(options);
@@ -54,6 +56,45 @@ export class WinTomoXPushatNS<E extends Env> {
 		this._server = server;
 	}
 
+	addDevice<A extends Auth = undefined>(
+		cfg: HonoConfigOrHandler<
+			E,
+			A,
+			WinTomoXPushatAddDevice.QueryParams,
+			WinTomoXPushatAddDevice.HandlerInput,
+			WinTomoXPushatAddDevice.HandlerOutput
+		>,
+	) {
+		const nsid = "win.tomo-x.pushat.addDevice";
+		return this._server.xrpc.addMethod(nsid, cfg);
+	}
+
+	deleteDevice<A extends Auth = undefined>(
+		cfg: HonoConfigOrHandler<
+			E,
+			A,
+			WinTomoXPushatDeleteDevice.QueryParams,
+			WinTomoXPushatDeleteDevice.HandlerInput,
+			WinTomoXPushatDeleteDevice.HandlerOutput
+		>,
+	) {
+		const nsid = "win.tomo-x.pushat.deleteDevice";
+		return this._server.xrpc.addMethod(nsid, cfg);
+	}
+
+	listDevices<A extends Auth = undefined>(
+		cfg: HonoConfigOrHandler<
+			E,
+			A,
+			WinTomoXPushatListDevices.QueryParams,
+			WinTomoXPushatListDevices.HandlerInput,
+			WinTomoXPushatListDevices.HandlerOutput
+		>,
+	) {
+		const nsid = "win.tomo-x.pushat.listDevices";
+		return this._server.xrpc.addMethod(nsid, cfg);
+	}
+
 	pushNotify<A extends Auth = undefined>(
 		cfg: HonoConfigOrHandler<
 			E,
@@ -64,19 +105,6 @@ export class WinTomoXPushatNS<E extends Env> {
 		>,
 	) {
 		const nsid = "win.tomo-x.pushat.pushNotify";
-		return this._server.xrpc.addMethod(nsid, cfg);
-	}
-
-	registerToken<A extends Auth = undefined>(
-		cfg: HonoConfigOrHandler<
-			E,
-			A,
-			WinTomoXPushatRegisterToken.QueryParams,
-			WinTomoXPushatRegisterToken.HandlerInput,
-			WinTomoXPushatRegisterToken.HandlerOutput
-		>,
-	) {
-		const nsid = "win.tomo-x.pushat.registerToken";
 		return this._server.xrpc.addMethod(nsid, cfg);
 	}
 }

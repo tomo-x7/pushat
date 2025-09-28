@@ -1,5 +1,6 @@
-import { drizzle, DrizzleD1Database } from "drizzle-orm/d1";
-import { App, cert, initializeApp } from "firebase-admin/app";
+import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
+import { type App, cert, initializeApp } from "firebase-admin/app";
+import { getMessaging } from "firebase-admin/messaging";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { verifyBearerAuth } from "./auth";
@@ -7,7 +8,6 @@ import { devicesTable } from "./db/schema";
 import { createServer } from "./lexicons";
 import type { HandlerOutput } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
 import type { Env } from "./types";
-import { getMessaging } from "firebase-admin/messaging";
 
 const app = new Hono<Env>();
 let db: DrizzleD1Database;

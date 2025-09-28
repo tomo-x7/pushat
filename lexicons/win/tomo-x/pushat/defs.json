@@ -6,7 +6,7 @@
 			"type": "array",
 			"items": {
 				"type": "ref",
-				"ref": "deviceListItem"
+				"ref": "#deviceListItem"
 			}
 		},
 		"deviceListItem": {

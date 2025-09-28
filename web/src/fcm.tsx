@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, isSupported } from "firebase/messaging";
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useErrorBoundary } from "react-error-boundary";
+import { toast } from "react-hot-toast";
 import { FiBell } from "react-icons/fi";
 import { FIREBASE_CONFIG, VAPID_KEY } from "./const";
 import { MessagingNotSupportedError, ServiceWorkerNotSupportedError } from "./Error";
@@ -116,7 +117,7 @@ function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<Requ
 		try {
 			const result = await requestToken();
 			if (!result.ok) {
-				alert(`通知の許可に失敗しました: ${result.error}`);
+				toast.error(`通知の許可に失敗しました: ${result.error}`);
 			}
 		} finally {
 			setIsRequesting(false);

@@ -5,7 +5,7 @@ import { App } from "./App";
 import { ATPProvider } from "./atproto";
 import { ErrorBoundary } from "./Error";
 import { FcmBaseProvider, FcmTokenProvider } from "./fcm";
-import { ConfirmRoot, TextInputRoot } from "./Modal";
+import { CallRoot } from "./Modal";
 import "./globals.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -19,8 +19,7 @@ createRoot(document.getElementById("root")!).render(
 				</ATPProvider>
 			</FcmBaseProvider>
 			<Toaster position="top-right" />
-			<TextInputRoot />
-			<ConfirmRoot />
+			<CallRoot />
 		</ErrorBoundary>
 	</StrictMode>,
 );

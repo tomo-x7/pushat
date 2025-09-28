@@ -6,6 +6,7 @@ import { useToken } from "./fcm";
 import { Loading } from "./Loading";
 import type { WinTomoXPushatDefs, WinTomoXPushatGetDevices } from "./lexicons";
 import { isRegisteredDevice } from "./lexicons/types/win/tomo-x/pushat/getDevices";
+import { showConfirm } from "./Modal";
 
 export function App() {
 	const client = useClient();
@@ -93,7 +94,14 @@ function Device() {
 	};
 
 	const deleteDevice = (id: string, name: string) => async () => {
-		if (!confirm(`「${name}」を削除しますか？`)) return;
+		const confirmed = await showConfirm({
+			title: "デバイスの削除",
+			message: `「${name}」を削除しますか？`,
+			confirmText: "削除",
+			cancelText: "キャンセル",
+		});
+
+		if (!confirmed) return;
 
 		try {
 			await agent.win.tomoX.pushat.deleteDevice({ id });

@@ -1,12 +1,10 @@
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
 import { type App, cert, initializeApp } from "firebase-admin/app";
-import { getMessaging } from "firebase-admin/messaging";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { verifyBearerAuth } from "./auth";
-import { devicesTable } from "./db/schema";
+import { deviceMethods } from "./device";
 import { createServer } from "./lexicons";
-import type { HandlerOutput } from "./lexicons/types/win/tomo-x/pushat/pushNotify";
+import { pushMethods } from "./push";
 import type { Env } from "./types";
 
 const app = new Hono<Env>();
@@ -37,40 +35,9 @@ app.get("/xrpc/", (c) => c.text("Hello World!"));
 
 const server = createServer<Env>();
 
-server.win.tomoX.pushat.pushNotify({
-	auth: ({ ctx }) => {
-		return verifyBearerAuth(ctx.req.header("Authorization"), "win.tomo-x.pushat.pushNotify");
-	},
-	handler: async ({ c, auth }) => {
-		const firebaseApp = c.get("firebase");
-		const messaging = getMessaging(firebaseApp);
-		messaging.send({
-			token: "",
-			notification: {},
-			webpush: { fcmOptions: { link: "" }, notification: {} },
-		});
-		return {
-			encoding: "application/json",
-			body: { success: true, token: c.req.header("Authorization") },
-			credentials: auth.credentials,
-		} satisfies HandlerOutput & {
-			[key: string]: unknown;
-		};
-	},
-});
-server.win.tomoX.pushat.registerToken({
-	auth: async ({ ctx }) => {
-		return verifyBearerAuth(ctx.req.header("Authorization"), "win.tomo-x.pushat.registerToken");
-	},
-	handler: async ({ c, input, auth }) => {
-		const result = await c
-			.get("db")
-			.insert(devicesTable)
-			.values({ did: auth.credentials.did, token: input.body.token })
-			.onConflictDoUpdate({ set: { token: input.body.token }, target: devicesTable.did });
-		return { encoding: "application/json", body: { success: result.success } };
-	},
-});
+pushMethods(server);
+deviceMethods(server);
+
 const inner = server.xrpc.createApp();
 app.route("/", inner);
 

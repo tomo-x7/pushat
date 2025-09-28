@@ -1,10 +1,14 @@
 import { verifySignature } from "@atproto/crypto";
 import type { ErrorResult } from "@evex-dev/xrpc-hono";
+import type { Context } from "hono";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";
 
 const BEARER_PREFIX = "Bearer ";
 export type BearerAuthResult = { credentials: { did: string } };
+export function normalAuthLxm(lxm: string) {
+	return ({ ctx }: { ctx: Context }) => verifyBearerAuth(ctx.req.header("Authorization"), lxm);
+}
 export async function verifyBearerAuth(
 	authorization: string | undefined | null,
 	lxm: string,

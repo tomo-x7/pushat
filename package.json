@@ -17,6 +17,7 @@
 	"license": "MIT",
 	"packageManager": "pnpm@10.15.1",
 	"dependencies": {
+		"@atproto/common-web": "^0.4.3",
 		"@atproto/crypto": "^0.4.4",
 		"@atproto/identity": "^0.4.9",
 		"@atproto/lexicon": "^0.5.1",

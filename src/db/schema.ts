@@ -1,4 +1,4 @@
-import { customType, index, int, primaryKey, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { customType, index, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 
 const isoDateTime = customType<{
 	data: Date; // type of TypeScript

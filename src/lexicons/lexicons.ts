@@ -41,6 +41,11 @@ export const schemaDict = {
 						},
 					},
 				},
+				errors: [
+					{
+						name: "AlreadyRegisteredError",
+					},
+				],
 			},
 		},
 	},

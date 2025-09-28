@@ -6,22 +6,26 @@ import { useToken } from "./fcm";
 import { Loading } from "./Loading";
 import type { WinTomoXPushatDefs, WinTomoXPushatGetDevices } from "./lexicons";
 import { isRegisteredDevice } from "./lexicons/types/win/tomo-x/pushat/getDevices";
-import { showConfirm } from "./Modal";
+import { showTextInput } from "./Modal";
 
 export function App() {
 	const client = useClient();
 	const session = useSession();
-	const token = useToken();
-	const [showHandleModal, setShowHandleModal] = useState(false);
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-	const login = async (handle: string) => {
+	const handleLogin = async () => {
 		setIsLoggingIn(true);
+		const handle = await showTextInput({
+			title: "アカウント変更",
+			placeholder: "@handle.bsky.social",
+			submitText: "ログイン",
+			cancelText: "キャンセル",
+		});
+		if (!handle) return;
 		try {
 			await client.signIn(handle, {
 				ui_locales: "ja",
 			});
-			setShowHandleModal(false);
 			toast.success("ログインしました");
 		} catch (error) {
 			toast.error("ログインに失敗しました");
@@ -35,7 +39,12 @@ export function App() {
 		<div className="container">
 			<header className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
 				<h1 className="text-xl font-semibold">Pushat</h1>
-				<button type="button" onClick={() => setShowHandleModal(true)} className="btn btn-secondary btn-small">
+				<button
+					disabled={isLoggingIn}
+					type="button"
+					onClick={handleLogin}
+					className="btn btn-secondary btn-small"
+				>
 					<FiLogOut size={14} />
 					アカウント変更
 				</button>
@@ -56,8 +65,6 @@ function Device() {
 	const [deviceList, setDeviceList] = useState<WinTomoXPushatDefs.DeviceList | null>(null);
 	const [currentDevice, setCurrentDevice] = useState<WinTomoXPushatGetDevices.OutputSchema["current"] | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [showDeviceNameModal, setShowDeviceNameModal] = useState(false);
-	const [isRegistering, setIsRegistering] = useState(false);
 	const token = useToken();
 
 	const load = useCallback(async () => {
@@ -78,38 +85,38 @@ function Device() {
 		load();
 	}, [load]);
 
-	const registerDevice = async (name: string) => {
-		setIsRegistering(true);
+	const handleRegisterDevice = async () => {
+		setIsLoading(true);
+		const name = await showTextInput({
+			title: "デバイス名入力",
+			placeholder: "デバイス名を入力",
+			submitText: "登録",
+			cancelText: "キャンセル",
+		});
+		if (!name) return;
 		try {
 			await agent.win.tomoX.pushat.addDevice({ name, token });
-			setShowDeviceNameModal(false);
 			toast.success("デバイスを登録しました");
 			await load();
 		} catch (error) {
 			toast.error("デバイスの登録に失敗しました");
 			console.error(error);
 		} finally {
-			setIsRegistering(false);
+			setIsLoading(false);
 		}
 	};
 
 	const deleteDevice = (id: string, name: string) => async () => {
-		const confirmed = await showConfirm({
-			title: "デバイスの削除",
-			message: `「${name}」を削除しますか？`,
-			confirmText: "削除",
-			cancelText: "キャンセル",
-		});
-
-		if (!confirmed) return;
-
 		try {
+			setIsLoading(true);
 			await agent.win.tomoX.pushat.deleteDevice({ id });
-			toast.success("デバイスを削除しました");
+			toast.success(`デバイス「${name}」を削除しました`);
 			await load();
 		} catch (error) {
 			toast.error("デバイスの削除に失敗しました");
 			console.error(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -145,7 +152,7 @@ function Device() {
 							<button
 								disabled={isLoading}
 								type="button"
-								onClick={() => setShowDeviceNameModal(true)}
+								onClick={handleRegisterDevice}
 								className="btn btn-primary"
 							>
 								<FiPlus size={16} />

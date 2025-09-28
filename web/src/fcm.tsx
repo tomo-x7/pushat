@@ -129,10 +129,6 @@ function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<Requ
 			<div className="card">
 				<div className="card-body text-center">
 					<FiBell size={48} className="text-blue-600 mb-4 mx-auto" />
-					<h2 className="text-lg font-semibold mb-2">プッシュ通知を許可</h2>
-					<p className="text-gray-600 text-sm mb-6">
-						重要な通知を受け取るために、プッシュ通知を許可してください
-					</p>
 					<button type="button" onClick={onClick} className="btn btn-primary" disabled={isRequesting}>
 						<FiBell size={16} />
 						通知を許可

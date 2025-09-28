@@ -4,6 +4,7 @@ import { useErrorBoundary } from "react-error-boundary";
 import { toast } from "react-hot-toast";
 import { Loading } from "./Loading";
 import { AtpBaseClient } from "./lexicons";
+import { showTextInput } from "./Modal";
 
 const ClientContext = createContext<BrowserOAuthClient>(null!);
 const AgentSessionContext = createContext<{ agent: AtpBaseClient; session: OAuthSession }>(null!);
@@ -53,16 +54,24 @@ export function ATPProvider({ children }: PropsWithChildren) {
 }
 
 function LoginScreen({ client }: { client: BrowserOAuthClient }) {
-	const [showHandleModal, setShowHandleModal] = useState(false);
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-	const login = async (handle: string) => {
+	const handleLogin = async () => {
+		const handle = await showTextInput({
+			title: "ログイン",
+			placeholder: "@handle.bsky.social",
+			submitText: "ログイン",
+			cancelText: "キャンセル",
+		});
+
+		if (!handle) return;
+
 		setIsLoggingIn(true);
 		try {
 			await client.signIn(handle, {
 				ui_locales: "ja",
 			});
-			setShowHandleModal(false);
+			toast.success("ログインしました");
 		} catch (error) {
 			toast.error(`ログインに失敗しました: ${String(error)}`);
 			console.error(error);
@@ -79,12 +88,7 @@ function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 					<p className="text-gray-600 text-sm mb-6">
 						BlueSkyアカウントでログインしてプッシュ通知を設定します
 					</p>
-					<button
-						type="button"
-						onClick={() => setShowHandleModal(true)}
-						className="btn btn-primary"
-						disabled={isLoggingIn}
-					>
+					<button type="button" onClick={handleLogin} className="btn btn-primary" disabled={isLoggingIn}>
 						ログイン
 					</button>
 				</div>

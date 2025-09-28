@@ -35,16 +35,26 @@ export function deviceMethods(server: Server<Env>) {
 		},
 	});
 
-	server.win.tomoX.pushat.listDevices({
-		auth: normalAuthLxm("win.tomo-x.pushat.listDevices"),
-		handler: async ({ auth, c }) => {
+	server.win.tomoX.pushat.getDevices({
+		auth: normalAuthLxm("win.tomo-x.pushat.getDevices"),
+		handler: async ({ auth, c, input }) => {
 			const db = c.get("db");
 			const did = auth.credentials.did;
-			const devices = await db.select().from(devicesTable).where(eq(devicesTable.did, did));
-			devices
+			const currentToken = input.body.token;
+			const devicesData = await db.select().from(devicesTable).where(eq(devicesTable.did, did));
+			const devices = devicesData
 				.toSorted((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf())
-				.map(({ id, name }) => ({ id, name }));
-			return { encoding: "application/json", body: { devices } };
+				.map(({ id, name, token }) => ({ id, name, current: token === currentToken }));
+			const currentData = devicesData.find(({ token }) => token === currentToken);
+			const current =
+				currentData == null
+					? { $type: "win.tomo-x.pushat.getDevices#registeredDevice" }
+					: {
+							$type: "win.tomo-x.pushat.getDevices#unregisteredDevice",
+							id: currentData.id,
+							name: currentData.name,
+						};
+			return { encoding: "application/json", body: { devices, current } };
 		},
 	});
 

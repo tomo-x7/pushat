@@ -34,11 +34,8 @@
 				}
 			}
 		},
+
 		"registeredDevice": {
-			"type": "object",
-			"properties": {}
-		},
-		"unregisteredDevice": {
 			"type": "object",
 			"required": ["id", "name"],
 			"properties": {
@@ -51,6 +48,10 @@
 					"maxLength": 300
 				}
 			}
+		},
+		"unregisteredDevice": {
+			"type": "object",
+			"properties": {}
 		}
 	}
 }

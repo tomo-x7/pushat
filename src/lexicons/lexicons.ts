@@ -151,10 +151,6 @@ export const schemaDict = {
 			},
 			registeredDevice: {
 				type: "object",
-				properties: {},
-			},
-			unregisteredDevice: {
-				type: "object",
 				required: ["id", "name"],
 				properties: {
 					id: {
@@ -166,6 +162,10 @@ export const schemaDict = {
 						maxLength: 300,
 					},
 				},
+			},
+			unregisteredDevice: {
+				type: "object",
+				properties: {},
 			},
 		},
 	},

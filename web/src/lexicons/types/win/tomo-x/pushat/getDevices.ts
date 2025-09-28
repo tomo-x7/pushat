@@ -41,6 +41,8 @@ export function toKnownErr(e: any) {
 
 export interface RegisteredDevice {
 	$type?: "win.tomo-x.pushat.getDevices#registeredDevice";
+	id: string;
+	name: string;
 }
 
 const hashRegisteredDevice = "registeredDevice";
@@ -55,8 +57,6 @@ export function validateRegisteredDevice<V>(v: V) {
 
 export interface UnregisteredDevice {
 	$type?: "win.tomo-x.pushat.getDevices#unregisteredDevice";
-	id: string;
-	name: string;
 }
 
 const hashUnregisteredDevice = "unregisteredDevice";

@@ -8,12 +8,13 @@ const id = "win.tomo-x.pushat.pushNotify";
 export type QueryParams = {};
 
 export interface InputSchema {
-	title?: string;
+	title: string;
+	body: string;
+	icon: string;
+	link?: string;
 }
 
-export interface OutputSchema {
-	success?: boolean;
-}
+export type OutputSchema = {};
 
 export interface HandlerInput {
 	encoding: "application/json";

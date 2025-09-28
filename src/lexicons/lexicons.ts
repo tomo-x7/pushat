@@ -142,9 +142,21 @@ export const schemaDict = {
 					encoding: "application/json",
 					schema: {
 						type: "object",
+						required: ["title", "body", "icon"],
 						properties: {
 							title: {
 								type: "string",
+							},
+							body: {
+								type: "string",
+							},
+							icon: {
+								type: "string",
+								format: "uri",
+							},
+							link: {
+								type: "string",
+								format: "uri",
 							},
 						},
 					},
@@ -153,11 +165,7 @@ export const schemaDict = {
 					encoding: "application/json",
 					schema: {
 						type: "object",
-						properties: {
-							success: {
-								type: "boolean",
-							},
-						},
+						properties: {},
 					},
 				},
 			},

@@ -29,6 +29,9 @@ importers:
       react:
         specifier: ^19.1.1
         version: 19.1.1
+      react-call:
+        specifier: ^1.8.1
+        version: 1.8.1(react@19.1.1)
       react-dom:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
@@ -2158,6 +2161,11 @@ packages:
 
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
+
+  react-call@1.8.1:
+    resolution: {integrity: sha512-HztXMrthuK+XHeUcOJjBsT2U+oKpc2nKcUWii1aYBIs3vpgTFRQ7nm/RbjU8JCC41djRpT0GC0KgF8XYVgxOUQ==}
+    peerDependencies:
+      react: '>=18'
 
   react-dom@19.1.1:
     resolution: {integrity: sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==}
@@ -4947,6 +4955,10 @@ snapshots:
   randombytes@2.1.0:
     dependencies:
       safe-buffer: 5.2.1
+
+  react-call@1.8.1(react@19.1.1):
+    dependencies:
+      react: 19.1.1
 
   react-dom@19.1.1(react@19.1.1):
     dependencies:

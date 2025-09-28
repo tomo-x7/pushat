@@ -2,7 +2,7 @@ import { BrowserOAuthClient, type OAuthSession } from "@atproto/oauth-client-bro
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { Loading } from "./Loading";
-import { TextInputModal } from "./Modal";
+import { showTextInputModal } from "./Modal";
 import { AtpBaseClient } from "./lexicons";
 
 const ClientContext = createContext<BrowserOAuthClient>(null!);
@@ -89,16 +89,6 @@ function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 					</button>
 				</div>
 			</div>
-
-			<TextInputModal
-				isOpen={showHandleModal}
-				onClose={() => setShowHandleModal(false)}
-				onSubmit={login}
-				title="ログイン"
-				placeholder="ハンドル名を入力 (例: alice.bsky.social)"
-				submitText="ログイン"
-				isLoading={isLoggingIn}
-			/>
 		</div>
 	);
 }

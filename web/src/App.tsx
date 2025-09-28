@@ -4,7 +4,7 @@ import { FiLogOut, FiSmartphone, FiTrash2, FiPlus } from "react-icons/fi";
 import { useAgent, useClient, useSession } from "./atproto";
 import { useToken } from "./fcm";
 import { Loading } from "./Loading";
-import { TextInputModal } from "./Modal";
+import { showTextInputModal, showConfirmModal } from "./Modal";
 import type { WinTomoXPushatDefs, WinTomoXPushatGetDevices } from "./lexicons";
 import { isRegisteredDevice } from "./lexicons/types/win/tomo-x/pushat/getDevices";
 
@@ -47,16 +47,6 @@ export function App() {
 			</div>
 
 			<Device />
-
-			<TextInputModal
-				isOpen={showHandleModal}
-				onClose={() => setShowHandleModal(false)}
-				onSubmit={login}
-				title="アカウント変更"
-				placeholder="ハンドル名を入力 (例: alice.bsky.social)"
-				submitText="ログイン"
-				isLoading={isLoggingIn}
-			/>
 		</div>
 	);
 }
@@ -182,16 +172,6 @@ function Device() {
 					</div>
 				</section>
 			)}
-
-			<TextInputModal
-				isOpen={showDeviceNameModal}
-				onClose={() => setShowDeviceNameModal(false)}
-				onSubmit={registerDevice}
-				title="デバイス名を入力"
-				placeholder="デバイス名 (例: iPhone, Android)"
-				submitText="登録"
-				isLoading={isRegistering}
-			/>
 		</div>
 	);
 }

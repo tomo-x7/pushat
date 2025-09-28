@@ -48,9 +48,9 @@ export function deviceMethods(server: Server<Env>) {
 			const currentData = devicesData.find(({ token }) => token === currentToken);
 			const current =
 				currentData == null
-					? { $type: "win.tomo-x.pushat.getDevices#registeredDevice" }
+					? { $type: "win.tomo-x.pushat.getDevices#unregisteredDevice" }
 					: {
-							$type: "win.tomo-x.pushat.getDevices#unregisteredDevice",
+							$type: "win.tomo-x.pushat.getDevices#registeredDevice",
 							id: currentData.id,
 							name: currentData.name,
 						};

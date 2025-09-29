@@ -12,16 +12,22 @@ export function pushMethods(server: Server<Env>) {
 			const did = auth.credentials.did;
 			const db = c.get("db");
 			const tokens = (await db.select().from(devicesTable).where(eq(devicesTable.did, did))).map((d) => d.token);
-			console.log("token:",tokens);
+			console.log("token:"+JSON.stringify(tokens));
 			const firebaseApp = c.get("firebase");
 			const messaging = getMessaging(firebaseApp);
 			console.log("getMessaging success")
 			const { body, icon, title, link } = input.body;
-			await messaging.sendEachForMulticast({
+			try{await messaging.sendEachForMulticast({
 				tokens,
 				notification: { title, body, imageUrl: icon },
 				webpush: { fcmOptions: { link: link }, notification: {} },
-			});
+			});}catch(e){
+				if(e instanceof Error){
+					console.dir(e.cause)
+					console.dir(e.stack)
+				}
+				throw e;
+			}
 			return { encoding: "application/json", body: { success: true } };
 		},
 	});

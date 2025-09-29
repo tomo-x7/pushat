@@ -22,7 +22,8 @@ export function pushMethods(server: Server<Env>) {
 				notification: { title, body, imageUrl: icon },
 				webpush: { fcmOptions: { link: link }, notification: {} },
 			});}catch(e){
-				console.log(JSON.stringify(e,undefined,2));
+				if(e instanceof Error){console.log(e.cause);console.log(e.stack);}
+				console.log(JSON.stringify(e));
 				throw e;
 			}
 			return { encoding: "application/json", body: { success: true } };

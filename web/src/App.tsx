@@ -34,11 +34,42 @@ export function App() {
 			setIsLoggingIn(false);
 		}
 	};
+	const updateSw = async () => {
+		const regist = await navigator.serviceWorker.getRegistration();
+		if (regist == null) return;
+		regist.update();
+		if (regist.waiting) {
+			// waiting service worker に skipWaiting を要求
+			try {
+				regist.waiting.postMessage({ type: "SKIP_WAITING" });
+			} catch (e) {
+				console.warn("postMessage to waiting failed:", e);
+			}
+
+			// controllerchange を待ってリロード（新しい SW が制御を取ったら）
+			await new Promise<void>((resolve) => {
+				if (navigator.serviceWorker.controller) {
+					const onControllerChange = () => {
+						navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
+						resolve();
+					};
+					navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
+				} else {
+					// controller がない場合は即 resolve
+					resolve();
+				}
+			});
+			window.location.reload();
+		}
+	};
 
 	return (
 		<div className="container">
 			<header className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
 				<h1 className="text-xl font-semibold">Pushat</h1>
+				<button type="button" onClick={updateSw}>
+					update
+				</button>
 				<button
 					disabled={isLoggingIn}
 					type="button"

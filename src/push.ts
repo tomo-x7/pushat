@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { getMessaging, Messaging } from "firebase-admin/messaging";
+import { getMessaging } from "firebase-admin/messaging";
 import { normalAuthLxm } from "./auth";
 import { devicesTable } from "./db/schema";
 import type { Server } from "./lexicons";
@@ -19,7 +19,19 @@ export function pushMethods(server: Server<Env>) {
 			await messaging.sendEachForMulticast({
 				tokens,
 				notification: { title, body, imageUrl: icon },
-				webpush: { fcmOptions: { link: link }, notification: {} },
+				webpush: {
+					fcmOptions: {
+						link:
+							link != null
+								? `https://pushat.tomo-x.win/redirect?redirect=${encodeURIComponent(link)}`
+								: undefined,
+					},
+					notification: {
+						icon,
+						title,
+						body,
+					},
+				},
 			});
 			return { encoding: "application/json", body: { success: true } };
 		},

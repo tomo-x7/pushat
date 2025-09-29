@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { getMessaging } from "firebase-admin/messaging";
+import { getMessaging, Messaging } from "firebase-admin/messaging";
 import { normalAuthLxm } from "./auth";
 import { devicesTable } from "./db/schema";
 import type { Server } from "./lexicons";
@@ -12,9 +12,10 @@ export function pushMethods(server: Server<Env>) {
 			const did = auth.credentials.did;
 			const db = c.get("db");
 			const tokens = (await db.select().from(devicesTable).where(eq(devicesTable.did, did))).map((d) => d.token);
-
+			console.log("token:",tokens);
 			const firebaseApp = c.get("firebase");
 			const messaging = getMessaging(firebaseApp);
+			console.log("getMessaging success")
 			const { body, icon, title, link } = input.body;
 			await messaging.sendEachForMulticast({
 				tokens,

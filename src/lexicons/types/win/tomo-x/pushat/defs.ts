@@ -23,3 +23,21 @@ export function isDeviceListItem<V>(v: V) {
 export function validateDeviceListItem<V>(v: V) {
 	return validate<DeviceListItem & V>(v, id, hashDeviceListItem);
 }
+
+export interface NotifyBody {
+	$type?: "win.tomo-x.pushat.defs#notifyBody";
+	title: string;
+	body: string;
+	icon: string;
+	link?: string;
+}
+
+const hashNotifyBody = "notifyBody";
+
+export function isNotifyBody<V>(v: V) {
+	return is$typed(v, id, hashNotifyBody);
+}
+
+export function validateNotifyBody<V>(v: V) {
+	return validate<NotifyBody & V>(v, id, hashNotifyBody);
+}

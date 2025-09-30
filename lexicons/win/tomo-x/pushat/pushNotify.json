@@ -8,21 +8,15 @@
 				"encoding": "application/json",
 				"schema": {
 					"type": "object",
-					"required": ["title", "body", "icon"],
+					"required": ["body", "target"],
 					"properties": {
-						"title": {
-							"type": "string"
-						},
 						"body": {
-							"type": "string"
+							"type": "ref",
+							"ref": "win.tomo-x.pushat.defs#notifyBody"
 						},
-						"icon": {
+						"target": {
 							"type": "string",
-							"format": "uri"
-						},
-						"link": {
-							"type": "string",
-							"format": "uri"
+							"format": "did"
 						}
 					}
 				}

@@ -79,6 +79,26 @@ export const schemaDict = {
 					},
 				},
 			},
+			notifyBody: {
+				type: "object",
+				required: ["title", "body", "icon"],
+				properties: {
+					title: {
+						type: "string",
+					},
+					body: {
+						type: "string",
+					},
+					icon: {
+						type: "string",
+						format: "uri",
+					},
+					link: {
+						type: "string",
+						format: "uri",
+					},
+				},
+			},
 		},
 	},
 	WinTomoXPushatDeleteDevice: {
@@ -179,21 +199,15 @@ export const schemaDict = {
 					encoding: "application/json",
 					schema: {
 						type: "object",
-						required: ["title", "body", "icon"],
+						required: ["body", "target"],
 						properties: {
-							title: {
-								type: "string",
-							},
 							body: {
-								type: "string",
+								type: "ref",
+								ref: "lex:win.tomo-x.pushat.defs#notifyBody",
 							},
-							icon: {
+							target: {
 								type: "string",
-								format: "uri",
-							},
-							link: {
-								type: "string",
-								format: "uri",
+								format: "did",
 							},
 						},
 					},

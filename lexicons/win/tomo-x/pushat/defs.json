@@ -27,6 +27,26 @@
 					"default": false
 				}
 			}
+		},
+		"notifyBody": {
+			"type": "object",
+			"required": ["title", "body", "icon"],
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"body": {
+					"type": "string"
+				},
+				"icon": {
+					"type": "string",
+					"format": "uri"
+				},
+				"link": {
+					"type": "string",
+					"format": "uri"
+				}
+			}
 		}
 	}
 }

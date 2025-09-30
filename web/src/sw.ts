@@ -16,12 +16,14 @@ import("firebase/app")
 
 swSelf.addEventListener("notificationclick", (ev) => {
 	const data = ev.notification.data.FCM_MSG.notification.data as { link: string | undefined } | undefined;
+	const link = data?.link;
 	ev.preventDefault();
 	ev.stopPropagation();
 	ev.notification.close();
+	if (link == null && !ev.action) return;
 	ev.waitUntil(
 		(async () => {
-			await swSelf.clients.openWindow(data?.link ?? `https://pushat.tomo-x.win/default?data=${JSON.stringify(data)}`);
+			if (link != null) await swSelf.clients.openWindow(link);
 		})(),
 	);
 });

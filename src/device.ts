@@ -1,13 +1,13 @@
 import { TID } from "@atproto/common-web";
 import { and, eq } from "drizzle-orm";
-import { normalAuthLxm } from "./auth";
+import { normalBearerAuth } from "./auth";
 import { devicesTable } from "./db/schema";
 import type { Server } from "./lexicons";
 import type { Env } from "./types";
 
 export function deviceMethods(server: Server<Env>) {
 	server.win.tomoX.pushat.addDevice({
-		auth: normalAuthLxm("win.tomo-x.pushat.addDevice"),
+		auth: normalBearerAuth({ lxm: "win.tomo-x.pushat.addDevice" }),
 		handler: async ({ auth, c, input }) => {
 			const db = c.get("db");
 			const did = auth.credentials.did;
@@ -36,7 +36,7 @@ export function deviceMethods(server: Server<Env>) {
 	});
 
 	server.win.tomoX.pushat.getDevices({
-		auth: normalAuthLxm("win.tomo-x.pushat.getDevices"),
+		auth: normalBearerAuth({ lxm: "win.tomo-x.pushat.getDevices" }),
 		handler: async ({ auth, c, input }) => {
 			const db = c.get("db");
 			const did = auth.credentials.did;
@@ -59,7 +59,7 @@ export function deviceMethods(server: Server<Env>) {
 	});
 
 	server.win.tomoX.pushat.deleteDevice({
-		auth: normalAuthLxm("win.tomo-x.pushat.deleteDevice"),
+		auth: normalBearerAuth({ lxm: "win.tomo-x.pushat.deleteDevice" }),
 		handler: async ({ auth, c, input }) => {
 			const db = c.get("db");
 			const did = auth.credentials.did;

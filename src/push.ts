@@ -20,16 +20,17 @@ export function pushMethods(server: Server<Env>) {
 				tokens,
 				notification: { title, body, imageUrl: icon },
 				webpush: {
-					fcmOptions: {
-						link:
-							link != null
-								? `https://pushat.tomo-x.win/redirect?redirect=${encodeURIComponent(link)}`
-								: undefined,
-					},
+					// fcmOptions: {
+					// 	link:
+					// 		link != null
+					// 			? `https://pushat.tomo-x.win/redirect?redirect=${encodeURIComponent(link)}`
+					// 			: undefined,
+					// },
 					notification: {
 						icon,
 						title,
 						body,
+						data: { link },
 					},
 				},
 			});

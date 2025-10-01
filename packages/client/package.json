@@ -11,12 +11,15 @@
 	"type": "module",
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "tsc"
+		"build": "tsc",
+		"prepublishOnly": "pnpm run build",
+		"gen": "lex gen-api ./src/lexicons/ ../../lexicons/win/tomo-x/pushat/pushNotify.json"
 	},
 	"keywords": [],
 	"author": "tomo-x",
 	"license": "MIT",
 	"devDependencies": {
+		"@atproto/lex-cli": "^0.9.5",
 		"typescript": "^5.9.3"
 	},
 	"files": [

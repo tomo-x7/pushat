@@ -74,17 +74,20 @@ function validateLxm(tokenLxm: unknown, lxm: string) {
 	return tokenLxm == null || tokenLxm === lxm;
 }
 
-type SigInput = { keyid: string; coveredComponents: Record<string, string[]> };
-function parseSignatureInput(input: string): SigInput | null {
+type SigInput = { keyid: string; sigBase: string };
+function parseSignatureInput(input: string,c:Context<Env>): SigInput | null {
 	const sigBaseReg = /([a-z0-9-]+)=\((.*?)\)/;
 	const keyidReg = /keyid="(.*?)"/;
 	const keyid = input.match(keyidReg)?.[1];
 	if (keyid == null) return null;
-	const coveredComponents: Record<string, string[]> = {};
-	for (const match of input.matchAll(sigBaseReg)) {
-		if (match.length !== 3) return null;
-		const [_, label, value] = match;
-		coveredComponents[label] = value.split(" ").map((v) => v.trim());
+	
+	const match=input.match(sigBaseReg);
+	if (match?.length !== 3) return null;
+	const [_, label, values] = match;
+	const bases:string[]=[]
+	for (const val of values.split(" ").map(v=>v.trim())) {
+		
 	}
-	return { keyid, coveredComponents };
+	
+	return { keyid, sigBase:"" };
 }

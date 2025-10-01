@@ -13,7 +13,7 @@
 	"scripts": {
 		"build": "tsc",
 		"prepublishOnly": "pnpm run build",
-		"gen": "lex gen-api ./src/lexicons/ ../../lexicons/win/tomo-x/pushat/pushNotify.json"
+		"gen": "lex gen-api ./src/lexicons/ ../../lexicons/win/tomo-x/pushat/pushNotify.json ../../lexicons/win/tomo-x/pushat/defs.json"
 	},
 	"keywords": [],
 	"author": "tomo-x",
@@ -25,5 +25,9 @@
 	"files": [
 		"dist",
 		"src"
-	]
+	],
+	"dependencies": {
+		"@atproto/lexicon": "^0.5.1",
+		"@atproto/xrpc": "^0.7.5"
+	}
 }

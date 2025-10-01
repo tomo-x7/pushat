@@ -5,6 +5,58 @@ import { type LexiconDoc, Lexicons, ValidationError, type ValidationResult } fro
 import { is$typed, maybe$typed } from "./util.js";
 
 export const schemaDict = {
+	WinTomoXPushatDefs: {
+		lexicon: 1,
+		id: "win.tomo-x.pushat.defs",
+		defs: {
+			deviceList: {
+				type: "array",
+				items: {
+					type: "ref",
+					ref: "lex:win.tomo-x.pushat.defs#deviceListItem",
+				},
+			},
+			deviceListItem: {
+				type: "object",
+				required: ["name", "id", "current"],
+				properties: {
+					name: {
+						type: "string",
+						maxGraphemes: 30,
+						maxLength: 300,
+					},
+					id: {
+						type: "string",
+						format: "tid",
+					},
+					current: {
+						type: "boolean",
+						default: false,
+					},
+				},
+			},
+			notifyBody: {
+				type: "object",
+				required: ["title", "body", "icon"],
+				properties: {
+					title: {
+						type: "string",
+					},
+					body: {
+						type: "string",
+					},
+					icon: {
+						type: "string",
+						format: "uri",
+					},
+					link: {
+						type: "string",
+						format: "uri",
+					},
+				},
+			},
+		},
+	},
 	WinTomoXPushatPushNotify: {
 		lexicon: 1,
 		id: "win.tomo-x.pushat.pushNotify",
@@ -66,5 +118,6 @@ export function validate(v: unknown, id: string, hash: string, requiredType?: bo
 }
 
 export const ids = {
+	WinTomoXPushatDefs: "win.tomo-x.pushat.defs",
 	WinTomoXPushatPushNotify: "win.tomo-x.pushat.pushNotify",
 } as const;

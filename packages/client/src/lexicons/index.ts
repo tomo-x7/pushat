@@ -5,6 +5,7 @@ import { type FetchHandler, type FetchHandlerOptions, XrpcClient } from "@atprot
 import { schemas } from "./lexicons.js";
 import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
 
+export * as WinTomoXPushatDefs from "./types/win/tomo-x/pushat/defs.js";
 export * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
 
 export class AtpBaseClient extends XrpcClient {

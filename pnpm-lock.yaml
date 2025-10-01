@@ -71,6 +71,13 @@ importers:
         version: 5.9.3
 
   packages/client:
+    dependencies:
+      '@atproto/lexicon':
+        specifier: ^0.5.1
+        version: 0.5.1
+      '@atproto/xrpc':
+        specifier: ^0.7.5
+        version: 0.7.5
     devDependencies:
       '@atproto/lex-cli':
         specifier: ^0.9.5

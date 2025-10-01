@@ -35,6 +35,9 @@ importers:
       '@evex-dev/xrpc-hono':
         specifier: ^1.0.4
         version: 1.0.4
+      '@tomo-x/pushat-client':
+        specifier: workspace:*
+        version: link:../packages/client
       '@tomo-x/resolvers':
         specifier: ^0.0.2
         version: 0.0.2

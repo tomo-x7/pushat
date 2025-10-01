@@ -1,20 +1,19 @@
-import { validate as _validate } from "../../../../lexicons";
-import { is$typed as _is$typed } from "../../../../util";
+import { validate as _validate } from "../../../../../lexicons";
+import { is$typed as _is$typed } from "../../../../../util";
+import type * as WinTomoXPushatDefs from "../defs.js";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.addDevice";
+const id = "win.tomo-x.pushat.client.pushNotify";
 
 export type QueryParams = {};
 
 export interface InputSchema {
-	token: string;
-	name: string;
+	body: WinTomoXPushatDefs.NotifyBody;
+	target: string;
 }
 
-export interface OutputSchema {
-	id: string;
-}
+export type OutputSchema = {};
 
 export interface HandlerInput {
 	encoding: "application/json";
@@ -30,7 +29,6 @@ export interface HandlerSuccess {
 export interface HandlerError {
 	status: number;
 	message?: string;
-	error?: "AlreadyRegisteredError";
 }
 
 export type HandlerOutput = HandlerError | HandlerSuccess;

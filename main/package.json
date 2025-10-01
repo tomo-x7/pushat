@@ -4,7 +4,7 @@
 	"main": "src/index.ts",
 	"private": true,
 	"scripts": {
-		"gen": "gen-xrpc-hono ./src/lexicons ../lexicons/win/tomo-x/**/*.json",
+		"gen": "gen-xrpc-hono ./src/lexicons ../lexicons/win/tomo-x/pushat/*.json ../lexicons/win/tomo-x/pushat/**/*.json",
 		"migrate": "drizzle-kit generate && drizzle-kit migrate"
 	},
 	"license": "MIT",
@@ -15,6 +15,7 @@
 		"@atproto/lexicon": "^0.5.1",
 		"@atproto/syntax": "^0.4.1",
 		"@evex-dev/xrpc-hono": "^1.0.4",
+		"@tomo-x/pushat-client": "workspace:*",
 		"@tomo-x/resolvers": "^0.0.2",
 		"dotenv": "^17.2.2",
 		"drizzle-orm": "^0.44.5",

@@ -3,10 +3,10 @@
  */
 import { type FetchHandler, type FetchHandlerOptions, XrpcClient } from "@atproto/xrpc";
 import { schemas } from "./lexicons.js";
-import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
+import type * as WinTomoXPushatClientPushNotify from "./types/win/tomo-x/pushat/client/pushNotify.js";
 
+export * as WinTomoXPushatClientPushNotify from "./types/win/tomo-x/pushat/client/pushNotify.js";
 export * as WinTomoXPushatDefs from "./types/win/tomo-x/pushat/defs.js";
-export * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
 
 export class AtpBaseClient extends XrpcClient {
 	win: WinNS;
@@ -44,15 +44,25 @@ export class WinTomoXNS {
 
 export class WinTomoXPushatNS {
 	_client: XrpcClient;
+	client: WinTomoXPushatClientNS;
+
+	constructor(client: XrpcClient) {
+		this._client = client;
+		this.client = new WinTomoXPushatClientNS(client);
+	}
+}
+
+export class WinTomoXPushatClientNS {
+	_client: XrpcClient;
 
 	constructor(client: XrpcClient) {
 		this._client = client;
 	}
 
 	pushNotify(
-		data?: WinTomoXPushatPushNotify.InputSchema,
-		opts?: WinTomoXPushatPushNotify.CallOptions,
-	): Promise<WinTomoXPushatPushNotify.Response> {
-		return this._client.call("win.tomo-x.pushat.pushNotify", opts?.qp, data, opts);
+		data?: WinTomoXPushatClientPushNotify.InputSchema,
+		opts?: WinTomoXPushatClientPushNotify.CallOptions,
+	): Promise<WinTomoXPushatClientPushNotify.Response> {
+		return this._client.call("win.tomo-x.pushat.client.pushNotify", opts?.qp, data, opts);
 	}
 }

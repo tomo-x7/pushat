@@ -1,17 +1,20 @@
-import { validate as _validate } from "../../../../lexicons";
-import { is$typed as _is$typed } from "../../../../util";
+import { validate as _validate } from "../../../../../lexicons";
+import { is$typed as _is$typed } from "../../../../../util";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.deleteDevice";
+const id = "win.tomo-x.pushat.manage.addDevice";
 
 export type QueryParams = {};
 
 export interface InputSchema {
-	id: string;
+	token: string;
+	name: string;
 }
 
-export type OutputSchema = {};
+export interface OutputSchema {
+	id: string;
+}
 
 export interface HandlerInput {
 	encoding: "application/json";
@@ -27,6 +30,7 @@ export interface HandlerSuccess {
 export interface HandlerError {
 	status: number;
 	message?: string;
+	error?: "AlreadyRegisteredError";
 }
 
 export type HandlerOutput = HandlerError | HandlerSuccess;

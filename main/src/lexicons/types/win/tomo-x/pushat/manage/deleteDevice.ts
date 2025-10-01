@@ -1,16 +1,14 @@
-import { validate as _validate } from "../../../../lexicons";
-import { is$typed as _is$typed } from "../../../../util";
-import type * as WinTomoXPushatDefs from "./defs.js";
+import { validate as _validate } from "../../../../../lexicons";
+import { is$typed as _is$typed } from "../../../../../util";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.pushNotify";
+const id = "win.tomo-x.pushat.manage.deleteDevice";
 
 export type QueryParams = {};
 
 export interface InputSchema {
-	body: WinTomoXPushatDefs.NotifyBody;
-	target: string;
+	id: string;
 }
 
 export type OutputSchema = {};

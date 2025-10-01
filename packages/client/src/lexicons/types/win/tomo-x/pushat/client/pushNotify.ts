@@ -3,13 +3,13 @@
  */
 
 import type { HeadersMap } from "@atproto/xrpc";
-import { validate as _validate } from "../../../../lexicons";
-import { is$typed as _is$typed } from "../../../../util";
-import type * as WinTomoXPushatDefs from "./defs.js";
+import { validate as _validate } from "../../../../../lexicons.js";
+import { is$typed as _is$typed } from "../../../../../util.js";
+import type * as WinTomoXPushatDefs from "../defs.js";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.pushNotify";
+const id = "win.tomo-x.pushat.client.pushNotify";
 
 export type QueryParams = {};
 

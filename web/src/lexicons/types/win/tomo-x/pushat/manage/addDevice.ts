@@ -3,12 +3,12 @@
  */
 
 import { type HeadersMap, XRPCError } from "@atproto/xrpc";
-import { validate as _validate } from "../../../../lexicons";
-import { is$typed as _is$typed } from "../../../../util";
+import { validate as _validate } from "../../../../../lexicons";
+import { is$typed as _is$typed } from "../../../../../util";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.addDevice";
+const id = "win.tomo-x.pushat.manage.addDevice";
 
 export type QueryParams = {};
 

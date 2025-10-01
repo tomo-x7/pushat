@@ -1,10 +1,10 @@
-import { validate as _validate } from "../../../../lexicons";
-import { is$typed as _is$typed, type $Typed } from "../../../../util";
-import type * as WinTomoXPushatDefs from "./defs.js";
+import { validate as _validate } from "../../../../../lexicons";
+import { is$typed as _is$typed, type $Typed } from "../../../../../util";
+import type * as WinTomoXPushatDefs from "../defs.js";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.getDevices";
+const id = "win.tomo-x.pushat.manage.getDevices";
 
 export type QueryParams = {};
 
@@ -36,7 +36,7 @@ export interface HandlerError {
 export type HandlerOutput = HandlerError | HandlerSuccess;
 
 export interface RegisteredDevice {
-	$type?: "win.tomo-x.pushat.getDevices#registeredDevice";
+	$type?: "win.tomo-x.pushat.manage.getDevices#registeredDevice";
 	id: string;
 	name: string;
 }
@@ -52,7 +52,7 @@ export function validateRegisteredDevice<V>(v: V) {
 }
 
 export interface UnregisteredDevice {
-	$type?: "win.tomo-x.pushat.getDevices#unregisteredDevice";
+	$type?: "win.tomo-x.pushat.manage.getDevices#unregisteredDevice";
 }
 
 const hashUnregisteredDevice = "unregisteredDevice";

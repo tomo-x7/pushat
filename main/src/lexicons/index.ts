@@ -10,10 +10,10 @@ import {
 } from "@evex-dev/xrpc-hono";
 import type { Env } from "hono";
 import { schemas } from "./lexicons.js";
-import type * as WinTomoXPushatAddDevice from "./types/win/tomo-x/pushat/addDevice.js";
-import type * as WinTomoXPushatDeleteDevice from "./types/win/tomo-x/pushat/deleteDevice.js";
-import type * as WinTomoXPushatGetDevices from "./types/win/tomo-x/pushat/getDevices.js";
-import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
+import type * as WinTomoXPushatClientPushNotify from "./types/win/tomo-x/pushat/client/pushNotify.js";
+import type * as WinTomoXPushatManageAddDevice from "./types/win/tomo-x/pushat/manage/addDevice.js";
+import type * as WinTomoXPushatManageDeleteDevice from "./types/win/tomo-x/pushat/manage/deleteDevice.js";
+import type * as WinTomoXPushatManageGetDevices from "./types/win/tomo-x/pushat/manage/getDevices.js";
 
 export function createServer<E extends Env = Env>(options?: XrpcOptions<E>): Server<E> {
 	return new Server<E>(options);
@@ -51,6 +51,39 @@ export class WinTomoXNS<E extends Env> {
 
 export class WinTomoXPushatNS<E extends Env> {
 	_server: Server<E>;
+	client: WinTomoXPushatClientNS<E>;
+	manage: WinTomoXPushatManageNS<E>;
+
+	constructor(server: Server<E>) {
+		this._server = server;
+		this.client = new WinTomoXPushatClientNS<E>(server);
+		this.manage = new WinTomoXPushatManageNS<E>(server);
+	}
+}
+
+export class WinTomoXPushatClientNS<E extends Env> {
+	_server: Server<E>;
+
+	constructor(server: Server<E>) {
+		this._server = server;
+	}
+
+	pushNotify<A extends Auth = undefined>(
+		cfg: HonoConfigOrHandler<
+			E,
+			A,
+			WinTomoXPushatClientPushNotify.QueryParams,
+			WinTomoXPushatClientPushNotify.HandlerInput,
+			WinTomoXPushatClientPushNotify.HandlerOutput
+		>,
+	) {
+		const nsid = "win.tomo-x.pushat.client.pushNotify";
+		return this._server.xrpc.addMethod(nsid, cfg);
+	}
+}
+
+export class WinTomoXPushatManageNS<E extends Env> {
+	_server: Server<E>;
 
 	constructor(server: Server<E>) {
 		this._server = server;
@@ -60,12 +93,12 @@ export class WinTomoXPushatNS<E extends Env> {
 		cfg: HonoConfigOrHandler<
 			E,
 			A,
-			WinTomoXPushatAddDevice.QueryParams,
-			WinTomoXPushatAddDevice.HandlerInput,
-			WinTomoXPushatAddDevice.HandlerOutput
+			WinTomoXPushatManageAddDevice.QueryParams,
+			WinTomoXPushatManageAddDevice.HandlerInput,
+			WinTomoXPushatManageAddDevice.HandlerOutput
 		>,
 	) {
-		const nsid = "win.tomo-x.pushat.addDevice";
+		const nsid = "win.tomo-x.pushat.manage.addDevice";
 		return this._server.xrpc.addMethod(nsid, cfg);
 	}
 
@@ -73,12 +106,12 @@ export class WinTomoXPushatNS<E extends Env> {
 		cfg: HonoConfigOrHandler<
 			E,
 			A,
-			WinTomoXPushatDeleteDevice.QueryParams,
-			WinTomoXPushatDeleteDevice.HandlerInput,
-			WinTomoXPushatDeleteDevice.HandlerOutput
+			WinTomoXPushatManageDeleteDevice.QueryParams,
+			WinTomoXPushatManageDeleteDevice.HandlerInput,
+			WinTomoXPushatManageDeleteDevice.HandlerOutput
 		>,
 	) {
-		const nsid = "win.tomo-x.pushat.deleteDevice";
+		const nsid = "win.tomo-x.pushat.manage.deleteDevice";
 		return this._server.xrpc.addMethod(nsid, cfg);
 	}
 
@@ -86,25 +119,12 @@ export class WinTomoXPushatNS<E extends Env> {
 		cfg: HonoConfigOrHandler<
 			E,
 			A,
-			WinTomoXPushatGetDevices.QueryParams,
-			WinTomoXPushatGetDevices.HandlerInput,
-			WinTomoXPushatGetDevices.HandlerOutput
+			WinTomoXPushatManageGetDevices.QueryParams,
+			WinTomoXPushatManageGetDevices.HandlerInput,
+			WinTomoXPushatManageGetDevices.HandlerOutput
 		>,
 	) {
-		const nsid = "win.tomo-x.pushat.getDevices";
-		return this._server.xrpc.addMethod(nsid, cfg);
-	}
-
-	pushNotify<A extends Auth = undefined>(
-		cfg: HonoConfigOrHandler<
-			E,
-			A,
-			WinTomoXPushatPushNotify.QueryParams,
-			WinTomoXPushatPushNotify.HandlerInput,
-			WinTomoXPushatPushNotify.HandlerOutput
-		>,
-	) {
-		const nsid = "win.tomo-x.pushat.pushNotify";
+		const nsid = "win.tomo-x.pushat.manage.getDevices";
 		return this._server.xrpc.addMethod(nsid, cfg);
 	}
 }

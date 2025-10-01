@@ -5,13 +5,9 @@
 	"private": true,
 	"scripts": {
 		"gen": "gen-xrpc-hono ./src/lexicons ./lexicons/win/tomo-x/**/*.json",
-		"dev": "wrangler dev",
-		"deploy": "wrangler deploy --minify",
-		"cf-typegen": "wrangler types ./src/worker.d.ts --env-interface CloudflareBindings",
 		"migrate": "drizzle-kit generate && drizzle-kit migrate"
 	},
 	"license": "MIT",
-	"packageManager": "pnpm@10.15.1",
 	"dependencies": {
 		"@atproto/common-web": "^0.4.3",
 		"@atproto/crypto": "^0.4.4",
@@ -31,8 +27,7 @@
 		"@types/http-errors": "^2.0.5",
 		"@types/node": "^24.5.2",
 		"drizzle-kit": "^0.31.4",
-		"typescript": "^5.9.2",
-		"wrangler": "^4.38.0"
+		"typescript": "^5.9.2"
 	},
 	"type": "module"
 }

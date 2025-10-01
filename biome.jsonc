@@ -3,6 +3,6 @@
 	"extends": ["./shared/biome.jsonc"],
 	"linter": { "rules": { "complexity": { "noBannedTypes": "off" }, "suspicious": { "noConfusingVoidType": "off" } } },
 	"overrides": [
-		{ "includes": ["src/worker.d.ts"], "linter": { "enabled": false }, "formatter": { "enabled": false } }
+		{ "includes": ["main/src/worker.d.ts"], "linter": { "enabled": false }, "formatter": { "enabled": false } }
 	]
 }

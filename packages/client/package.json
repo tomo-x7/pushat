@@ -1,0 +1,26 @@
+{
+	"name": "@tomo-x/pushat-client",
+	"version": "0.0.1",
+	"description": "",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc"
+	},
+	"keywords": [],
+	"author": "tomo-x",
+	"license": "MIT",
+	"devDependencies": {
+		"typescript": "^5.9.3"
+	},
+	"files": [
+		"dist",
+		"src"
+	]
+}

@@ -7,18 +7,24 @@
 	"scripts": {
 		"check": "biome check --write",
 		"web": "pnpm --filter ./web",
-		"main": "pnpm --filter ./main"
+		"main": "pnpm --filter ./main",
+		"gen": "pnpm web run gen && pnpm main run gen",
+		"deploy": "wrangler deploy --minify",
+		"dev": "wrangler dev",
+		"cf-typegen": "wrangler types ./main/src/worker.d.ts --env-interface CloudflareBindings",
+		"publish": "pnpm publish --filter ./packages/* --no-git-checks"
 	},
 	"engines": {
 		"pnpm": ">=10.17.1",
-		"node": ">=22"
+		"node": ">=22.12"
 	},
 	"pnpm": {
 		"executionEnv": {
-			"nodeVersion": "22.11.0"
+			"nodeVersion": "22.19.0"
 		}
 	},
-	"dependencies": {
-		"@biomejs/biome": "2.2.3"
+	"devDependencies": {
+		"@biomejs/biome": "2.2.3",
+		"wrangler": "^4.38.0"
 	}
 }

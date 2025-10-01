@@ -1,7 +1,7 @@
 {
 	"$schema": "https://unpkg.com/wrangler@latest/config-schema.json",
 	"name": "pushat",
-	"main": "src/index.ts",
+	"main": "main/src/index.ts",
 	"compatibility_date": "2025-09-18",
 	"compatibility_flags": ["nodejs_compat"],
 	"d1_databases": [
@@ -21,7 +21,7 @@
 		"run_worker_first": ["/xrpc/*", "/api/*"]
 	},
 	"build": {
-		"command": "cd web && pnpm i --frozen-lockfile && pnpm run build"
+		"command": "pwd && cd web && pnpm i --frozen-lockfile && pnpm run build"
 	},
 	"workers_dev": false,
 	"routes": [
@@ -29,5 +29,6 @@
 			"pattern": "pushat.tomo-x.win",
 			"custom_domain": true
 		}
-	]
+	],
+	"base_dir": "."
 }

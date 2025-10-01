@@ -28,6 +28,7 @@
 	],
 	"dependencies": {
 		"@atproto/lexicon": "^0.5.1",
-		"@atproto/xrpc": "^0.7.5"
+		"@atproto/xrpc": "^0.7.5",
+		"buffer": "^6.0.3"
 	}
 }

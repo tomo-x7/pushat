@@ -6,7 +6,7 @@ import type { Server } from "./lexicons";
 import type { Env } from "./types";
 
 export function pushMethods(server: Server<Env>) {
-	server.win.tomoX.pushat.pushNotify({
+	server.win.tomoX.pushat.client.pushNotify({
 		auth: normalBearerAuth({ lxm: "win.tomo-x.pushat.pushNotify" }),
 		handler: async ({ auth, c, input }) => {
 			if (input.body.target !== auth.credentials.did) throw new Error("target must be same as authenticated did");

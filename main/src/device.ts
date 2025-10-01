@@ -6,7 +6,7 @@ import type { Server } from "./lexicons";
 import type { Env } from "./types";
 
 export function deviceMethods(server: Server<Env>) {
-	server.win.tomoX.pushat.addDevice({
+	server.win.tomoX.pushat.manage.addDevice({
 		auth: normalBearerAuth({ lxm: "win.tomo-x.pushat.addDevice" }),
 		handler: async ({ auth, c, input }) => {
 			const db = c.get("db");
@@ -35,7 +35,7 @@ export function deviceMethods(server: Server<Env>) {
 		},
 	});
 
-	server.win.tomoX.pushat.getDevices({
+	server.win.tomoX.pushat.manage.getDevices({
 		auth: normalBearerAuth({ lxm: "win.tomo-x.pushat.getDevices" }),
 		handler: async ({ auth, c, input }) => {
 			const db = c.get("db");
@@ -58,7 +58,7 @@ export function deviceMethods(server: Server<Env>) {
 		},
 	});
 
-	server.win.tomoX.pushat.deleteDevice({
+	server.win.tomoX.pushat.manage.deleteDevice({
 		auth: normalBearerAuth({ lxm: "win.tomo-x.pushat.deleteDevice" }),
 		handler: async ({ auth, c, input }) => {
 			const db = c.get("db");

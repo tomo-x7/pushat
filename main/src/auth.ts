@@ -5,6 +5,7 @@ import { BadRequest } from "http-errors";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";
 import type { Env } from "./types";
+import {generateContentDigest} from "@tomo-x/pushat-client"
 
 const BEARER_PREFIX = "Bearer ";
 type AuthParam = { lxm: string };
@@ -75,33 +76,35 @@ function validateLxm(tokenLxm: unknown, lxm: string) {
 	return tokenLxm == null || tokenLxm === lxm;
 }
 
-type SigInput = { keyid: string; sigBase: string };
-function parseSignatureInput(input: string, c: Context<Env>): SigInput | null {
-	const sigBaseReg = /(pushat)=\((.*?)\)/;
+type SigBase = { keyid: string; sigBase: string };
+function parseSignatureParams(input: string, c: Context<Env>): SigBase | null {
+	const sigBaseReg = /pushat=\((.*?)\)/;
 	const keyidReg = /keyid="(.*?)"/;
 	const keyid = input.match(keyidReg)?.[1];
 	const componentNameReg = /"(.*?)"/;
 	if (keyid == null) return null;
 
 	const match = input.match(sigBaseReg);
-	if (match?.length !== 3) return null;
-	const [_, label, values] = match;
+	if (match?.length !== 3) throw new BadRequest('only one signature base(named "pushat") supported');
+	const values = match[1].replaceAll("\n", " ").replaceAll("  ", " ").trim();
 	const bases: string[] = [];
-	for (const component of values.split(" ").map((v) => v.trim().replace("\n", " "))) {
-		const name = component.split(";")[0];
+	for (const component of values.split(" ").map((v) => v.trim())) {
+		const name = componentNameReg.exec(component)?.[1];
+		if (name == null) return null;
 		let value: string | null | undefined = null;
 		if (component.startsWith('"@')) {
-			const name = componentNameReg.exec(component)?.[1];
-			if (name == null) throw new BadRequest(`invalid derived component: ${component}`);
 			value = derivedComponent(name, c);
 		} else {
 			value = c.req.header(name.replaceAll('"', ""));
 		}
+		if (value == null) throw new BadRequest(`component ${name} is invalid`);
+		bases.push(`${component}: ${value}`);
 	}
+	bases.push(`"@signature-params": ${input.replace("pushat=", "")}`);
 
 	return { keyid, sigBase: "" };
 }
-function derivedComponent(name: string, c: Context<Env>): string | null {
+function derivedComponent(name: string, c: Context<Env>): string {
 	switch (name) {
 		case "@method":
 			return c.req.method.toUpperCase();
@@ -117,4 +120,10 @@ function derivedComponent(name: string, c: Context<Env>): string | null {
 		default:
 			throw new BadRequest(`derived component ${name} is not supported`);
 	}
+}
+
+async function validateDigest(c:Context<Env>): Promise<boolean> {
+	const hash=await generateContentDigest(await c.req.arrayBuffer())
+	const reqHash=c.req.header("Content-Digest")?.match(/sha-512=:(.*?):/)?.[1]
+	return hash === reqHash;
 }

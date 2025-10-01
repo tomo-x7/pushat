@@ -85,9 +85,23 @@ function parseSignatureInput(input: string,c:Context<Env>): SigInput | null {
 	if (match?.length !== 3) return null;
 	const [_, label, values] = match;
 	const bases:string[]=[]
-	for (const val of values.split(" ").map(v=>v.trim())) {
-		
+	for (const component of values.split(" ").map(v=>v.trim().replace("\n"," "))) {
+		const name=component.split(";")[0]
+		let value:string|null|undefined=null;
+		if(component.startsWith("\"@")){
+			value=derivedComponent(name.replaceAll("\"",""),c)
+		}else{
+			value=c.req.header(name.replaceAll("\"",""))
+		}
 	}
 	
 	return { keyid, sigBase:"" };
+}
+function derivedComponent(name:string,c:Context<Env>):string|null{
+	switch (name) {
+		case "@method":
+			return c.req.method
+		default:
+			return null
+	}
 }

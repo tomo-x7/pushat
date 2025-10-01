@@ -1,6 +1,7 @@
 import { verifySignature } from "@atproto/crypto";
 import type { ErrorResult } from "@evex-dev/xrpc-hono";
 import type { Context } from "hono";
+import { BadRequest } from "http-errors";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";
 import type { Env } from "./types";
@@ -75,33 +76,45 @@ function validateLxm(tokenLxm: unknown, lxm: string) {
 }
 
 type SigInput = { keyid: string; sigBase: string };
-function parseSignatureInput(input: string,c:Context<Env>): SigInput | null {
-	const sigBaseReg = /([a-z0-9-]+)=\((.*?)\)/;
+function parseSignatureInput(input: string, c: Context<Env>): SigInput | null {
+	const sigBaseReg = /(pushat)=\((.*?)\)/;
 	const keyidReg = /keyid="(.*?)"/;
 	const keyid = input.match(keyidReg)?.[1];
+	const componentNameReg = /"(.*?)"/;
 	if (keyid == null) return null;
-	
-	const match=input.match(sigBaseReg);
+
+	const match = input.match(sigBaseReg);
 	if (match?.length !== 3) return null;
 	const [_, label, values] = match;
-	const bases:string[]=[]
-	for (const component of values.split(" ").map(v=>v.trim().replace("\n"," "))) {
-		const name=component.split(";")[0]
-		let value:string|null|undefined=null;
-		if(component.startsWith("\"@")){
-			value=derivedComponent(name.replaceAll("\"",""),c)
-		}else{
-			value=c.req.header(name.replaceAll("\"",""))
+	const bases: string[] = [];
+	for (const component of values.split(" ").map((v) => v.trim().replace("\n", " "))) {
+		const name = component.split(";")[0];
+		let value: string | null | undefined = null;
+		if (component.startsWith('"@')) {
+			const name = componentNameReg.exec(component)?.[1];
+			if (name == null) throw new BadRequest(`invalid derived component: ${component}`);
+			value = derivedComponent(name, c);
+		} else {
+			value = c.req.header(name.replaceAll('"', ""));
 		}
 	}
-	
-	return { keyid, sigBase:"" };
+
+	return { keyid, sigBase: "" };
 }
-function derivedComponent(name:string,c:Context<Env>):string|null{
+function derivedComponent(name: string, c: Context<Env>): string | null {
 	switch (name) {
 		case "@method":
-			return c.req.method
+			return c.req.method.toUpperCase();
+		case "@target-uri":
+			return c.req.url;
+		// case "@authority":
+		// case "@scheme":
+		// case "@request-target":
+		// case "@path":
+		// case "@query":
+		// case "@query-param":
+		// case "@status":
 		default:
-			return null
+			throw new BadRequest(`derived component ${name} is not supported`);
 	}
 }

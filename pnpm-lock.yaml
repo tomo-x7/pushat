@@ -41,6 +41,9 @@ importers:
       hono:
         specifier: ^4.9.8
         version: 4.9.8
+      http-errors:
+        specifier: ^2.0.0
+        version: 2.0.0
     devDependencies:
       '@biomejs/biome':
         specifier: 2.2.3
@@ -48,6 +51,9 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20250918.0
         version: 4.20250918.0
+      '@types/http-errors':
+        specifier: ^2.0.5
+        version: 2.0.5
       '@types/node':
         specifier: ^24.5.2
         version: 24.5.2

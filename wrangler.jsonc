@@ -21,7 +21,7 @@
 		"run_worker_first": ["/xrpc/*", "/api/*"]
 	},
 	"build": {
-		"command": "pnpm -r i --frozen-lockfile && pnpm -r run build"
+		"command": "pnpm -r i --frozen-lockfile && pnpm -r --sort run build"
 	},
 	"workers_dev": false,
 	"routes": [

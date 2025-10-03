@@ -1,5 +1,5 @@
 {
-	"name": "@tomo-x/pushat-client",
+	"name": "@tomo-x/pushat",
 	"version": "0.0.1",
 	"description": "",
 	"exports": {
@@ -13,7 +13,7 @@
 	"scripts": {
 		"build": "tsc",
 		"prepublishOnly": "pnpm run build",
-		"gen": "lex gen-api ./src/lexicons/ ../../lexicons/win/tomo-x/pushat/*.json"
+		"gen": "lex gen-api ./src/lexicons/ ../lexicons/win/tomo-x/pushat/*.json"
 	},
 	"keywords": [],
 	"author": "tomo-x",

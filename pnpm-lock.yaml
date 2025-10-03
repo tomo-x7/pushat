@@ -15,6 +15,25 @@ importers:
         specifier: ^4.38.0
         version: 4.40.3(@cloudflare/workers-types@4.20251001.0)
 
+  lib:
+    dependencies:
+      '@atproto/lexicon':
+        specifier: ^0.5.1
+        version: 0.5.1
+      '@atproto/xrpc':
+        specifier: ^0.7.5
+        version: 0.7.5
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
+    devDependencies:
+      '@atproto/lex-cli':
+        specifier: ^0.9.5
+        version: 0.9.5
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   main:
     dependencies:
       '@atproto/common-web':
@@ -35,9 +54,9 @@ importers:
       '@evex-dev/xrpc-hono':
         specifier: ^1.0.4
         version: 1.0.4
-      '@tomo-x/pushat-client':
+      '@tomo-x/pushat':
         specifier: workspace:*
-        version: link:../packages/client
+        version: link:../lib
       '@tomo-x/resolvers':
         specifier: ^0.0.2
         version: 0.0.2
@@ -73,25 +92,6 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
 
-  packages/client:
-    dependencies:
-      '@atproto/lexicon':
-        specifier: ^0.5.1
-        version: 0.5.1
-      '@atproto/xrpc':
-        specifier: ^0.7.5
-        version: 0.7.5
-      buffer:
-        specifier: ^6.0.3
-        version: 6.0.3
-    devDependencies:
-      '@atproto/lex-cli':
-        specifier: ^0.9.5
-        version: 0.9.5
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   web:
     dependencies:
       '@atproto/lexicon':
@@ -106,6 +106,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.13
         version: 4.1.13(vite@7.1.7(@types/node@24.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0))
+      '@tomo-x/pushat':
+        specifier: workspace:*
+        version: link:../lib
       firebase:
         specifier: ^12.3.0
         version: 12.3.0

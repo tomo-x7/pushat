@@ -11,12 +11,16 @@ async function generateContentDigest(input: ArrayBufferLike | Buffer) {
 }
 /**
  * SHA-512 only
- * add header to request
+ * copy request and add Content-Digest header
  */
-export async function addContentDigest(req:Request){
+export async function addContentDigest(req:Request):Promise<Request>{
+	
 	const data=(await req.clone().arrayBuffer())
 	const digest=await generateContentDigest(data)
-	req.headers.set("Content-Digest",`sha512=:${digest}:`)
+	const headers=new Headers(req.headers)
+	headers.set("Content-Digest",`sha-512=:${digest}:`)
+	const newReq=new Request(req,{headers})
+	return newReq;
 }
 /**
  * SHA-512 only

@@ -1,6 +1,6 @@
 {
 	"lexicon": 1,
-	"id": "win.tomo-x.pushat.manage.addDevice",
+	"id": "win.tomo-x.pushat.addDevice",
 	"defs": {
 		"main": {
 			"type": "procedure",

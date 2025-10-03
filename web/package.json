@@ -7,7 +7,7 @@
 		"dev": "vite",
 		"build": "tsc -b && vite build",
 		"preview": "vite preview",
-		"gen": "lex gen-api ./src/lexicons/ ../lexicons/win/tomo-x/pushat/*.json ../lexicons/win/tomo-x/pushat/**/*.json"
+		"gen": "lex gen-api ./src/lexicons/ ../lexicons/win/tomo-x/pushat/*.json"
 	},
 	"dependencies": {
 		"@atproto/lexicon": "^0.5.1",

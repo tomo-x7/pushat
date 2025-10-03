@@ -17,7 +17,7 @@ export async function importJwk(jwkStr: string): Promise<CryptoKeyWithKid> {
 	if (!crv) throw new Error("crv is required");
 	if (d == null) throw new Error("private key required");
 	if (kid == null) throw new Error("kid required");
-	if (/^did:[a-z0-9]+:[a-zA-Z0-9.]+#[a-zA-Z0-9]+$/.test(kid)===false)
+	if (/^did:[a-z0-9]+:[a-zA-Z0-9.]+#[a-zA-Z0-9]+$/.test(kid) === false)
 		throw new Error("invalid kid: kid must be did with fragment");
 	if (!kid.startsWith("did:web:") && !kid.startsWith("did:plc:")) throw new Error("unspported did method");
 	return { key: await crypto.subtle.importKey("jwk", jwk, { name: "ECDSA", namedCurve: crv }, false, ["sign"]), kid };
@@ -33,7 +33,7 @@ export async function signRequest(
 	{ key, kid }: CryptoKeyWithKid,
 	digest: string,
 ): Promise<{ "Signature-Input": string; Signature: string }> {
-	const sigParams = `("@target-uri" "content-digest");created=${Math.floor(Date.now()/1000)};keyid="${kid}"`;
+	const sigParams = `("@target-uri" "content-digest");created=${Math.floor(Date.now() / 1000)};keyid="${kid}"`;
 	const data = generateData(getURL(req), digest, sigParams);
 	const signed = await crypto.subtle.sign({ name: "ECDSA", hash: { name: "SHA-512" } }, key, data);
 	const signature = Buffer.from(signed).toString("base64");
@@ -53,7 +53,8 @@ export async function verifyRequest(
 	if (signatureRaw == null) return { ok: false, error: "Signature header required" };
 	const signature = /^pushat=:(.*):$/.exec(signatureRaw)?.[1];
 	if (signature == null) return { ok: false, error: "invalid Signature header" };
-	if(signature.includes(":")||signature.includes(","))return {ok:false,error:"invalid signature header: multiple signature is not supported"}
+	if (signature.includes(":") || signature.includes(","))
+		return { ok: false, error: "invalid signature header: multiple signature is not supported" };
 	const inputMatch =
 		/^pushat=(\("@target-uri" "content-digest"\);created=(\d+);keyid="(did:[a-z0-9]+:[a-zA-Z0-9.]+#[a-zA-Z0-9]+)")$/.exec(
 			sigInput,
@@ -62,7 +63,7 @@ export async function verifyRequest(
 	const [_, sigParams, createdStr, kid] = inputMatch;
 	const keys = await getPubKey(kid);
 	if (kid !== keys?.kid) return { ok: false, error: "kid mismatch" };
-	if (Date.now()/1000 - Number.parseInt(createdStr, 10) > 5 * 60) return { ok: false, error: "old signature" };
+	if (Date.now() / 1000 - Number.parseInt(createdStr, 10) > 5 * 60) return { ok: false, error: "old signature" };
 	const data = generateData(getURL(req), getHeader(req, "Content-Digest"), sigParams);
 	const result = await crypto.subtle.verify(
 		{ name: "ECDSA", hash: { name: "SHA-512" } },

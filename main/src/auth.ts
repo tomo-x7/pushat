@@ -1,6 +1,5 @@
 import { verifySignature } from "@atproto/crypto";
 import type { ErrorResult } from "@evex-dev/xrpc-hono";
-import { generateContentDigest } from "@tomo-x/pushat-client";
 import type { Context } from "hono";
 import { BadRequest } from "http-errors";
 import { AUD } from "./consts";
@@ -123,7 +122,8 @@ function derivedComponent(name: string, c: Context<Env>): string {
 }
 
 async function validateDigest(c: Context<Env>): Promise<boolean> {
-	const hash = await generateContentDigest(await c.req.arrayBuffer());
-	const reqHash = c.req.header("Content-Digest")?.match(/sha-512=:(.*?):/)?.[1];
-	return hash === reqHash;
+	// const hash = await generateContentDigest(await c.req.arrayBuffer());
+	// const reqHash = c.req.header("Content-Digest")?.match(/sha-512=:(.*?):/)?.[1];
+	// return hash === reqHash;
+	return false;
 }

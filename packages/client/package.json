@@ -13,7 +13,7 @@
 	"scripts": {
 		"build": "tsc",
 		"prepublishOnly": "pnpm run build",
-		"gen": "lex gen-api ./src/lexicons/ ../../lexicons/win/tomo-x/pushat/client/*.json ../../lexicons/win/tomo-x/pushat/defs.json"
+		"gen": "lex gen-api ./src/lexicons/ ../../lexicons/win/tomo-x/pushat/*.json"
 	},
 	"keywords": [],
 	"author": "tomo-x",

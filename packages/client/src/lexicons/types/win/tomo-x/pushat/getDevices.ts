@@ -3,13 +3,13 @@
  */
 
 import type { HeadersMap } from "@atproto/xrpc";
-import { validate as _validate } from "../../../../../lexicons";
-import { is$typed as _is$typed, type $Typed } from "../../../../../util";
-import type * as WinTomoXPushatDefs from "../defs.js";
+import { validate as _validate } from "../../../../lexicons.js";
+import { is$typed as _is$typed, type $Typed } from "../../../../util.js";
+import type * as WinTomoXPushatDefs from "./defs.js";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.manage.getDevices";
+const id = "win.tomo-x.pushat.getDevices";
 
 export type QueryParams = {};
 
@@ -40,7 +40,7 @@ export function toKnownErr(e: any) {
 }
 
 export interface RegisteredDevice {
-	$type?: "win.tomo-x.pushat.manage.getDevices#registeredDevice";
+	$type?: "win.tomo-x.pushat.getDevices#registeredDevice";
 	id: string;
 	name: string;
 }
@@ -56,7 +56,7 @@ export function validateRegisteredDevice<V>(v: V) {
 }
 
 export interface UnregisteredDevice {
-	$type?: "win.tomo-x.pushat.manage.getDevices#unregisteredDevice";
+	$type?: "win.tomo-x.pushat.getDevices#unregisteredDevice";
 }
 
 const hashUnregisteredDevice = "unregisteredDevice";

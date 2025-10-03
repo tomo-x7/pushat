@@ -4,8 +4,8 @@ import { FiLogOut, FiPlus, FiSmartphone, FiTrash2 } from "react-icons/fi";
 import { useAgent, useClient, useSession } from "./atproto";
 import { useToken } from "./fcm";
 import { Loading } from "./Loading";
-import type { WinTomoXPushatDefs, WinTomoXPushatManageGetDevices } from "./lexicons";
-import { isRegisteredDevice } from "./lexicons/types/win/tomo-x/pushat/manage/getDevices";
+import type { WinTomoXPushatDefs, WinTomoXPushatGetDevices } from "./lexicons";
+import { isRegisteredDevice } from "./lexicons/types/win/tomo-x/pushat/getDevices";
 import { showTextInput } from "./Modal";
 
 export function App() {
@@ -94,7 +94,7 @@ export function App() {
 function Device() {
 	const agent = useAgent();
 	const [deviceList, setDeviceList] = useState<WinTomoXPushatDefs.DeviceList | null>(null);
-	const [currentDevice, setCurrentDevice] = useState<WinTomoXPushatManageGetDevices.OutputSchema["current"] | null>(
+	const [currentDevice, setCurrentDevice] = useState<WinTomoXPushatGetDevices.OutputSchema["current"] | null>(
 		null,
 	);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -103,7 +103,7 @@ function Device() {
 	const load = useCallback(async () => {
 		setIsLoading(true);
 		try {
-			const res = await agent.win.tomoX.pushat.manage.getDevices({ token });
+			const res = await agent.win.tomoX.pushat.getDevices({ token });
 			setDeviceList(res.data.devices);
 			setCurrentDevice(res.data.current);
 		} catch (error) {
@@ -128,7 +128,7 @@ function Device() {
 		});
 		if (!name) return;
 		try {
-			await agent.win.tomoX.pushat.manage.addDevice({ name, token });
+			await agent.win.tomoX.pushat.addDevice({ name, token });
 			toast.success("デバイスを登録しました");
 			await load();
 		} catch (error) {
@@ -142,7 +142,7 @@ function Device() {
 	const deleteDevice = (id: string, name: string) => async () => {
 		try {
 			setIsLoading(true);
-			await agent.win.tomoX.pushat.manage.deleteDevice({ id });
+			await agent.win.tomoX.pushat.deleteDevice({ id });
 			toast.success(`デバイス「${name}」を削除しました`);
 			await load();
 		} catch (error) {

@@ -5,9 +5,9 @@ import { type LexiconDoc, Lexicons, ValidationError, type ValidationResult } fro
 import { is$typed, maybe$typed } from "./util.js";
 
 export const schemaDict = {
-	WinTomoXPushatClientPushNotify: {
+	WinTomoXPushatAddDevice: {
 		lexicon: 1,
-		id: "win.tomo-x.pushat.client.pushNotify",
+		id: "win.tomo-x.pushat.addDevice",
 		defs: {
 			main: {
 				type: "procedure",
@@ -15,15 +15,15 @@ export const schemaDict = {
 					encoding: "application/json",
 					schema: {
 						type: "object",
-						required: ["body", "target"],
+						required: ["token", "name"],
 						properties: {
-							body: {
-								type: "ref",
-								ref: "lex:win.tomo-x.pushat.defs#notifyBody",
-							},
-							target: {
+							token: {
 								type: "string",
-								format: "did",
+							},
+							name: {
+								type: "string",
+								maxGraphemes: 30,
+								maxLength: 300,
 							},
 						},
 					},
@@ -32,9 +32,20 @@ export const schemaDict = {
 					encoding: "application/json",
 					schema: {
 						type: "object",
-						properties: {},
+						required: ["id"],
+						properties: {
+							id: {
+								type: "string",
+								format: "tid",
+							},
+						},
 					},
 				},
+				errors: [
+					{
+						name: "AlreadyRegisteredError",
+					},
+				],
 			},
 		},
 	},
@@ -90,6 +101,127 @@ export const schemaDict = {
 			},
 		},
 	},
+	WinTomoXPushatDeleteDevice: {
+		lexicon: 1,
+		id: "win.tomo-x.pushat.deleteDevice",
+		defs: {
+			main: {
+				type: "procedure",
+				input: {
+					encoding: "application/json",
+					schema: {
+						type: "object",
+						required: ["id"],
+						properties: {
+							id: {
+								type: "string",
+								format: "tid",
+							},
+						},
+					},
+				},
+				output: {
+					encoding: "application/json",
+					schema: {
+						type: "object",
+						properties: {},
+					},
+				},
+			},
+		},
+	},
+	WinTomoXPushatGetDevices: {
+		lexicon: 1,
+		id: "win.tomo-x.pushat.getDevices",
+		defs: {
+			main: {
+				type: "procedure",
+				input: {
+					encoding: "application/json",
+					schema: {
+						type: "object",
+						required: ["token"],
+						properties: {
+							token: {
+								type: "string",
+							},
+						},
+					},
+				},
+				output: {
+					encoding: "application/json",
+					schema: {
+						type: "object",
+						required: ["devices", "current"],
+						properties: {
+							devices: {
+								type: "ref",
+								ref: "lex:win.tomo-x.pushat.defs#deviceList",
+							},
+							current: {
+								type: "union",
+								refs: [
+									"lex:win.tomo-x.pushat.getDevices#registeredDevice",
+									"lex:win.tomo-x.pushat.getDevices#unregisteredDevice",
+								],
+							},
+						},
+					},
+				},
+			},
+			registeredDevice: {
+				type: "object",
+				required: ["id", "name"],
+				properties: {
+					id: {
+						type: "string",
+					},
+					name: {
+						type: "string",
+						maxGraphemes: 30,
+						maxLength: 300,
+					},
+				},
+			},
+			unregisteredDevice: {
+				type: "object",
+				properties: {},
+			},
+		},
+	},
+	WinTomoXPushatPushNotify: {
+		lexicon: 1,
+		id: "win.tomo-x.pushat.pushNotify",
+		defs: {
+			main: {
+				type: "procedure",
+				input: {
+					encoding: "application/json",
+					schema: {
+						type: "object",
+						required: ["body", "target"],
+						properties: {
+							body: {
+								type: "ref",
+								ref: "lex:win.tomo-x.pushat.defs#notifyBody",
+							},
+							target: {
+								type: "string",
+								format: "did",
+							},
+						},
+					},
+				},
+				output: {
+					encoding: "application/json",
+					schema: {
+						type: "object",
+						properties: {},
+					},
+				},
+			},
+		},
+	},
 } as const satisfies Record<string, LexiconDoc>;
 export const schemas = Object.values(schemaDict) satisfies LexiconDoc[];
 export const lexicons: Lexicons = new Lexicons(schemas);
@@ -118,6 +250,9 @@ export function validate(v: unknown, id: string, hash: string, requiredType?: bo
 }
 
 export const ids = {
-	WinTomoXPushatClientPushNotify: "win.tomo-x.pushat.client.pushNotify",
+	WinTomoXPushatAddDevice: "win.tomo-x.pushat.addDevice",
 	WinTomoXPushatDefs: "win.tomo-x.pushat.defs",
+	WinTomoXPushatDeleteDevice: "win.tomo-x.pushat.deleteDevice",
+	WinTomoXPushatGetDevices: "win.tomo-x.pushat.getDevices",
+	WinTomoXPushatPushNotify: "win.tomo-x.pushat.pushNotify",
 } as const;

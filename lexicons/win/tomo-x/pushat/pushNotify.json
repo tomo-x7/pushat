@@ -1,6 +1,6 @@
 {
 	"lexicon": 1,
-	"id": "win.tomo-x.pushat.manage.deleteDevice",
+	"id": "win.tomo-x.pushat.pushNotify",
 	"defs": {
 		"main": {
 			"type": "procedure",
@@ -8,11 +8,15 @@
 				"encoding": "application/json",
 				"schema": {
 					"type": "object",
-					"required": ["id"],
+					"required": ["body", "target"],
 					"properties": {
-						"id": {
+						"body": {
+							"type": "ref",
+							"ref": "win.tomo-x.pushat.defs#notifyBody"
+						},
+						"target": {
 							"type": "string",
-							"format": "tid"
+							"format": "did"
 						}
 					}
 				}

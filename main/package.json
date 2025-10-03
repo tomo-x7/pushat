@@ -4,7 +4,7 @@
 	"main": "src/index.ts",
 	"private": true,
 	"scripts": {
-		"gen": "gen-xrpc-hono ./src/lexicons ../lexicons/win/tomo-x/pushat/*.json ../lexicons/win/tomo-x/pushat/**/*.json",
+		"gen": "gen-xrpc-hono ./src/lexicons ../lexicons/win/tomo-x/pushat/*.json",
 		"migrate": "drizzle-kit generate && drizzle-kit migrate"
 	},
 	"license": "MIT",

@@ -33,7 +33,7 @@ export async function signRequest(
 	{ key, kid }: CryptoKeyWithKid,
 	digest: string,
 ): Promise<{ "Signature-Input": string; Signature: string }> {
-	const sigParams = `("@target-uri" "content-digest");created=${Date.now()/1000};keyid="${kid}"`;
+	const sigParams = `("@target-uri" "content-digest");created=${Math.floor(Date.now()/1000)};keyid="${kid}"`;
 	const data = generateData(getURL(req), digest, sigParams);
 	const signed = await crypto.subtle.sign({ name: "ECDSA", hash: { name: "SHA-512" } }, key, data);
 	const signature = Buffer.from(signed).toString("base64");

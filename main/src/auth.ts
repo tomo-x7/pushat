@@ -1,16 +1,19 @@
+import type { DidDocument } from "@atproto/common-web";
 import { verifySignature } from "@atproto/crypto";
 import type { ErrorResult } from "@evex-dev/xrpc-hono";
+import { type CryptoKeyWithKid, importPublicJwk, validateContentDigest, verifyRequest } from "@tomo-x/pushat-client";
 import type { Context } from "hono";
-import { BadRequest } from "http-errors";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";
 import type { Env } from "./types";
 
 const BEARER_PREFIX = "Bearer ";
 type AuthParam = { lxm: string };
-type Auth = (p: { ctx: Context<Env> }) => Promise<BearerAuthResult | ErrorResult>;
-export type BearerAuthResult = { credentials: { did: string } };
-export function normalBearerAuth({ lxm }: AuthParam): Auth {
+type BearerAuth = (p: { ctx: Context<Env> }) => Promise<BearerAuthResult | ErrorResult>;
+type ServerAuth = (p: { ctx: Context<Env> }) => Promise<ServerAuthResult | ErrorResult>;
+export type BearerAuthResult = { credentials: { did: string }; artifacts: { type: "Bearer" } };
+export type ServerAuthResult = { credentials: { did: string }; artifacts: { type: "Server" } };
+export function normalBearerAuth({ lxm }: AuthParam): BearerAuth {
 	return async ({ ctx }) => {
 		const authorization = ctx.req.header("Authorization");
 		if (authorization == null) return invalidAuth("Authorization header required");
@@ -19,21 +22,21 @@ export function normalBearerAuth({ lxm }: AuthParam): Auth {
 		const token = authorization.slice(BEARER_PREFIX.length).trim();
 		if (token.split(".").length !== 3) return invalidAuth("bad jwt length");
 		const [headerRaw, payloadRaw, signature] = token.split(".");
-		const header = JSON.parse(atob(headerRaw));
-		const payload = JSON.parse(atob(payloadRaw));
+		const header = JSON.parse(Buffer.from(headerRaw, "base64url").toString());
+		const payload = JSON.parse(Buffer.from(payloadRaw, "base64url").toString());
 		if (typeof header.typ === "string" && header.typ.toLowerCase() !== "jwt")
 			return invalidAuth(`bad jwt type:jwt required but got ${header.typ}`);
 		const iss = payload.iss;
 		if (typeof iss !== "string") return invalidAuth("bad payload.iss");
 		// diddoc取得
-		const doc = await getDidDoc(iss).catch((e) => {
+		const docs = await getDidDoc(iss).catch((e) => {
 			console.error(e);
 			return null;
 		});
-		if (doc == null) return invalidAuth("invalid iss diddoc");
+		if (docs == null) return invalidAuth("invalid iss diddoc");
 		// 署名検証
 		const isValid = await verifySignature(
-			doc.key,
+			docs.key,
 			Buffer.from([headerRaw, payloadRaw].join(".")),
 			Buffer.from(signature, "base64url"),
 		).catch((e) => {
@@ -46,25 +49,53 @@ export function normalBearerAuth({ lxm }: AuthParam): Auth {
 		if (!validateAud(payload.aud)) return invalidAuth("invalid aud");
 		if (!validateLxm(payload.lxm, lxm)) return invalidAuth("invalid lxm");
 
-		return { credentials: { did: doc.did } };
+		return { credentials: { did: docs.did }, artifacts: { type: "Bearer" } };
 	};
 }
 
-export function serverAuth(p: AuthParam): Auth {
+export function serverAuth(): ServerAuth {
 	return async ({ ctx }) => {
-		const digest = ctx.req.header("Digest");
-		const rawSignature = ctx.req.header("Signature");
-		const rawSignatureInput = ctx.req.header("Signature-Input");
-		if (digest == null || rawSignature == null || rawSignatureInput == null) return invalidAuth("Header missing");
-		const signatureInput = rawSignatureInput.split(";").map((s) => s.trim());
-		return invalidAuth("");
+		const digestResult = await validateContentDigest(ctx.req.raw);
+		if (digestResult !== true) return invalidAuth(digestResult);
+		const result = await verifyRequest(ctx.req.raw, getKey);
+		if (result.ok === false) return invalidAuth(result.error);
+		return { credentials: { did: result.kid.split("#")[0] }, artifacts: { type: "Server" } };
 	};
+}
+type DidVerifyMethod = {
+	id: string;
+	type: string;
+	controller: string;
+	publicKeyJwk: object;
+};
+async function getKey(kid: string): Promise<CryptoKeyWithKid> {
+	const [did, id] = kid.split("#");
+	if (did == null || id == null) throw new Error("invalid kid");
+	const { rawDoc } = (await getDidDoc(did)) ?? {};
+	if (rawDoc == null) throw new Error("cannot get did doc");
+	const authKeys = (rawDoc as DidDocument & { authentication?: (string | DidVerifyMethod)[] }).authentication;
+	if (authKeys == null || authKeys.length === 0) throw new Error("invalid kid: authentication is empty");
+	let key: Pick<DidVerifyMethod, "type" | "publicKeyJwk"> | undefined;
+	if (authKeys.find((v) => typeof v === "string" && v === kid)) {
+		for (const verifyKey of rawDoc.verificationMethod ?? []) {
+			if (verifyKey.id === kid) {
+				key = verifyKey as DidVerifyMethod;
+				break;
+			}
+		}
+	} else {
+		key = authKeys.find((k): k is DidVerifyMethod => typeof k === "object" && k.id === kid);
+	}
+	if (key == null) throw new Error("cannot get key from did doc");
+	if (key.type !== "JsonWebKey2020") throw new Error("invalid key type: only support JsonWebKey2020");
+	return importPublicJwk(key.publicKeyJwk, kid);
 }
 
 function invalidAuth(message: string): ErrorResult {
 	return { status: 401, message, error: "InvalidAuthError" };
 }
 function validateTime(iat: number, exp: number) {
+	if (!Number.isFinite(iat) || !Number.isFinite(exp)) return false;
 	const now = Date.now() / 1000;
 	return iat <= now && now <= exp;
 }
@@ -73,57 +104,4 @@ function validateAud(aud: unknown) {
 }
 function validateLxm(tokenLxm: unknown, lxm: string) {
 	return tokenLxm == null || tokenLxm === lxm;
-}
-
-type SigBase = { keyid: string; sigBase: string };
-function parseSignatureParams(input: string, c: Context<Env>): SigBase | null {
-	const sigBaseReg = /pushat=\((.*?)\)/;
-	const keyidReg = /keyid="(.*?)"/;
-	const keyid = input.match(keyidReg)?.[1];
-	const componentNameReg = /"(.*?)"/;
-	if (keyid == null) return null;
-
-	const match = input.match(sigBaseReg);
-	if (match?.length !== 3) throw new BadRequest('only one signature base(named "pushat") supported');
-	const values = match[1].replaceAll("\n", " ").replaceAll("  ", " ").trim();
-	const bases: string[] = [];
-	for (const component of values.split(" ").map((v) => v.trim())) {
-		const name = componentNameReg.exec(component)?.[1];
-		if (name == null) return null;
-		let value: string | null | undefined = null;
-		if (component.startsWith('"@')) {
-			value = derivedComponent(name, c);
-		} else {
-			value = c.req.header(name.replaceAll('"', ""));
-		}
-		if (value == null) throw new BadRequest(`component ${name} is invalid`);
-		bases.push(`${component}: ${value}`);
-	}
-	bases.push(`"@signature-params": ${input.replace("pushat=", "")}`);
-
-	return { keyid, sigBase: "" };
-}
-function derivedComponent(name: string, c: Context<Env>): string {
-	switch (name) {
-		case "@method":
-			return c.req.method.toUpperCase();
-		case "@target-uri":
-			return c.req.url;
-		// case "@authority":
-		// case "@scheme":
-		// case "@request-target":
-		// case "@path":
-		// case "@query":
-		// case "@query-param":
-		// case "@status":
-		default:
-			throw new BadRequest(`derived component ${name} is not supported`);
-	}
-}
-
-async function validateDigest(c: Context<Env>): Promise<boolean> {
-	// const hash = await generateContentDigest(await c.req.arrayBuffer());
-	// const reqHash = c.req.header("Content-Digest")?.match(/sha-512=:(.*?):/)?.[1];
-	// return hash === reqHash;
-	return false;
 }

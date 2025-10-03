@@ -6,14 +6,14 @@ const didValidator = new DidValidator({});
 const handleResolver = new HandleResolver("https://public.api.bsky.app");
 export async function getDidDoc(did: string) {
 	const rawdoc = await didResolver.resolve(did);
-	const doc = didValidator.validateDidDoc(did, rawdoc);
-	const handle = getHandle(doc);
-	const key = getKey(doc);
+	const rawDoc = didValidator.validateDidDoc(did, rawdoc);
+	const handle = getHandle(rawDoc);
+	const key = getKey(rawDoc);
 	if (key == null) return null;
 	return {
 		did,
 		handle,
 		key,
-		doc,
+		rawDoc,
 	};
 }

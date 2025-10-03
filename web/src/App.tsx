@@ -94,9 +94,7 @@ export function App() {
 function Device() {
 	const agent = useAgent();
 	const [deviceList, setDeviceList] = useState<WinTomoXPushatDefs.DeviceList | null>(null);
-	const [currentDevice, setCurrentDevice] = useState<WinTomoXPushatGetDevices.OutputSchema["current"] | null>(
-		null,
-	);
+	const [currentDevice, setCurrentDevice] = useState<WinTomoXPushatGetDevices.OutputSchema["current"] | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const token = useToken();
 

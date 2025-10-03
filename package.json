@@ -9,10 +9,11 @@
 		"web": "pnpm --filter ./web",
 		"main": "pnpm --filter ./main",
 		"client": "pnpm --filter ./packages/client",
-		"gen": "pnpm web run gen && pnpm main run gen && pnpm client run gen",
+		"gen": "pnpm -r run gen",
 		"deploy": "wrangler deploy --minify",
 		"dev": "wrangler dev",
-		"cf-typegen": "wrangler types ./main/src/worker.d.ts --env-interface CloudflareBindings"
+		"cf-typegen": "wrangler types ./main/src/worker.d.ts --env-interface CloudflareBindings",
+		"build": "pnpm -r --sort run build"
 	},
 	"engines": {
 		"pnpm": ">=10.17.1",

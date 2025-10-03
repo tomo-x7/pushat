@@ -16,7 +16,7 @@ export async function importJwk(jwkStr:string):Promise<CryptoKey> {
 /**ECDSA only */
 export async function signRequest(req: Request, key: CryptoKey) {
 	const data = await generateData(req);
-	crypto.subtle.sign({ name: "ECDSA", hash: { name: "SHA-512" } }, key, data);
+	await crypto.subtle.sign({ name: "ECDSA", hash: { name: "SHA-512" } }, key, data);
 }
 
 async function generateData(req: Request, urlBase?: string): Promise<Buffer> {

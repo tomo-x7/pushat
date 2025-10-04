@@ -8,24 +8,29 @@ import { is$typed as _is$typed } from "../../../../util.js";
 
 const is$typed = _is$typed,
 	validate = _validate;
-const id = "win.tomo-x.pushat.addDevice";
+const id = "com.atproto.repo.getRecord";
 
-export type QueryParams = {};
-
-export interface InputSchema {
-	token: string;
-	name: string;
-}
+export type QueryParams = {
+	/** The handle or DID of the repo. */
+	repo: string;
+	/** The NSID of the record collection. */
+	collection: string;
+	/** The Record Key. */
+	rkey: string;
+	/** The CID of the version of the record. If not specified, then return the most recent version. */
+	cid?: string;
+};
+export type InputSchema = undefined;
 
 export interface OutputSchema {
-	id: string;
+	uri: string;
+	cid?: string;
+	value: { [_ in string]: unknown };
 }
 
 export interface CallOptions {
 	signal?: AbortSignal;
 	headers?: HeadersMap;
-	qp?: QueryParams;
-	encoding?: "application/json";
 }
 
 export interface Response {
@@ -34,7 +39,7 @@ export interface Response {
 	data: OutputSchema;
 }
 
-export class AlreadyRegisteredError extends XRPCError {
+export class RecordNotFoundError extends XRPCError {
 	constructor(src: XRPCError) {
 		super(src.status, src.error, src.message, src.headers, { cause: src });
 	}
@@ -42,7 +47,7 @@ export class AlreadyRegisteredError extends XRPCError {
 
 export function toKnownErr(e: any) {
 	if (e instanceof XRPCError) {
-		if (e.error === "AlreadyRegisteredError") return new AlreadyRegisteredError(e);
+		if (e.error === "RecordNotFound") return new RecordNotFoundError(e);
 	}
 
 	return e;

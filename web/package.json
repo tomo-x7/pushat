@@ -14,16 +14,17 @@
 		"@atproto/oauth-client-browser": "^0.3.32",
 		"@atproto/xrpc": "^0.7.5",
 		"@tailwindcss/vite": "^4.1.13",
+		"@tomo-x/pushat": "workspace:*",
 		"firebase": "^12.3.0",
 		"multiformats": "^13.4.1",
 		"react": "^19.1.1",
+		"react-async-hook": "^4.0.0",
 		"react-call": "^1.8.1",
 		"react-dom": "^19.1.1",
 		"react-error-boundary": "^6.0.0",
 		"react-hot-toast": "^2.6.0",
 		"react-icons": "^5.5.0",
-		"tailwindcss": "^4.1.13",
-		"@tomo-x/pushat": "workspace:*"
+		"tailwindcss": "^4.1.13"
 	},
 	"devDependencies": {
 		"@atproto/lex-cli": "^0.9.5",

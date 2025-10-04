@@ -1,5 +1,5 @@
-import type { PropsWithChildren } from "react";
-import { ErrorBoundary as LibErrorBoundary } from "react-error-boundary";
+import { useState, type PropsWithChildren } from "react";
+import { ErrorBoundary as LibErrorBoundary, type FallbackProps } from "react-error-boundary";
 import { FiAlertTriangle, FiRefreshCw, FiWifi } from "react-icons/fi";
 
 // カスタムエラー
@@ -10,7 +10,7 @@ export function ErrorBoundary({ children }: PropsWithChildren) {
 	return <LibErrorBoundary fallbackRender={Fallback}>{children}</LibErrorBoundary>;
 }
 
-function Fallback({ error, resetErrorBoundary }: { error: unknown; resetErrorBoundary: () => void }) {
+function Fallback({ error, resetErrorBoundary }: FallbackProps) {
 	if (error instanceof MessagingNotSupportedError) return <MessagingNotSupported />;
 	if (error instanceof ServiceWorkerNotSupportedError) return <ServiceWorkerNotSupported />;
 	if (error instanceof Error) return <GeneralError error={error} />;
@@ -18,15 +18,31 @@ function Fallback({ error, resetErrorBoundary }: { error: unknown; resetErrorBou
 }
 
 function MessagingNotSupported() {
+	const [openIos, setOpenIos] = useState(false);
+	const [openAndroid, setOpenAndroid] = useState(false);
 	return (
 		<div className="full-center">
 			<div className="card">
 				<div className="card-body text-center">
-					<FiWifi size={48} className="text-red-600 mb-4 mx-auto" />
 					<h2 className="text-lg font-semibold mb-2">プッシュ通知がサポートされていません</h2>
-					<p className="text-gray-600 text-sm">
+					<div>
 						お使いのブラウザまたはデバイスはプッシュ通知に対応していません。
-					</p>
+						スマートフォンをご利用の場合、PWAをインストールする必要があります。
+					</div>
+					<br />
+					<div>
+						PWAのインストール方法
+						<button type="button" onClick={() => setOpenIos((b) => !b)}>
+							▶iOS
+						</button>
+						{openIos && (
+							<div>Safariで開いた後共有ボタンをタップして、「ホーム画面に追加」を選択してください</div>
+						)}
+						<button type="button" onClick={() => setOpenAndroid((b) => !b)}>
+							▶Android
+						</button>
+						{openAndroid && <div>Chromeのメニューから「ホーム画面に追加」を選択してください</div>}
+					</div>
 				</div>
 			</div>
 		</div>

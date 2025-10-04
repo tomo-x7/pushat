@@ -1,88 +1,87 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: <> */
-import { useEffect, useState } from "react";
+import { useEffect, useState, type PropsWithChildren, type ReactNode } from "react";
 import { createCallable } from "react-call";
 import { FiX } from "react-icons/fi";
 
-// テキスト入力モーダル
 interface TextInputProps {
 	title: string;
 	placeholder: string;
 	submitText?: string;
 	cancelText?: string;
+	prefix?: ReactNode;
+}
+interface ConfirmProps {
+	title: string;
+	message?: string;
+	confirmText?: string;
+	cancelText?: string;
 }
 
-function TextInputModal({
-	title,
-	placeholder,
-	submitText = "OK",
-	cancelText = "キャンセル",
-	call,
-}: TextInputProps & { call: any }) {
-	const [value, setValue] = useState("");
-
-	useEffect(() => {
-		document.body.style.overflow = "hidden";
-
-		const handleEscape = (e: KeyboardEvent) => {
-			if (e.key === "Escape") call.end();
-		};
-
-		document.addEventListener("keydown", handleEscape);
-		return () => {
-			document.body.style.overflow = "unset";
-			document.removeEventListener("keydown", handleEscape);
-		};
-	}, [call]);
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (value.trim()) {
-			call.end(value.trim());
-		}
-	};
-
+function Modal({ children, close }: PropsWithChildren<{ close: () => void }>) {
 	return (
-		<div className="modal-overlay" onClick={() => call.end()}>
-			<div className="modal" onClick={(e) => e.stopPropagation()}>
-				<div className="modal-header">
-					<div className="flex justify-between items-center">
-						<h2 className="modal-title">{title}</h2>
-						<button type="button" onClick={() => call.end()} className="text-gray-500 hover:text-gray-700">
-							<FiX size={20} />
-						</button>
-					</div>
-				</div>
-				<form onSubmit={handleSubmit}>
-					<div className="modal-body">
-						<input
-							type="text"
-							className="input"
-							placeholder={placeholder}
-							value={value}
-							onChange={(e) => setValue(e.target.value)}
-						/>
-					</div>
-					<div className="modal-footer">
-						<button type="button" className="btn btn-secondary" onClick={() => call.end()}>
-							{cancelText}
-						</button>
-						<button type="submit" className="btn btn-primary" disabled={!value.trim()}>
-							{submitText}
-						</button>
-					</div>
-				</form>
+		<div className="bg-black/55 fixed inset-0">
+			<div className="bg-white relative">
+				<button type="button" onClick={close} className="absolute top-2 right-2">
+					x
+				</button>
+				<div>{children}</div>
 			</div>
 		</div>
 	);
 }
 
-// Callableインスタンス作成
-const textInput = createCallable<TextInputProps, string | undefined>(TextInputModal);
+const TextInput = createCallable<TextInputProps, string | null>(
+	({ title, call, placeholder, cancelText = "cancel", submitText = "enter", prefix }) => {
+		const [value, setValue] = useState("");
+		return (
+			<Modal close={() => call.end(null)}>
+				<div>{title}</div>
+				<div>
+					{prefix}
+					<input
+						type="text"
+						value={value}
+						onChange={(e) => setValue(e.target.value)}
+						placeholder={placeholder}
+					/>
+				</div>
+				<button type="button" onClick={() => call.end(null)}>
+					{cancelText}
+				</button>
+				<button type="button" onClick={() => call.end(value)} disabled={!value}>
+					{submitText}
+				</button>
+			</Modal>
+		);
+	},
+);
+const Confirm = createCallable<ConfirmProps, boolean>(
+	({ call, title, message, cancelText = "cancel", confirmText = "ok" }) => {
+		return (
+			<Modal close={() => call.end(false)}>
+				<div>{title}</div>
+				<div>{message}</div>
+				<button type="button" onClick={() => call.end(false)}>
+					{cancelText}
+				</button>
+				<button type="button" onClick={() => call.end(true)}>
+					{confirmText}
+				</button>
+			</Modal>
+		);
+	},
+);
 
 // 統一ルートコンポーネント
 export function CallRoot() {
-	return <textInput.Root />;
+	return (
+		<>
+			<TextInput.Root />
+			<Confirm.Root />
+		</>
+	);
 }
 
 // エクスポート関数
-export const showTextInput = textInput.call;
+export const showTextInput = TextInput.call;
+export const showConfirm = Confirm.call;

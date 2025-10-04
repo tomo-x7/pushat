@@ -5,6 +5,8 @@ import { toast } from "react-hot-toast";
 import { Loading } from "./Loading";
 import { AtpBaseClient } from "./lexicons";
 import { showTextInput } from "./Modal";
+import { IoAt } from "react-icons/io5";
+import { useAsync } from "react-async-hook";
 
 const ClientContext = createContext<BrowserOAuthClient>(null!);
 const AgentSessionContext = createContext<{ agent: AtpBaseClient; session: OAuthSession }>(null!);
@@ -48,51 +50,74 @@ export function ATPProvider({ children }: PropsWithChildren) {
 	if (session == null || agent == null) return <LoginScreen client={client} />;
 	return (
 		<ClientContext value={client}>
-			<AgentSessionContext value={{ agent, session }}>{children}</AgentSessionContext>
+			<AgentSessionContext value={{ agent, session }}>
+				<div>
+					<Header did={session.did} />
+					{children}
+				</div>
+			</AgentSessionContext>
 		</ClientContext>
 	);
 }
 
 function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
-
-	const handleLogin = async () => {
-		const handle = await showTextInput({
-			title: "ログイン",
-			placeholder: "@handle.bsky.social",
-			submitText: "ログイン",
-			cancelText: "キャンセル",
-		});
-
-		if (!handle) return;
-
-		setIsLoggingIn(true);
-		try {
-			await client.signIn(handle, {
-				ui_locales: "ja",
-			});
-			toast.success("ログインしました");
-		} catch (error) {
-			toast.error(`ログインに失敗しました: ${String(error)}`);
-			console.error(error);
-		} finally {
-			setIsLoggingIn(false);
-		}
-	};
-
 	return (
-		<div className="full-center">
-			<div className="card">
-				<div className="card-body text-center">
-					<h1 className="text-2xl font-semibold mb-2">Pushat</h1>
-					<p className="text-gray-600 text-sm mb-6">
-						BlueSkyアカウントでログインしてプッシュ通知を設定します
-					</p>
-					<button type="button" onClick={handleLogin} className="btn btn-primary" disabled={isLoggingIn}>
-						ログイン
-					</button>
-				</div>
-			</div>
+		<div>
+			<Header />
+			<div>Blueskyアカウントでログイン</div>
+			<button type="button" onClick={handleLogin(client, setIsLoggingIn)} disabled={isLoggingIn}>
+				ログイン
+			</button>
 		</div>
 	);
+}
+
+function Header({ did }: { did?: string }) {
+	const avatar = useAsync<string>(async () => {
+		if (!did) return;
+		return await fetch(
+			`https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${encodeURIComponent(did)}`,
+		)
+			.then((res) => res.json())
+			.then((res) => res.avatar);
+	}, [did]);
+	return (
+		<div className="h-8 w-full flex justify-between">
+			<h1>PushAt</h1>
+			{did && (
+				<div>
+					<button type="button">
+						<img src={avatar.result} />
+					</button>
+				</div>
+			)}
+		</div>
+	);
+}
+
+function handleLogin(client: BrowserOAuthClient, setLoading?: (v: boolean) => void) {
+	return async () => {
+		const handle = await showTextInput({
+			title: "ログイン",
+			placeholder: "example.bsky.social",
+			submitText: "ログイン",
+			cancelText: "キャンセル",
+			prefix: <IoAt />,
+		});
+		if (handle == null) return;
+		setLoading?.(true);
+		try {
+			const p = client.signIn(handle, { ui_locales: "ja" });
+			toast.promise(
+				p,
+				{ loading: "ログイン中...", error: (e) => `ログインに失敗しました: ${String(e)}` },
+				{ style: { minWidth: "200px" } },
+			);
+			await p;
+		} catch (error) {
+			console.error(error);
+			setLoading?.(false);
+		}
+	};
 }

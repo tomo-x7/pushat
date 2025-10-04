@@ -1,0 +1,22 @@
+diff --git a/dist/codegen/lex-gen.js b/dist/codegen/lex-gen.js
+index 9bcacea5cdd2f8905eea31948f3f9ad22ab14156..6820baaa053862a3d67f490291766fbc836e7398 100644
+--- a/dist/codegen/lex-gen.js
++++ b/dist/codegen/lex-gen.js
+@@ -48,7 +48,7 @@ function genCommonImports(file, baseNsid) {
+         moduleSpecifier: `${baseNsid
+             .split('.')
+             .map((_str) => '..')
+-            .join('/')}/lexicons`,
++            .join('/')}/lexicons.js`,
+     })
+         .addNamedImports([{ name: 'validate', alias: '_validate' }]);
+     //= import { type $Typed, is$typed as _is$typed, type OmitKey } from '../[...]/util.ts'
+@@ -57,7 +57,7 @@ function genCommonImports(file, baseNsid) {
+         moduleSpecifier: `${baseNsid
+             .split('.')
+             .map((_str) => '..')
+-            .join('/')}/util`,
++            .join('/')}/util.js`,
+     })
+         .addNamedImports([
+         { name: '$Typed', isTypeOnly: true },

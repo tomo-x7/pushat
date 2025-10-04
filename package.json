@@ -8,8 +8,8 @@
 		"check": "biome check --write",
 		"web": "pnpm --filter ./web",
 		"main": "pnpm --filter ./main",
-		"client": "pnpm --filter ./packages/client",
-		"gen": "pnpm -r run gen",
+		"lib": "pnpm --filter ./lib",
+		"gen": "pnpm main run gen && pnpm lib run gen && pnpm web run gen",
 		"deploy": "wrangler deploy --minify",
 		"dev": "wrangler dev",
 		"cf-typegen": "wrangler types ./main/src/worker.d.ts --env-interface CloudflareBindings",
@@ -22,6 +22,9 @@
 	"pnpm": {
 		"executionEnv": {
 			"nodeVersion": "22.19.0"
+		},
+		"patchedDependencies": {
+			"@atproto/lex-cli": "patches/@atproto__lex-cli.patch"
 		}
 	},
 	"devDependencies": {

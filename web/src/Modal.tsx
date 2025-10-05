@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: <> */
 import { type PropsWithChildren, type ReactNode, useState } from "react";
 import { createCallable } from "react-call";
+import { MdClose } from "react-icons/md";
 
 interface TextInputProps {
 	title: string;
@@ -15,6 +16,10 @@ interface ConfirmProps {
 	confirmText?: string;
 	confirmColor?: keyof typeof colors;
 	cancelText?: string;
+}
+interface TextProps {
+	title: string;
+	text: ReactNode;
 }
 const colors = {
 	primary: "var(--color-primary-600)",
@@ -34,7 +39,7 @@ function Modal({ children, close }: PropsWithChildren<{ close: () => void }>) {
 					className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 transition-colors text-neutral-500 hover:text-neutral-700"
 					aria-label="Close"
 				>
-					✕
+					<MdClose size={20} />
 				</button>
 				<div className="p-6">{children}</div>
 			</div>
@@ -121,6 +126,12 @@ const Confirm = createCallable<ConfirmProps, boolean>(
 		);
 	},
 );
+const Text = createCallable<TextProps, void>(({ call, text, title }) => (
+	<Modal close={() => call.end()}>
+		<h2 className="text-xl font-semibold text-neutral-900 mb-4">{title}</h2>
+		<p className="text-neutral-700 leading-relaxed whitespace-pre-wrap">{text}</p>
+	</Modal>
+));
 
 // 統一ルートコンポーネント
 export function CallRoot() {
@@ -128,6 +139,7 @@ export function CallRoot() {
 		<>
 			<TextInput.Root />
 			<Confirm.Root />
+			<Text.Root />
 		</>
 	);
 }
@@ -135,3 +147,4 @@ export function CallRoot() {
 // エクスポート関数
 export const showTextInput = TextInput.call;
 export const showConfirm = Confirm.call;
+export const showText = Text.call;

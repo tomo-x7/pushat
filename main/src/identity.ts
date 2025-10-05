@@ -1,4 +1,4 @@
-import { DidResolver as DidValidator, getHandle, getKey } from "@atproto/identity";
+import { DidResolver as DidValidator, getHandle, getKey, getPds } from "@atproto/identity";
 import { DidResolver, HandleResolver } from "@tomo-x/resolvers";
 
 const didResolver = new DidResolver();
@@ -9,11 +9,13 @@ export async function getDidDoc(did: string) {
 	const rawDoc = didValidator.validateDidDoc(did, rawdoc);
 	const handle = getHandle(rawDoc);
 	const key = getKey(rawDoc);
+	const pds = getPds(rawDoc);
 	if (key == null) return null;
 	return {
 		did,
 		handle,
 		key,
 		rawDoc,
+		pds,
 	};
 }

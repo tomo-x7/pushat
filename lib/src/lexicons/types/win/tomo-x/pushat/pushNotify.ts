@@ -2,7 +2,7 @@
  * GENERATED CODE - DO NOT MODIFY
  */
 
-import type { HeadersMap } from "@atproto/xrpc";
+import { type HeadersMap, XRPCError } from "@atproto/xrpc";
 import { validate as _validate } from "../../../../lexicons.js";
 import { is$typed as _is$typed } from "../../../../util.js";
 import type * as WinTomoXPushatDefs from "./defs.js";
@@ -33,6 +33,16 @@ export interface Response {
 	data: OutputSchema;
 }
 
+export class ServiceNotAllowedError extends XRPCError {
+	constructor(src: XRPCError) {
+		super(src.status, src.error, src.message, src.headers, { cause: src });
+	}
+}
+
 export function toKnownErr(e: any) {
+	if (e instanceof XRPCError) {
+		if (e.error === "ServiceNotAllowedError") return new ServiceNotAllowedError(e);
+	}
+
 	return e;
 }

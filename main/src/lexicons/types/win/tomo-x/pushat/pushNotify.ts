@@ -29,6 +29,7 @@ export interface HandlerSuccess {
 export interface HandlerError {
 	status: number;
 	message?: string;
+	error?: "ServiceNotAllowedError";
 }
 
 export type HandlerOutput = HandlerError | HandlerSuccess;

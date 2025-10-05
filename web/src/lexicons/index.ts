@@ -12,7 +12,7 @@ import * as WinTomoXPushatAddDevice from "./types/win/tomo-x/pushat/addDevice.js
 import type * as WinTomoXPushatAllow from "./types/win/tomo-x/pushat/allow.js";
 import type * as WinTomoXPushatDeleteDevice from "./types/win/tomo-x/pushat/deleteDevice.js";
 import type * as WinTomoXPushatGetDevices from "./types/win/tomo-x/pushat/getDevices.js";
-import type * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
+import * as WinTomoXPushatPushNotify from "./types/win/tomo-x/pushat/pushNotify.js";
 import type { OmitKey, Un$Typed } from "./util.js";
 
 export * as ComAtprotoRepoCreateRecord from "./types/com/atproto/repo/createRecord.js";
@@ -171,7 +171,9 @@ export class WinTomoXPushatNS {
 		data?: WinTomoXPushatPushNotify.InputSchema,
 		opts?: WinTomoXPushatPushNotify.CallOptions,
 	): Promise<WinTomoXPushatPushNotify.Response> {
-		return this._client.call("win.tomo-x.pushat.pushNotify", opts?.qp, data, opts);
+		return this._client.call("win.tomo-x.pushat.pushNotify", opts?.qp, data, opts).catch((e) => {
+			throw WinTomoXPushatPushNotify.toKnownErr(e);
+		});
 	}
 }
 

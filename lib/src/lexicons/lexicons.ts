@@ -628,6 +628,11 @@ export const schemaDict = {
 						properties: {},
 					},
 				},
+				errors: [
+					{
+						name: "ServiceNotAllowedError",
+					},
+				],
 			},
 		},
 	},

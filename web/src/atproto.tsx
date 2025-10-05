@@ -4,10 +4,10 @@ import { useAsync } from "react-async-hook";
 import { useErrorBoundary } from "react-error-boundary";
 import { toast } from "react-hot-toast";
 import { IoAt } from "react-icons/io5";
-import { updateSw } from "./fcm";
+import bskyJa from "./assets/bsky-ja.svg";
 import { Loading } from "./Loading";
 import { AtpBaseClient } from "./lexicons";
-import { showTextInput } from "./Modal";
+import { showText, showTextInput } from "./Modal";
 
 const ClientContext = createContext<BrowserOAuthClient>(null!);
 const AgentSessionContext = createContext<{ agent: AtpBaseClient; session: OAuthSession }>(null!);
@@ -68,7 +68,7 @@ function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 			<Header client={client} />
 			<div>Blueskyアカウントでログイン</div>
 			<button type="button" onClick={handleLogin(client, setIsLoggingIn)} disabled={isLoggingIn}>
-				ログイン
+				<img src={bskyJa} alt="login with Bluesky" width={120} />
 			</button>
 		</div>
 	);
@@ -87,9 +87,11 @@ function Header({ did, client }: { did?: string; client: BrowserOAuthClient }) {
 	return (
 		<div className="h-8 w-full flex justify-between">
 			<h1>PushAt</h1>
-			<button type="button" onClick={updateSw}>
-				update sw
-			</button>
+			<div>
+				<button type="button" onClick={() => showText({ title: "About PushAt", text: "" })}>
+					about
+				</button>
+			</div>
 			<div>
 				{did && (
 					<>

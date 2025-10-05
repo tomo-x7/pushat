@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
+import { useAsync } from "react-async-hook";
 import toast from "react-hot-toast";
 import { FiPlus, FiSmartphone, FiTrash2 } from "react-icons/fi";
 import { useAgent } from "./atproto";
 import { useToken } from "./fcm";
 import { Loading } from "./Loading";
-import type { WinTomoXPushatDefs, WinTomoXPushatGetDevices } from "./lexicons";
 import { isRegisteredDevice } from "./lexicons/types/win/tomo-x/pushat/getDevices";
 import { showConfirm, showTextInput } from "./Modal";
-import { useAsync } from "react-async-hook";
 
 export function DeviceList() {
 	const agent = useAgent();

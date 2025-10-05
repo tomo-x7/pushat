@@ -11,6 +11,7 @@ const BEARER_PREFIX = "Bearer ";
 type AuthParam = { lxm: string };
 type BearerAuth = (p: { ctx: Context<Env> }) => Promise<BearerAuthResult | ErrorResult>;
 type ServerAuth = (p: { ctx: Context<Env> }) => Promise<ServerAuthResult | ErrorResult>;
+type BearerOrServerAuth = (p: { ctx: Context<Env> }) => Promise<BearerAuthResult | ServerAuthResult | ErrorResult>;
 export type BearerAuthResult = { credentials: { did: string }; artifacts: { type: "Bearer" } };
 export type ServerAuthResult = { credentials: { did: string }; artifacts: { type: "Server" } };
 export function normalBearerAuth({ lxm }: AuthParam): BearerAuth {
@@ -60,6 +61,15 @@ export function serverAuth(): ServerAuth {
 		const result = await verifyRequest(ctx.req.raw, getKey);
 		if (result.ok === false) return invalidAuth(result.error);
 		return { credentials: { did: result.kid.split("#")[0] }, artifacts: { type: "Server" } };
+	};
+}
+export function BearerOrServerAuth({ lxm }: AuthParam): BearerOrServerAuth {
+	return async ({ ctx }) => {
+		if (ctx.req.header("Authorization") != null) {
+			return await normalBearerAuth({ lxm })({ ctx });
+		} else {
+			return await serverAuth()({ ctx });
+		}
 	};
 }
 type DidVerifyMethod = {

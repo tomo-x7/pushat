@@ -50,17 +50,17 @@ function Modal({ children, close }: PropsWithChildren<{ close: () => void }>) {
 // childrenで渡す内容には閉じるボタンを置くことを考慮したスタイルにする
 function SimpleModal({ children, close }: PropsWithChildren<{ close: () => void }>) {
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-			<div className="relative w-full max-w-md mx-4 bg-white rounded-lg shadow-xl">
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+			<div className="relative w-full max-w-2xl">
 				<button
 					type="button"
 					onClick={close}
-					className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 transition-colors text-neutral-500 hover:text-neutral-700"
+					className="absolute -top-2 -right-2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white hover:bg-neutral-100 transition-colors text-neutral-700 hover:text-neutral-900 shadow-lg"
 					aria-label="Close"
 				>
-					<MdClose size={20} />
+					<MdClose size={24} />
 				</button>
-				<div className="p-6">{children}</div>
+				{children}
 			</div>
 		</div>
 	);

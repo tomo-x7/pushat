@@ -1,19 +1,19 @@
 import { type PropsWithChildren, useState } from "react";
-import { type FallbackProps, ErrorBoundary as LibErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
 import { FiAlertTriangle, FiRefreshCw } from "react-icons/fi";
 
 // カスタムエラー
 export class MessagingNotSupportedError extends Error {}
 export class ServiceWorkerNotSupportedError extends Error {}
 
-export function ErrorBoundary({ children }: PropsWithChildren) {
-	return <LibErrorBoundary fallbackRender={Fallback}>{children}</LibErrorBoundary>;
+export function TopLevelErrorBoundary({ children }: PropsWithChildren) {
+	return <ErrorBoundary fallbackRender={Fallback}>{children}</ErrorBoundary>;
 }
 
 function Fallback({ error, resetErrorBoundary }: FallbackProps) {
 	if (error instanceof MessagingNotSupportedError) return <MessagingNotSupported />;
 	if (error instanceof ServiceWorkerNotSupportedError) return <ServiceWorkerNotSupported />;
-	if (error instanceof Error) return <GeneralError error={error} />;
+	if (error instanceof Error) return <NormalError error={error} />;
 	return <UnknownError error={error} />;
 }
 
@@ -61,7 +61,7 @@ function ServiceWorkerNotSupported() {
 		</div>
 	);
 }
-function GeneralError({ error }: { error: Error }) {
+function NormalError({ error }: { error: Error }) {
 	console.error(error);
 	const reload = () => window.location.reload();
 
@@ -118,4 +118,24 @@ function UnknownError({ error }: { error: unknown }) {
 			</div>
 		);
 	}
+}
+
+export function GeneralErrorBoundary({ children }: PropsWithChildren) {
+	return <ErrorBoundary fallbackRender={GeneralFallback}>{children}</ErrorBoundary>;
+}
+function GeneralFallback({ error, resetErrorBoundary }: FallbackProps) {
+	return (
+		<div className="flex flex-col items-center justify-center p-6 bg-danger-50 border border-danger-200 rounded-lg">
+			<FiAlertTriangle size={32} className="text-danger-600 mb-3" />
+			<p className="text-sm text-danger-800 text-center mb-4 font-medium">{String(error)}</p>
+			<button
+				type="button"
+				onClick={resetErrorBoundary}
+				className="flex items-center gap-2 px-4 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 transition-colors font-medium text-sm"
+			>
+				<FiRefreshCw size={16} />
+				再読み込み
+			</button>
+		</div>
+	);
 }

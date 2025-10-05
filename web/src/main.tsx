@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 import { App } from "./App";
 import { ATPProvider } from "./atproto";
-import { ErrorBoundary } from "./Error";
+import { TopLevelErrorBoundary } from "./Error";
 import { FcmBaseProvider, FcmTokenProvider } from "./fcm";
 import { CallRoot } from "./Modal";
 import "./globals.css";
@@ -22,16 +22,16 @@ if (new URL(location.href).searchParams.has("redirect")) {
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<ErrorBoundary>
+		<TopLevelErrorBoundary>
 			<FcmBaseProvider>
 				<ATPProvider>
 					<FcmTokenProvider>
 						<App />
 					</FcmTokenProvider>
+					<CallRoot />
 				</ATPProvider>
 			</FcmBaseProvider>
 			<Toaster position="top-right" />
-			<CallRoot />
-		</ErrorBoundary>
+		</TopLevelErrorBoundary>
 	</StrictMode>,
 );

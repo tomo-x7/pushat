@@ -105,6 +105,9 @@ importers:
       '@atproto/oauth-client-browser':
         specifier: ^0.3.32
         version: 0.3.32
+      '@atproto/syntax':
+        specifier: ^0.4.1
+        version: 0.4.1
       '@atproto/xrpc':
         specifier: ^0.7.5
         version: 0.7.5

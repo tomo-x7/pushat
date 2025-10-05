@@ -1,7 +1,18 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
 	"extends": ["./shared/biome.jsonc"],
-	"linter": { "rules": { "complexity": { "noBannedTypes": "off" }, "suspicious": { "noConfusingVoidType": "off" } } },
+	"linter": {
+		"rules": {
+			"complexity": { "noBannedTypes": "off" },
+			"suspicious": { "noConfusingVoidType": "off" },
+			"correctness": {
+				"useExhaustiveDependencies": {
+					"level": "on",
+					"options": { "hooks": [{ "name": "useAsync", "closureIndex": 0, "dependenciesIndex": 1 }] }
+				}
+			}
+		}
+	},
 	"overrides": [
 		{ "includes": ["main/src/worker.d.ts"], "linter": { "enabled": false }, "formatter": { "enabled": false } }
 	]

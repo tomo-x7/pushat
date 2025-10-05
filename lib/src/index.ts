@@ -1,9 +1,19 @@
-import type { FetchHandlerObject } from "@atproto/xrpc";
+import { ValidationError } from "@atproto/lexicon";
+import {
+	type FetchHandlerObject,
+	httpResponseBodyParse,
+	isErrorResponseBody,
+	XRPCError,
+	XRPCInvalidResponseError,
+	XRPCResponse,
+} from "@atproto/xrpc";
 import { getContentDigest } from "./digest.js";
-import { AtpBaseClient, type WinTomoXPushatDefs, type WinTomoXPushatPushNotify } from "./lexicons/index.js";
+import { AtpBaseClient, WinTomoXPushatPushNotify, type WinTomoXPushatDefs } from "./lexicons/index.js";
+import { lexicons } from "./lexicons/lexicons.js";
 import { type CryptoKeyWithKid, importPrivateJwkStr, signRequest } from "./signature.js";
 
 export * from "./digest.js";
+export { ServiceNotAllowedError } from "./lexicons/types/win/tomo-x/pushat/pushNotify.js";
 export * from "./signature.js";
 
 interface SessionManager extends FetchHandlerObject {
@@ -73,9 +83,27 @@ export class PushatRequester {
 		header.set("Signature", sigs.Signature);
 		header.set("Signature-Input", sigs["Signature-Input"]);
 		const signedReq = new Request(req, { headers: header });
-		return await fetch(signedReq).then(async (res) => {
-			if (!res.ok) throw new Error(`pushNotify failed: ${res.status} ${res.statusText} ${await res.text()}`);
-			return (await res.json()) as WinTomoXPushatPushNotify.OutputSchema;
-		});
+		return await fetch(signedReq)
+			.then(async (res) => {
+				const resHeaders = Object.fromEntries(res.headers.entries());
+				const resBodyBytes = await res.arrayBuffer();
+				const resBody = httpResponseBodyParse(res.headers.get("content-type"), resBodyBytes);
+				if (res.status === 200) {
+					try {
+						lexicons.assertValidXrpcOutput("win.tomo-x.pushat.pushNotify", resBody);
+						return new XRPCResponse(resBody, resHeaders) as WinTomoXPushatPushNotify.Response;
+					} catch (e) {
+						if (e instanceof ValidationError)
+							throw new XRPCInvalidResponseError("win.tomo-x.pushat.pushNotify", e, res);
+						else throw e;
+					}
+				}
+				const { error = undefined, message = undefined } =
+					resBody && isErrorResponseBody(resBody) ? resBody : {};
+				throw new XRPCError(res.status, error, message, resHeaders);
+			})
+			.catch((e) => {
+				throw WinTomoXPushatPushNotify.toKnownErr(e);
+			});
 	}
 }

@@ -57,7 +57,7 @@ async function getTokenWithoutRequestPermission() {
 	return null;
 }
 // クリックイベントでしか呼ばれないのでキャッシュ不要
-export async function getTokenWithRequestPermission() {
+async function getTokenWithRequestPermission() {
 	if (sw == null) throw new Error("sw is null");
 	const messaging = getMessaging();
 	const result = await Notification.requestPermission();
@@ -79,9 +79,6 @@ export function useToken() {
 	const token = useContext(TokenContext);
 	if (token == null) throw new Error("token is null");
 	return token;
-}
-export function useRequestToken() {
-	return useContext(RequestTokenContext);
 }
 
 export function FcmTokenProvider({ children }: PropsWithChildren) {
@@ -140,4 +137,33 @@ function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<Requ
 			</div>
 		</div>
 	);
+}
+
+export async function updateSw() {
+	const regist = await navigator.serviceWorker.getRegistration();
+	if (regist == null) return;
+	regist.update();
+	if (regist.waiting) {
+		// waiting service worker に skipWaiting を要求
+		try {
+			regist.waiting.postMessage({ type: "SKIP_WAITING" });
+		} catch (e) {
+			console.warn("postMessage to waiting failed:", e);
+		}
+
+		// controllerchange を待ってリロード（新しい SW が制御を取ったら）
+		await new Promise<void>((resolve) => {
+			if (navigator.serviceWorker.controller) {
+				const onControllerChange = () => {
+					navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
+					resolve();
+				};
+				navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
+			} else {
+				// controller がない場合は即 resolve
+				resolve();
+			}
+		});
+		window.location.reload();
+	}
 }

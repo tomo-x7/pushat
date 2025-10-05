@@ -1,7 +1,6 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: <> */
-import { useEffect, useState, type PropsWithChildren, type ReactNode } from "react";
+import { type PropsWithChildren, type ReactNode, useState } from "react";
 import { createCallable } from "react-call";
-import { FiX } from "react-icons/fi";
 
 interface TextInputProps {
 	title: string;
@@ -14,8 +13,13 @@ interface ConfirmProps {
 	title: string;
 	message?: string;
 	confirmText?: string;
+	confirmColor?: keyof typeof colors;
 	cancelText?: string;
 }
+const colors = {
+	blue: "#00ff00",
+	red: "#ff0000",
+};
 
 function Modal({ children, close }: PropsWithChildren<{ close: () => void }>) {
 	return (
@@ -56,7 +60,7 @@ const TextInput = createCallable<TextInputProps, string | null>(
 	},
 );
 const Confirm = createCallable<ConfirmProps, boolean>(
-	({ call, title, message, cancelText = "cancel", confirmText = "ok" }) => {
+	({ call, title, message, cancelText = "cancel", confirmText = "ok", confirmColor = "blue" }) => {
 		return (
 			<Modal close={() => call.end(false)}>
 				<div>{title}</div>
@@ -64,7 +68,7 @@ const Confirm = createCallable<ConfirmProps, boolean>(
 				<button type="button" onClick={() => call.end(false)}>
 					{cancelText}
 				</button>
-				<button type="button" onClick={() => call.end(true)}>
+				<button type="button" onClick={() => call.end(true)} style={{ color: confirmColor }}>
 					{confirmText}
 				</button>
 			</Modal>

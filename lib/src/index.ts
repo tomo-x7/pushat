@@ -51,8 +51,7 @@ export class PushatRequester {
 	private constructor(
 		public serviceDid: string,
 		private keyobj: CryptoKeyWithKid,
-	) {
-	}
+	) {}
 	static async create({ PrivateJwkStr, serviceDid }: RequesterConfig) {
 		const keyobj = await importPrivateJwkStr(PrivateJwkStr);
 		if (!keyobj.kid.startsWith(serviceDid)) throw new Error("kid and serviceDid mismatch");

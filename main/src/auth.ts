@@ -1,7 +1,7 @@
 import type { DidDocument } from "@atproto/common-web";
 import { verifySignature } from "@atproto/crypto";
 import type { ErrorResult } from "@evex-dev/xrpc-hono";
-import { type CryptoKeyWithKid, importPublicJwk, validateContentDigest, verifyRequest } from "@tomo-x/pushat-client";
+import { type CryptoKeyWithKid, importPublicJwk, validateContentDigest, verifyRequest } from "@tomo-x/pushat";
 import type { Context } from "hono";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";

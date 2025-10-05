@@ -1,12 +1,13 @@
 import { BrowserOAuthClient, type OAuthSession } from "@atproto/oauth-client-browser";
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
+import { useAsync } from "react-async-hook";
 import { useErrorBoundary } from "react-error-boundary";
 import { toast } from "react-hot-toast";
+import { IoAt } from "react-icons/io5";
+import { updateSw } from "./fcm";
 import { Loading } from "./Loading";
 import { AtpBaseClient } from "./lexicons";
 import { showTextInput } from "./Modal";
-import { IoAt } from "react-icons/io5";
-import { useAsync } from "react-async-hook";
 
 const ClientContext = createContext<BrowserOAuthClient>(null!);
 const AgentSessionContext = createContext<{ agent: AtpBaseClient; session: OAuthSession }>(null!);
@@ -52,7 +53,7 @@ export function ATPProvider({ children }: PropsWithChildren) {
 		<ClientContext value={client}>
 			<AgentSessionContext value={{ agent, session }}>
 				<div>
-					<Header did={session.did} />
+					<Header client={client} did={session.did} />
 					{children}
 				</div>
 			</AgentSessionContext>
@@ -64,7 +65,7 @@ function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 	return (
 		<div>
-			<Header />
+			<Header client={client} />
 			<div>Blueskyアカウントでログイン</div>
 			<button type="button" onClick={handleLogin(client, setIsLoggingIn)} disabled={isLoggingIn}>
 				ログイン
@@ -73,7 +74,8 @@ function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 	);
 }
 
-function Header({ did }: { did?: string }) {
+function Header({ did, client }: { did?: string; client: BrowserOAuthClient }) {
+	const [isPDOpen, setIsPDOpen] = useState(false);
 	const avatar = useAsync<string>(async () => {
 		if (!did) return;
 		return await fetch(
@@ -85,13 +87,42 @@ function Header({ did }: { did?: string }) {
 	return (
 		<div className="h-8 w-full flex justify-between">
 			<h1>PushAt</h1>
-			{did && (
-				<div>
-					<button type="button">
-						<img src={avatar.result} />
-					</button>
-				</div>
-			)}
+			<button type="button" onClick={updateSw}>
+				update sw
+			</button>
+			<div>
+				{did && (
+					<>
+						<button
+							type="button"
+							onClick={(ev) => {
+								ev.stopPropagation();
+								setIsPDOpen((v) => !v);
+							}}
+							disabled={avatar.result == null}
+						>
+							<img width={40} height={40} src={avatar.result} />
+						</button>
+						{isPDOpen && <UserPulldown close={() => setIsPDOpen(false)} changeUser={handleLogin(client)} />}
+					</>
+				)}
+			</div>
+		</div>
+	);
+}
+function UserPulldown({ close, changeUser }: { close: () => void; changeUser: () => void }) {
+	useEffect(() => {
+		document.addEventListener("click", close);
+		return () => document.removeEventListener("click", close);
+	}, [close]);
+	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: a
+		<div onClick={(ev) => ev.stopPropagation()} className="relative">
+			<div className="absolute right-0 top-0">
+				<button type="button" onClick={changeUser}>
+					ユーザー切り替え
+				</button>
+			</div>
 		</div>
 	);
 }

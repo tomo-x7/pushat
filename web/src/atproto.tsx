@@ -4,6 +4,8 @@ import { useAsync } from "react-async-hook";
 import { useErrorBoundary } from "react-error-boundary";
 import { toast } from "react-hot-toast";
 import { IoAt } from "react-icons/io5";
+import { MdInfo } from "react-icons/md";
+import { About } from "./About";
 import bskyJa from "./assets/bsky-ja.svg";
 import { Loading } from "./Loading";
 import { AtpBaseClient } from "./lexicons";
@@ -52,9 +54,9 @@ export function ATPProvider({ children }: PropsWithChildren) {
 	return (
 		<ClientContext value={client}>
 			<AgentSessionContext value={{ agent, session }}>
-				<div>
+				<div className="min-h-screen flex flex-col bg-neutral-50">
 					<Header client={client} did={session.did} />
-					{children}
+					<main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">{children}</main>
 				</div>
 			</AgentSessionContext>
 		</ClientContext>
@@ -64,12 +66,26 @@ export function ATPProvider({ children }: PropsWithChildren) {
 function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 	return (
-		<div>
+		<div className="min-h-screen flex flex-col bg-neutral-50">
 			<Header client={client} />
-			<div>Blueskyアカウントでログイン</div>
-			<button type="button" onClick={handleLogin(client, setIsLoggingIn)} disabled={isLoggingIn}>
-				<img src={bskyJa} alt="login with Bluesky" width={120} />
-			</button>
+			<div className="flex-1 flex items-center justify-center px-4">
+				<div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 space-y-6">
+					<div className="text-center">
+						<h2 className="text-2xl font-bold text-neutral-900 mb-2">PushAtへようこそ</h2>
+					</div>
+					<About hiddenFooter />
+					<div className="pt-4">
+						<button
+							type="button"
+							onClick={handleLogin(client, setIsLoggingIn)}
+							disabled={isLoggingIn}
+							className="w-full flex items-center justify-center py-3 rounded-lg hover:bg-neutral-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-neutral-200"
+						>
+							<img src={bskyJa} alt="login with Bluesky" width={180} />
+						</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 }
@@ -85,31 +101,47 @@ function Header({ did, client }: { did?: string; client: BrowserOAuthClient }) {
 			.then((res) => res.avatar);
 	}, [did]);
 	return (
-		<div className="h-8 w-full flex justify-between">
-			<h1>PushAt</h1>
-			<div>
-				<button type="button" onClick={() => showText({ title: "About PushAt", text: "" })}>
-					about
-				</button>
+		<header className="w-full bg-white border-b border-neutral-200 shadow-sm">
+			<div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+				<h1 className="text-2xl font-bold text-primary-600">PushAt</h1>
+				<div className="flex items-center gap-4">
+					<button
+						type="button"
+						onClick={() => showText({ title: "About PushAt", text: <About /> })}
+						className="flex items-center gap-2 px-3 py-2 text-neutral-700 hover:text-primary-600 hover:bg-neutral-50 rounded-lg transition-colors"
+					>
+						<MdInfo size={20} />
+						<span className="text-sm font-medium">About</span>
+					</button>
+					{did && (
+						<div className="relative">
+							<button
+								type="button"
+								onClick={(ev) => {
+									ev.stopPropagation();
+									setIsPDOpen((v) => !v);
+								}}
+								disabled={avatar.result == null}
+								className="w-10 h-10 rounded-full overflow-hidden border-2 border-neutral-200 hover:border-primary-500 transition-colors disabled:opacity-50"
+							>
+								{avatar.result && (
+									<img
+										width={40}
+										height={40}
+										src={avatar.result}
+										alt="User avatar"
+										className="w-full h-full object-cover"
+									/>
+								)}
+							</button>
+							{isPDOpen && (
+								<UserPulldown close={() => setIsPDOpen(false)} changeUser={handleLogin(client)} />
+							)}
+						</div>
+					)}
+				</div>
 			</div>
-			<div>
-				{did && (
-					<>
-						<button
-							type="button"
-							onClick={(ev) => {
-								ev.stopPropagation();
-								setIsPDOpen((v) => !v);
-							}}
-							disabled={avatar.result == null}
-						>
-							<img width={40} height={40} src={avatar.result} />
-						</button>
-						{isPDOpen && <UserPulldown close={() => setIsPDOpen(false)} changeUser={handleLogin(client)} />}
-					</>
-				)}
-			</div>
-		</div>
+		</header>
 	);
 }
 function UserPulldown({ close, changeUser }: { close: () => void; changeUser: () => void }) {
@@ -119,9 +151,13 @@ function UserPulldown({ close, changeUser }: { close: () => void; changeUser: ()
 	}, [close]);
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: a
-		<div onClick={(ev) => ev.stopPropagation()} className="relative">
-			<div className="absolute right-0 top-0">
-				<button type="button" onClick={changeUser}>
+		<div onClick={(ev) => ev.stopPropagation()} className="absolute right-0 top-12 z-50">
+			<div className="bg-white rounded-lg shadow-xl border border-neutral-200 py-2 min-w-48">
+				<button
+					type="button"
+					onClick={changeUser}
+					className="w-full px-4 py-2 text-left text-neutral-700 hover:bg-neutral-50 transition-colors"
+				>
 					ユーザー切り替え
 				</button>
 			</div>

@@ -1,11 +1,11 @@
 import { eq } from "drizzle-orm";
 import { getMessaging } from "firebase-admin/messaging";
-import { BearerOrServerAuth, normalBearerAuth } from "./auth";
+import { BearerOrServerAuth } from "./auth";
 import { devicesTable } from "./db/schema";
-import type { Server } from "./lexicons";
-import type { Env } from "./types";
 import { getDidDoc } from "./identity";
+import type { Server } from "./lexicons";
 import * as allow from "./lexicons/types/win/tomo-x/pushat/allow";
+import type { Env } from "./types";
 
 export function pushMethods(server: Server<Env>) {
 	server.win.tomoX.pushat.pushNotify({

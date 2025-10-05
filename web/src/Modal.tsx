@@ -17,18 +17,26 @@ interface ConfirmProps {
 	cancelText?: string;
 }
 const colors = {
-	blue: "#00ff00",
-	red: "#ff0000",
+	primary: "var(--color-primary-600)",
+	success: "var(--color-success-600)",
+	danger: "var(--color-danger-600)",
+	warning: "var(--color-warning-600)",
+	neutral: "var(--color-neutral-600)",
 };
 
 function Modal({ children, close }: PropsWithChildren<{ close: () => void }>) {
 	return (
-		<div className="bg-black/55 fixed inset-0">
-			<div className="bg-white relative">
-				<button type="button" onClick={close} className="absolute top-2 right-2">
-					x
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+			<div className="relative w-full max-w-md mx-4 bg-white rounded-lg shadow-xl">
+				<button
+					type="button"
+					onClick={close}
+					className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 transition-colors text-neutral-500 hover:text-neutral-700"
+					aria-label="Close"
+				>
+					✕
 				</button>
-				<div>{children}</div>
+				<div className="p-6">{children}</div>
 			</div>
 		</div>
 	);
@@ -39,38 +47,76 @@ const TextInput = createCallable<TextInputProps, string | null>(
 		const [value, setValue] = useState("");
 		return (
 			<Modal close={() => call.end(null)}>
-				<div>{title}</div>
-				<div>
-					{prefix}
-					<input
-						type="text"
-						value={value}
-						onChange={(e) => setValue(e.target.value)}
-						placeholder={placeholder}
-					/>
+				<h2 className="text-xl font-semibold text-neutral-900 mb-4">{title}</h2>
+				<div className="mb-6">
+					<div className="relative">
+						{prefix && (
+							<div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center text-neutral-500 pointer-events-none">
+								{prefix}
+							</div>
+						)}
+						<input
+							type="text"
+							value={value}
+							onChange={(e) => setValue(e.target.value)}
+							placeholder={placeholder}
+							className={`w-full py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all ${
+								prefix ? "pl-10 pr-4" : "px-4"
+							}`}
+						/>
+					</div>
 				</div>
-				<button type="button" onClick={() => call.end(null)}>
-					{cancelText}
-				</button>
-				<button type="button" onClick={() => call.end(value)} disabled={!value}>
-					{submitText}
-				</button>
+				<div className="flex justify-end gap-3">
+					<button
+						type="button"
+						onClick={() => call.end(null)}
+						className="px-4 py-2 text-neutral-700 bg-neutral-100 rounded-lg hover:bg-neutral-200 transition-colors font-medium"
+					>
+						{cancelText}
+					</button>
+					<button
+						type="button"
+						onClick={() => call.end(value)}
+						disabled={!value}
+						className="px-4 py-2 text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors font-medium"
+					>
+						{submitText}
+					</button>
+				</div>
 			</Modal>
 		);
 	},
 );
 const Confirm = createCallable<ConfirmProps, boolean>(
-	({ call, title, message, cancelText = "cancel", confirmText = "ok", confirmColor = "blue" }) => {
+	({ call, title, message, cancelText = "cancel", confirmText = "ok", confirmColor = "primary" }) => {
+		const colorClass = {
+			primary: "bg-primary-600 hover:bg-primary-700",
+			success: "bg-success-600 hover:bg-success-700",
+			danger: "bg-danger-600 hover:bg-danger-700",
+			warning: "bg-warning-600 hover:bg-warning-700",
+			neutral: "bg-neutral-600 hover:bg-neutral-700",
+		}[confirmColor];
+
 		return (
 			<Modal close={() => call.end(false)}>
-				<div>{title}</div>
-				<div>{message}</div>
-				<button type="button" onClick={() => call.end(false)}>
-					{cancelText}
-				</button>
-				<button type="button" onClick={() => call.end(true)} style={{ color: confirmColor }}>
-					{confirmText}
-				</button>
+				<h2 className="text-xl font-semibold text-neutral-900 mb-4">{title}</h2>
+				{message && <p className="text-neutral-600 mb-6">{message}</p>}
+				<div className="flex justify-end gap-3">
+					<button
+						type="button"
+						onClick={() => call.end(false)}
+						className="px-4 py-2 text-neutral-700 bg-neutral-100 rounded-lg hover:bg-neutral-200 transition-colors font-medium"
+					>
+						{cancelText}
+					</button>
+					<button
+						type="button"
+						onClick={() => call.end(true)}
+						className={`px-4 py-2 text-white rounded-lg transition-colors font-medium ${colorClass}`}
+					>
+						{confirmText}
+					</button>
+				</div>
 			</Modal>
 		);
 	},

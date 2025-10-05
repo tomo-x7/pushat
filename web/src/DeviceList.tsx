@@ -58,7 +58,7 @@ export function DeviceList() {
 			title: `デバイス「${name}」を削除します。よろしいですか？`,
 			confirmText: "削除",
 			cancelText: "キャンセル",
-			confirmColor: "red",
+			confirmColor: "danger",
 		});
 		if (!confirm) return;
 		try {

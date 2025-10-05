@@ -139,31 +139,50 @@ function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<Requ
 	);
 }
 
-export async function updateSw() {
-	const regist = await navigator.serviceWorker.getRegistration();
-	if (regist == null) return;
-	regist.update();
-	if (regist.waiting) {
-		// waiting service worker に skipWaiting を要求
-		try {
-			regist.waiting.postMessage({ type: "SKIP_WAITING" });
-		} catch (e) {
-			console.warn("postMessage to waiting failed:", e);
-		}
-
-		// controllerchange を待ってリロード（新しい SW が制御を取ったら）
-		await new Promise<void>((resolve) => {
-			if (navigator.serviceWorker.controller) {
-				const onControllerChange = () => {
-					navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
-					resolve();
-				};
-				navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
-			} else {
-				// controller がない場合は即 resolve
-				resolve();
+export function useCheckUpdateSw() {
+	const [latest, setLatest] = useState(false);
+	const update = useCallback(async () => {
+		const regist = await navigator.serviceWorker.getRegistration();
+		if (regist == null) return;
+		await regist.update();
+		if (regist.waiting) {
+			// waiting service worker に skipWaiting を要求
+			try {
+				regist.waiting.postMessage({ type: "SKIP_WAITING" });
+			} catch (e) {
+				console.warn("postMessage to waiting failed:", e);
 			}
+			// controllerchange を待ってリロード（新しい SW が制御を取ったら）
+			await new Promise<void>((resolve) => {
+				if (navigator.serviceWorker.controller) {
+					const onControllerChange = () => {
+						navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
+						resolve();
+					};
+					navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
+				} else {
+					// controller がない場合は即 resolve
+					resolve();
+				}
+			});
+			window.location.reload();
+		} else {
+			setLatest(true);
+		}
+	}, []);
+	const chackLatest = useCallback(async () => {
+		navigator.serviceWorker.getRegistration().then(async (regist) => {
+			await regist?.update();
+			// 待機中がなければ最新
+			if (regist?.waiting == null) setLatest(true);
+			else setLatest(false);
 		});
-		window.location.reload();
-	}
+	}, []);
+	useEffect(() => {
+		navigator.serviceWorker.getRegistration().then((regist) => {
+			// 待機中がなければ最新
+			if (regist?.waiting == null) setLatest(true);
+		});
+	}, []);
+	return { latest, update, chackLatest };
 }

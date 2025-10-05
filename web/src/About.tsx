@@ -1,6 +1,7 @@
-import { updateSw } from "./fcm";
+import { useCheckUpdateSw } from "./fcm";
 
 export function About({ hiddenFooter }: { hiddenFooter?: boolean }) {
+	const { latest, update, chackLatest } = useCheckUpdateSw();
 	return (
 		<div className="space-y-4">
 			<p className="text-neutral-700 leading-relaxed">
@@ -9,7 +10,7 @@ export function About({ hiddenFooter }: { hiddenFooter?: boolean }) {
 			</p>
 			<div>
 				<a
-					href="https://github.com/tomo-x7/pushat"
+					href="https://github.com/tomo-x7/pushat/blob/main/readme.md"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="text-primary-600 hover:text-primary-700 underline transition-colors"
@@ -25,7 +26,7 @@ export function About({ hiddenFooter }: { hiddenFooter?: boolean }) {
 							href="https://bsky.app/profile/did:plc:qcwvyds5tixmcwkwrg3hxgxd"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="text-primary-600 hover:text-primary-700 transition-colors"
+							className="text-neutral-600 hover:text-neutral-700 underline transition-colors"
 						>
 							tomo-x
 						</a>
@@ -33,10 +34,10 @@ export function About({ hiddenFooter }: { hiddenFooter?: boolean }) {
 					<div>
 						<button
 							type="button"
-							onClick={updateSw}
+							onClick={latest ? chackLatest : update}
 							className="text-sm text-neutral-600 hover:text-neutral-900 underline transition-colors"
 						>
-							更新を確認
+							{latest ? "更新を確認" : "更新する"}
 						</button>
 					</div>
 				</div>

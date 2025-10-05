@@ -46,7 +46,25 @@ function Modal({ children, close }: PropsWithChildren<{ close: () => void }>) {
 		</div>
 	);
 }
-
+// 白背景などの余分なものがないモーダル
+// childrenで渡す内容には閉じるボタンを置くことを考慮したスタイルにする
+function SimpleModal({ children, close }: PropsWithChildren<{ close: () => void }>) {
+	return (
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+			<div className="relative w-full max-w-md mx-4 bg-white rounded-lg shadow-xl">
+				<button
+					type="button"
+					onClick={close}
+					className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 transition-colors text-neutral-500 hover:text-neutral-700"
+					aria-label="Close"
+				>
+					<MdClose size={20} />
+				</button>
+				<div className="p-6">{children}</div>
+			</div>
+		</div>
+	);
+}
 const TextInput = createCallable<TextInputProps, string | null>(
 	({ title, call, placeholder, cancelText = "cancel", submitText = "enter", prefix }) => {
 		const [value, setValue] = useState("");
@@ -132,6 +150,9 @@ const Text = createCallable<TextProps, void>(({ call, text, title }) => (
 		<p className="text-neutral-700 leading-relaxed whitespace-pre-wrap">{text}</p>
 	</Modal>
 ));
+const simpleModal = createCallable<{ el: ReactNode }>(({ call, el }) => (
+	<SimpleModal close={() => call.end()}>{el}</SimpleModal>
+));
 
 // 統一ルートコンポーネント
 export function CallRoot() {
@@ -140,6 +161,7 @@ export function CallRoot() {
 			<TextInput.Root />
 			<Confirm.Root />
 			<Text.Root />
+			<simpleModal.Root />
 		</>
 	);
 }
@@ -148,3 +170,4 @@ export function CallRoot() {
 export const showTextInput = TextInput.call;
 export const showConfirm = Confirm.call;
 export const showText = Text.call;
+export const showSimpleModal = simpleModal.call;

@@ -1,32 +1,45 @@
 #! /usr/bin/env node
 
-import {defineCommand, runMain} from "citty"
-import fs from "fs"
+import { defineCommand, runMain } from "citty";
+import fs from "fs";
 
-const main=defineCommand({
-	meta:{
-		name:"generate key for pushat"
-	},args:{
-		keyOut:{type:"string",alias:"-k",description:"output file path for private key jwk",default:"./private.jwk"},
-		didOut:{type:"string",alias:"-d",description:"output file path for did document",default:"./did.json"},
-		did:{type:"positional",description:"service did",required:true}
-	},run:async ({args})=>{
-		const { privateKey, publicKey } = await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-521" }, true, [
-		"sign",
-		"verify",
-	]);
-	const privKeyJwk = await crypto.subtle.exportKey("jwk", privateKey);
-	const privJwkStr = JSON.stringify({ ...privKeyJwk, kid: `${args.did}#pushat` });
-	fs.writeFileSync(args.keyOut,privJwkStr)
-	const pubJwk=await crypto.subtle.exportKey("jwk",publicKey)
-    const didDoc=genDidDoc(args.did,pubJwk)
-    fs.writeFileSync(args.didOut,JSON.stringify(didDoc,undefined,2))
-	}
-})
-runMain(main)
+const main = defineCommand({
+	meta: {
+		name: "generate key for pushat",
+	},
+	args: {
+		keyOut: {
+			type: "string",
+			alias: "-k",
+			description: "output file path for private key jwk",
+			default: "./private.jwk",
+		},
+		didOut: {
+			type: "string",
+			alias: "-d",
+			description: "output file path for did document",
+			default: "./did.json",
+		},
+		did: { type: "positional", description: "service did", required: true },
+	},
+	run: async ({ args }) => {
+		const { privateKey, publicKey } = await crypto.subtle.generateKey(
+			{ name: "ECDSA", namedCurve: "P-521" },
+			true,
+			["sign", "verify"],
+		);
+		const privKeyJwk = await crypto.subtle.exportKey("jwk", privateKey);
+		const privJwkStr = JSON.stringify({ ...privKeyJwk, kid: `${args.did}#pushat` });
+		fs.writeFileSync(args.keyOut, privJwkStr);
+		const pubJwk = await crypto.subtle.exportKey("jwk", publicKey);
+		const didDoc = genDidDoc(args.did, pubJwk);
+		fs.writeFileSync(args.didOut, JSON.stringify(didDoc, undefined, 2));
+	},
+});
+runMain(main);
 
-function genDidDoc(did: string,jwk:JsonWebKey) {
-    if(jwk.d!=null)throw new Error("private key not allowed")
+function genDidDoc(did: string, jwk: JsonWebKey) {
+	if (jwk.d != null) throw new Error("private key not allowed");
 	return {
 		"@context": ["https://www.w3.org/ns/did/v1", "https://w3id.org/security/suites/jws-2020/v1"],
 		id: did,

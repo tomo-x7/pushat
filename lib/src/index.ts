@@ -8,7 +8,7 @@ import {
 	XRPCResponse,
 } from "@atproto/xrpc";
 import { getContentDigest } from "./digest.js";
-import { AtpBaseClient, WinTomoXPushatPushNotify, type WinTomoXPushatDefs } from "./lexicons/index.js";
+import { AtpBaseClient, type WinTomoXPushatDefs, WinTomoXPushatPushNotify } from "./lexicons/index.js";
 import { lexicons } from "./lexicons/lexicons.js";
 import { type CryptoKeyWithKid, importPrivateJwkStr, signRequest } from "./signature.js";
 

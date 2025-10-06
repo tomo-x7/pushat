@@ -1,4 +1,6 @@
-import {defineCommand} from "citty"
+#! /usr/bin/env node
+
+import {defineCommand, runMain} from "citty"
 import fs from "fs"
 
 const main=defineCommand({
@@ -7,19 +9,21 @@ const main=defineCommand({
 	},args:{
 		keyOut:{type:"string",alias:"-k",description:"output file path for private key jwk",default:"./private.jwk"},
 		didOut:{type:"string",alias:"-d",description:"output file path for did document",default:"./did.json"},
+		did:{type:"positional",description:"service did",required:true}
 	},run:async ({args})=>{
 		const { privateKey, publicKey } = await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-521" }, true, [
 		"sign",
 		"verify",
 	]);
 	const privKeyJwk = await crypto.subtle.exportKey("jwk", privateKey);
-	const privJwkStr = JSON.stringify({ ...privKeyJwk, kid: "did:web:example.com#pushat" });
+	const privJwkStr = JSON.stringify({ ...privKeyJwk, kid: `${args.did}#pushat` });
 	fs.writeFileSync(args.keyOut,privJwkStr)
 	const pubJwk=await crypto.subtle.exportKey("jwk",publicKey)
-    const didDoc=genDidDoc("did:web:example.com",pubJwk)
+    const didDoc=genDidDoc(args.did,pubJwk)
     fs.writeFileSync(args.didOut,JSON.stringify(didDoc,undefined,2))
 	}
 })
+runMain(main)
 
 function genDidDoc(did: string,jwk:JsonWebKey) {
     if(jwk.d!=null)throw new Error("private key not allowed")

@@ -55,7 +55,7 @@ export async function signRequest(
 ): Promise<{ "Signature-Input": string; Signature: string }> {
 	const sigParams = `("@target-uri" "content-digest");created=${Math.floor(Date.now() / 1000)};keyid="${kid}"`;
 	const data = generateData(getURL(req), digest, sigParams);
-	const signed = await crypto.subtle.sign({ name: "ECDSA", hash: { name: "SHA-512" } }, key, data);
+	const signed = await crypto.subtle.sign({ name: "ECDSA", hash: { name: "SHA-512" } }, key, Buffer.from(data));
 	const signature = Buffer.from(signed).toString("base64");
 	return { "Signature-Input": `pushat=${sigParams}`, Signature: `pushat=:${signature}:` };
 }
@@ -90,7 +90,7 @@ export async function verifyRequest(
 		{ name: "ECDSA", hash: { name: "SHA-512" } },
 		keys.key,
 		Buffer.from(signature, "base64"),
-		data,
+		Buffer.from(data),
 	);
 	if (result !== true) return { ok: false, error: "verify failed" };
 	return { ok: true, kid };

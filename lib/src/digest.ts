@@ -7,7 +7,7 @@ import { toBuffer } from "./util.js";
  */
 async function generateContentDigest(input: ArrayBufferLike | Buffer) {
 	const buf = toBuffer(input);
-	return await crypto.subtle.digest("SHA-512", buf).then((hash) => Buffer.from(hash).toString("base64"));
+	return await crypto.subtle.digest("SHA-512", Buffer.from(buf)).then((hash) => Buffer.from(hash).toString("base64"));
 }
 /**
  * SHA-512 only

@@ -17,7 +17,7 @@ export async function importPrivateJwkStr(jwkStr: string): Promise<CryptoKeyWith
 	if (!crv) throw new Error("crv is required");
 	if (d == null) throw new Error("private key required");
 	if (kid == null) throw new Error("kid required");
-	if (alg !== "ES512") throw new Error(`only support ES512`);
+	if (alg != null && alg !== "ES512") throw new Error(`only support ES512`);
 	if (crv !== "P-521") throw new Error(`only support P-521`);
 	if (/^did:[a-z0-9]+:[a-zA-Z0-9.]+#[a-zA-Z0-9]+$/.test(kid) === false)
 		throw new Error("invalid kid: kid must be did with fragment");

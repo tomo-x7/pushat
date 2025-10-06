@@ -20,6 +20,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@atproto/lex-cli": "^0.9.5",
+		"@types/node": "^24.6.1",
 		"typescript": "^5.9.3"
 	},
 	"files": [
@@ -29,6 +30,7 @@
 	"dependencies": {
 		"@atproto/lexicon": "^0.5.1",
 		"@atproto/xrpc": "^0.7.5",
-		"buffer": "^6.0.3"
+		"buffer": "^6.0.3",
+		"citty": "^0.1.6"
 	}
 }

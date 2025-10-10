@@ -19,7 +19,7 @@ export async function importPrivateJwkStr(jwkStr: string): Promise<CryptoKeyWith
 	if (kid == null) throw new Error("kid required");
 	if (alg != null && alg !== "ES512") throw new Error(`only support ES512`);
 	if (crv !== "P-521") throw new Error(`only support P-521`);
-	if (/^did:[a-z0-9]+:[a-zA-Z0-9.]+#[a-zA-Z0-9]+$/.test(kid) === false)
+	if (/^did:[a-z0-9]+:[a-zA-Z0-9.-]+#[a-zA-Z0-9]+$/.test(kid) === false)
 		throw new Error("invalid kid: kid must be did with fragment");
 	if (!kid.startsWith("did:web:") && !kid.startsWith("did:plc:")) throw new Error("unspported did method");
 	return { key: await crypto.subtle.importKey("jwk", jwk, { name: "ECDSA", namedCurve: crv }, false, ["sign"]), kid };

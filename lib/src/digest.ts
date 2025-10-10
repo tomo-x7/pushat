@@ -25,7 +25,7 @@ export async function getContentDigest(req: Request): Promise<string> {
 export async function validateContentDigest(req: Request): Promise<true | string> {
 	const headerValue = req.headers.get("Content-Digest") ?? req.headers.get("content-digest");
 	if (headerValue == null) return "Content-Digest header required";
-	const match = headerValue.match(/^sha-512=:([a-zA-Z+/=]+):$/);
+	const match = headerValue.match(/^sha-512=:([a-zA-Z0-9+/=]+):$/);
 	if (match == null || match[1] == null)
 		return "invalid Content-Digest header: multiple digest is not supported and sha-512 only.";
 	const digest1 = match[1];

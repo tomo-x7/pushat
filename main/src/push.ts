@@ -23,6 +23,8 @@ export function pushMethods(server: Server<Env>) {
 					.then((res) => (res.ok ? (res.json() as Promise<allow.Record>) : null))
 					.catch(() => null);
 				if (res == null) return { error: "ServiceNotAllowedError", status: 403 };
+				console.log(res)
+				console.log(allow.validateRecord(res))
 				if (allow.validateRecord(res).success === false)
 					return { error: "ServiceNotAllowedError", status: 403, message: "invalid allow record" };
 			} else {

@@ -20,12 +20,10 @@ export function pushMethods(server: Server<Env>) {
 				const res = await fetch(
 					`${targetDoc.pds}/xrpc/com.atproto.repo.getRecord?repo=${encodeURIComponent(input.body.target)}&collection=win.tomo-x.pushat.allow&rkey=${auth.credentials.did}`,
 				)
-					.then((res) => (res.ok ? (res.json() as Promise<allow.Record>) : null))
+					.then((res) => (res.ok ? (res.json() as Promise<{value:allow.Record}>) : null))
 					.catch(() => null);
 				if (res == null) return { error: "ServiceNotAllowedError", status: 403 };
-				console.log(res)
-				console.log(allow.validateRecord(res))
-				if (allow.validateRecord(res).success === false)
+				if (allow.validateRecord(res.value).success === false)
 					return { error: "ServiceNotAllowedError", status: 403, message: "invalid allow record" };
 			} else {
 				throw new Error("unknown auth type");

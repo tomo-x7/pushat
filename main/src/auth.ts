@@ -6,7 +6,7 @@ import type { Context } from "hono";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";
 import type { Env } from "./types";
-import {Unauthorized} from "http-errors"
+import {Unauthorized,isHttpError} from "http-errors"
 
 const BEARER_PREFIX = "Bearer ";
 type AuthParam = { lxm: string };
@@ -59,8 +59,16 @@ export function serverAuth(): ServerAuth {
 	return async ({ ctx }) => {
 		const digestResult = await validateContentDigest(ctx.req.raw);
 		if (digestResult !== true) return invalidAuth(digestResult);
-		const result = await verifyRequest(ctx.req.raw, (...p)=>getKey(...p).catch(e=>{throw new Unauthorized(e)}));
-		if (result.ok === false) return invalidAuth(result.error);
+		let result:Awaited<ReturnType<typeof verifyRequest>>|undefined=undefined
+		try{
+		result = await verifyRequest(ctx.req.raw, (...p)=>getKey(...p));
+		}catch(e){
+			if(isHttpError(e)){
+				return {status:e.status,message:e.message,error:e.name}
+			}
+			throw e;
+		}
+		if (result?.ok !== true) return invalidAuth(result?.error??"unknown error");
 		return { credentials: { did: result.kid.split("#")[0] }, artifacts: { type: "Server" } };
 	};
 }

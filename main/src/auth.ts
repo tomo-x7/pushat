@@ -6,6 +6,7 @@ import type { Context } from "hono";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";
 import type { Env } from "./types";
+import {Unauthorized} from "http-errors"
 
 const BEARER_PREFIX = "Bearer ";
 type AuthParam = { lxm: string };
@@ -58,7 +59,7 @@ export function serverAuth(): ServerAuth {
 	return async ({ ctx }) => {
 		const digestResult = await validateContentDigest(ctx.req.raw);
 		if (digestResult !== true) return invalidAuth(digestResult);
-		const result = await verifyRequest(ctx.req.raw, getKey);
+		const result = await verifyRequest(ctx.req.raw, (...p)=>getKey(...p).catch(e=>{throw new Unauthorized(e)}));
 		if (result.ok === false) return invalidAuth(result.error);
 		return { credentials: { did: result.kid.split("#")[0] }, artifacts: { type: "Server" } };
 	};
@@ -80,11 +81,11 @@ type DidVerifyMethod = {
 };
 async function getKey(kid: string): Promise<CryptoKeyWithKid> {
 	const [did, id] = kid.split("#");
-	if (did == null || id == null) throw new Error("invalid kid");
+	if (did == null || id == null) throw new Unauthorized("invalid kid");
 	const { rawDoc } = (await getDidDoc(did)) ?? {};
-	if (rawDoc == null) throw new Error("cannot get did doc");
+	if (rawDoc == null) throw new Unauthorized("cannot get did doc");
 	const authKeys = (rawDoc as DidDocument & { authentication?: (string | DidVerifyMethod)[] }).authentication;
-	if (authKeys == null || authKeys.length === 0) throw new Error("invalid kid: authentication is empty");
+	if (authKeys == null || authKeys.length === 0) throw new Unauthorized("invalid kid: authentication is empty");
 	let key: Pick<DidVerifyMethod, "type" | "publicKeyJwk"> | undefined;
 	if (authKeys.find((v) => typeof v === "string" && v === kid)) {
 		for (const verifyKey of rawDoc.verificationMethod ?? []) {

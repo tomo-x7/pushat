@@ -77,7 +77,7 @@ export async function verifyRequest(
 	if (signature.includes(":") || signature.includes(","))
 		return { ok: false, error: "invalid signature header: multiple signature is not supported" };
 	const inputMatch =
-		/^pushat=(\("@target-uri" "content-digest"\);created=(\d+);keyid="(did:[a-z0-9]+:[a-zA-Z0-9.]+#[a-zA-Z0-9]+)")$/.exec(
+		/^pushat=(\("@target-uri" "content-digest"\);created=(\d+);keyid="(did:[a-z0-9]+:[a-zA-Z0-9.-]+#[a-zA-Z0-9]+)")$/.exec(
 			sigInput,
 		);
 	if (inputMatch == null) return { ok: false, error: "invalid Signature-Input header" };

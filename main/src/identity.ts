@@ -10,7 +10,6 @@ export async function getDidDoc(did: string) {
 	const handle = getHandle(rawDoc);
 	const key = getKey(rawDoc);
 	const pds = getPds(rawDoc);
-	if (key == null) return null;
 	return {
 		did,
 		handle,

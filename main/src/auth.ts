@@ -35,7 +35,7 @@ export function normalBearerAuth({ lxm }: AuthParam): BearerAuth {
 			console.error(e);
 			return null;
 		});
-		if (docs == null) return invalidAuth("invalid iss diddoc");
+		if (docs == null||docs.key==null) return invalidAuth("invalid iss diddoc");
 		// 署名検証
 		const isValid = await verifySignature(
 			docs.key,

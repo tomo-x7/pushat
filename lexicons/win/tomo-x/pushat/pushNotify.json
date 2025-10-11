@@ -16,7 +16,8 @@
 						},
 						"target": {
 							"type": "string",
-							"format": "did"
+							"format": "did",
+							"description": "The DID of the target user to whom the notification will be sent."
 						}
 					}
 				}

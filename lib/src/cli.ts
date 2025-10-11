@@ -1,7 +1,8 @@
 #! /usr/bin/env node
 
+import fs from "node:fs";
+import path from "node:path";
 import { defineCommand, runMain } from "citty";
-import fs from "fs";
 
 const main = defineCommand({
 	meta: {
@@ -30,9 +31,11 @@ const main = defineCommand({
 		);
 		const privKeyJwk = await crypto.subtle.exportKey("jwk", privateKey);
 		const privJwkStr = JSON.stringify({ ...privKeyJwk, kid: `${args.did}#pushat` });
+		fs.mkdirSync(path.dirname(args.keyOut), { recursive: true });
 		fs.writeFileSync(args.keyOut, privJwkStr);
 		const pubJwk = await crypto.subtle.exportKey("jwk", publicKey);
 		const didDoc = genDidDoc(args.did, pubJwk);
+		fs.mkdirSync(path.dirname(args.didOut), { recursive: true });
 		fs.writeFileSync(args.didOut, JSON.stringify(didDoc, undefined, 2));
 	},
 });

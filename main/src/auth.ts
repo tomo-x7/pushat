@@ -3,10 +3,10 @@ import { verifySignature } from "@atproto/crypto";
 import type { ErrorResult } from "@evex-dev/xrpc-hono";
 import { type CryptoKeyWithKid, importPublicJwk, validateContentDigest, verifyRequest } from "@tomo-x/pushat";
 import type { Context } from "hono";
+import { isHttpError, Unauthorized } from "http-errors";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";
 import type { Env } from "./types";
-import {Unauthorized,isHttpError} from "http-errors"
 
 const BEARER_PREFIX = "Bearer ";
 type AuthParam = { lxm: string };
@@ -35,7 +35,7 @@ export function normalBearerAuth({ lxm }: AuthParam): BearerAuth {
 			console.error(e);
 			return null;
 		});
-		if (docs == null||docs.key==null) return invalidAuth("invalid iss diddoc");
+		if (docs == null || docs.key == null) return invalidAuth("invalid iss diddoc");
 		// 署名検証
 		const isValid = await verifySignature(
 			docs.key,
@@ -59,16 +59,16 @@ export function serverAuth(): ServerAuth {
 	return async ({ ctx }) => {
 		const digestResult = await validateContentDigest(ctx.req.raw);
 		if (digestResult !== true) return invalidAuth(digestResult);
-		let result:Awaited<ReturnType<typeof verifyRequest>>|undefined=undefined
-		try{
-		result = await verifyRequest(ctx.req.raw, (...p)=>getKey(...p));
-		}catch(e){
-			if(isHttpError(e)){
-				return {status:e.status,message:e.message,error:e.name}
+		let result: Awaited<ReturnType<typeof verifyRequest>> | undefined;
+		try {
+			result = await verifyRequest(ctx.req.raw, (...p) => getKey(...p));
+		} catch (e) {
+			if (isHttpError(e)) {
+				return { status: e.status, message: e.message, error: e.name };
 			}
 			throw e;
 		}
-		if (result?.ok !== true) return invalidAuth(result?.error??"unknown error");
+		if (result?.ok !== true) return invalidAuth(result?.error ?? "unknown error");
 		return { credentials: { did: result.kid.split("#")[0] }, artifacts: { type: "Server" } };
 	};
 }

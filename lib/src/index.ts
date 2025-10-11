@@ -34,17 +34,18 @@ export class PushatRequesterClient {
 		this.base = new AtpBaseClient((...p) => session.fetchHandler(...p));
 		this.base.setHeader("atproto-proxy", "did:web:pushat.tomo-x.win#pushat");
 	}
-	async addAllowService() {
+	async allow() {
 		return await this.base.win.tomoX.pushat.allow.put(
 			{ repo: this.did, rkey: this.serviceDid },
 			{ createdAt: new Date().toISOString() },
 		);
 	}
-	async deleteAllowService() {
+	async disallow() {
 		return await this.base.win.tomoX.pushat.allow.delete({ repo: this.did, rkey: this.serviceDid });
 	}
 	async isAllowed() {
 		try {
+			// 取得できない場合例外を投げる
 			await this.base.win.tomoX.pushat.allow.get({ repo: this.did, rkey: this.serviceDid });
 			return true;
 		} catch {

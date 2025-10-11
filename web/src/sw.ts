@@ -34,7 +34,7 @@ swSelf.addEventListener("activate", (event) => {
 	event.waitUntil(
 		(async () => {
 			try {
-				await (self as any).clients.claim();
+				await swSelf.clients.claim();
 			} catch (e) {
 				// noop
 			}
@@ -48,7 +48,7 @@ swSelf.addEventListener("message", (event) => {
 	if (!data) return;
 	if (data.type === "SKIP_WAITING") {
 		try {
-			(self as any).skipWaiting();
+			swSelf.skipWaiting();
 		} catch (e) {
 			// noop
 		}

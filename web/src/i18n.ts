@@ -6,22 +6,28 @@ import en from "./locales/en.json";
 
 i18n.use(LanguageDetector)
 	.use(initReactI18next)
-	.init({
-		resources: {
-			ja: { translation: ja },
-			en: { translation: en },
+	.init(
+		{
+			resources: {
+				ja: { translation: ja },
+				en: { translation: en },
+			},
+			fallbackLng: "ja",
+			interpolation: {
+				escapeValue: false,
+			},
+			detection: {
+				order: ["localStorage", "navigator"],
+				caches: ["localStorage"],
+			},
 		},
-		fallbackLng: "ja",
-		interpolation: {
-			escapeValue: false,
-		},
-		detection: {
-			order: ["localStorage", "navigator"],
-			caches: ["localStorage"],
-		},
-	});
+		() => void setHtmlLang(i18n.resolvedLanguage || i18n.language || "ja"),
+	);
 
-// Make i18n globally available for use in non-React contexts
-(window as any).i18n = i18n;
+// document.langを更新する
+const setHtmlLang = (lng: string) => {
+	document.documentElement.lang = lng;
+};
+i18n.on("languageChanged", setHtmlLang);
 
 export default i18n;

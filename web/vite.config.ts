@@ -13,7 +13,12 @@ export default defineConfig({
 			srcDir: "src",
 			filename: "sw.ts",
 			injectManifest: { injectionPoint: undefined },
-			manifest: {},
+			manifest: {
+				display: "standalone",
+				id: "pushat",
+				name: "PushAt",
+				short_name: "PushAt",
+			},
 			injectRegister: false,
 		}),
 	],

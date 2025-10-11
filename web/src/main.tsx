@@ -5,7 +5,7 @@ import { App } from "./App";
 import { ATPProvider } from "./atproto";
 import { TopLevelErrorBoundary } from "./Error";
 import { FcmBaseProvider, FcmTokenProvider } from "./fcm";
-import { CallRoot } from "./Modal";
+import { CallInnerRoot, CallRoot } from "./Modal";
 import "./globals.css";
 import "./i18n";
 
@@ -28,10 +28,11 @@ createRoot(document.getElementById("root")!).render(
 				<ATPProvider>
 					<FcmTokenProvider>
 						<App />
+						<CallInnerRoot />
 					</FcmTokenProvider>
-					<CallRoot />
 				</ATPProvider>
 			</FcmBaseProvider>
+			<CallRoot />
 			<Toaster position="top-right" />
 		</TopLevelErrorBoundary>
 	</StrictMode>,

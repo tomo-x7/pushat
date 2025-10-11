@@ -166,9 +166,12 @@ export function CallRoot() {
 			<TextInput.Root />
 			<Confirm.Root />
 			<Text.Root />
-			<simpleModal.Root />
 		</>
 	);
+}
+/**コンテキスト APIを使うものむけ */
+export function CallInnerRoot() {
+	return <simpleModal.Root />;
 }
 
 // エクスポート関数

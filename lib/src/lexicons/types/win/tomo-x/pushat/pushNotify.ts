@@ -15,6 +15,7 @@ export type QueryParams = {};
 
 export interface InputSchema {
 	body: WinTomoXPushatDefs.NotifyBody;
+	/** The DID of the target user to whom the notification will be sent. */
 	target: string;
 }
 

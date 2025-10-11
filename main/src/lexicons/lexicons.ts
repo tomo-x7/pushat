@@ -490,21 +490,25 @@ export const schemaDict = {
 			},
 			notifyBody: {
 				type: "object",
-				required: ["title", "body", "icon"],
+				required: ["title", "body"],
 				properties: {
 					title: {
 						type: "string",
+						description: "Title text of the notification.",
 					},
 					body: {
 						type: "string",
+						description: "Body text of the notification.",
 					},
 					icon: {
 						type: "string",
 						format: "uri",
+						description: "The URI of the icon displayed in the notification.",
 					},
 					link: {
 						type: "string",
 						format: "uri",
+						description: "Experimental — do not use. The URI to open when the notification is clicked.",
 					},
 				},
 			},
@@ -617,6 +621,7 @@ export const schemaDict = {
 							target: {
 								type: "string",
 								format: "did",
+								description: "The DID of the target user to whom the notification will be sent.",
 							},
 						},
 					},

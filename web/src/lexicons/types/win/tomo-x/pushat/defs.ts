@@ -26,9 +26,13 @@ export function validateDeviceListItem<V>(v: V) {
 
 export interface NotifyBody {
 	$type?: "win.tomo-x.pushat.defs#notifyBody";
+	/** Title text of the notification. */
 	title: string;
+	/** Body text of the notification. */
 	body: string;
-	icon: string;
+	/** The URI of the icon displayed in the notification. */
+	icon?: string;
+	/** Experimental — do not use. The URI to open when the notification is clicked. */
 	link?: string;
 }
 

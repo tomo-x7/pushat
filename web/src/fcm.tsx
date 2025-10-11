@@ -127,12 +127,23 @@ function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<Requ
 	};
 
 	return (
-		<div className="full-center">
-			<div className="card">
-				<div className="card-body text-center">
-					<FiBell size={48} className="text-blue-600 mb-4 mx-auto" />
-					<button type="button" onClick={onClick} className="btn btn-primary" disabled={isRequesting}>
-						<FiBell size={16} />
+		<div className="min-h-screen flex items-center justify-center bg-neutral-50 p-4">
+			<div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+				<div className="text-center space-y-6">
+					<FiBell size={48} className="text-primary-600 mx-auto" />
+					<div>
+						<h2 className="text-xl font-bold text-neutral-900 mb-2">
+							{t("notification.requestPermission")}
+						</h2>
+						<p className="text-neutral-600 text-sm">{t("notification.requestDescription")}</p>
+					</div>
+					<button
+						type="button"
+						onClick={onClick}
+						disabled={isRequesting}
+						className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+					>
+						<FiBell size={18} />
 						{t("notification.requestPermission")}
 					</button>
 				</div>

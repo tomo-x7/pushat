@@ -14,6 +14,8 @@ import {
 import type { $Typed } from "./lexicons/util";
 import { showConfirm, showTextInput } from "./Modal";
 
+const deleted = Symbol("deleted");
+
 type Data =
 	| { loading: true }
 	| {
@@ -60,15 +62,21 @@ export function DeviceList({ list }: DeviceListProps) {
 					<p className="text-neutral-500 text-sm text-center py-4">{t("device.noDevices")}</p>
 				)}
 				{list
-					.filter((d) => !d.current)
-					.map((d) => (
-						<DeviceListItem key={d.id} item={d} />
+					.filter((d) => !d.current && d.id !== (deleted as unknown as string))
+					.map((d, i) => (
+						<DeviceListItem
+							key={d.id}
+							item={d}
+							del={() => {
+								list[i].id = deleted as unknown as string;
+							}}
+						/>
 					))}
 			</div>
 		</div>
 	);
 }
-function DeviceListItem({ item }: { item: DeviceListItemType }) {
+function DeviceListItem({ item, del: delOuter }: { item: DeviceListItemType; del: () => void }) {
 	const { t } = useTranslation();
 	const agent = useAgent();
 	const [deleted, setDeleted] = useState(false);
@@ -82,6 +90,7 @@ function DeviceListItem({ item }: { item: DeviceListItemType }) {
 		if (!confirm) return;
 		await agent.win.tomoX.pushat.deleteDevice({ id: item.id });
 		setDeleted(true);
+		delOuter();
 	});
 	if (deleted) return null;
 	return (

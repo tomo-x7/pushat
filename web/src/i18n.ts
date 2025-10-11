@@ -4,6 +4,11 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import ja from "./locales/ja.json";
 import en from "./locales/en.json";
 
+// document.langを更新する
+const setHtmlLang = (lng: string) => {
+	document.documentElement.lang = lng;
+};
+
 i18n.use(LanguageDetector)
 	.use(initReactI18next)
 	.init(
@@ -24,10 +29,6 @@ i18n.use(LanguageDetector)
 		() => void setHtmlLang(i18n.resolvedLanguage || i18n.language || "ja"),
 	);
 
-// document.langを更新する
-const setHtmlLang = (lng: string) => {
-	document.documentElement.lang = lng;
-};
 i18n.on("languageChanged", setHtmlLang);
 
 export default i18n;

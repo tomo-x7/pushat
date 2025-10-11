@@ -37,13 +37,14 @@ export class PushatRequesterClient {
 
 	/**
 	 * Grant permission for the configured service to send push notifications for the current user.
-	 *
-	 * @returns Promise resolving to the created record response from the AT Proto endpoint.
+	 * If updating settings, call allow again instead of revoking (disallowing) first.
+	 * @param config - Optional configuration object supplied by the service.
+	 * @returns Promise resolving to the created record response from the AT Protocol endpoint.
 	 */
-	async allow() {
+	async allow(config?:{[_:string]:unknown}) {
 		return await this.base.win.tomoX.pushat.allow.put(
 			{ repo: this.did, rkey: this.serviceDid },
-			{ createdAt: new Date().toISOString() },
+			{ createdAt: new Date().toISOString(),config },
 		);
 	}
 
@@ -68,6 +69,18 @@ export class PushatRequesterClient {
 			return true;
 		} catch {
 			return false;
+		}
+	}
+	/**
+	 * Get the configuration object for the configured service.
+	 * @returns A Promise that resolves to the config object if allowed, undefined if no config is stored, or null if not allowed.
+	 */
+	async getConfig(){
+		try {
+			const res=await this.base.win.tomoX.pushat.allow.get({ repo: this.did, rkey: this.serviceDid });
+			return res.value.config;
+		} catch {
+			return null;
 		}
 	}
 }

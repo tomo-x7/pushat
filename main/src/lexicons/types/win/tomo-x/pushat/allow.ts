@@ -8,6 +8,7 @@ const id = "win.tomo-x.pushat.allow";
 export interface Record {
 	$type: "win.tomo-x.pushat.allow";
 	createdAt: string;
+	config?: { [_ in string]: unknown };
 	[k: string]: unknown;
 }
 

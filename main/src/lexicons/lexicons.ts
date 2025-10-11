@@ -453,6 +453,9 @@ export const schemaDict = {
 							type: "string",
 							format: "datetime",
 						},
+						config: {
+							type: "unknown",
+						},
 					},
 				},
 			},

@@ -12,10 +12,6 @@ import { AtpBaseClient, type WinTomoXPushatDefs, WinTomoXPushatPushNotify } from
 import { lexicons } from "./lexicons/lexicons.js";
 import { type CryptoKeyWithKid, importPrivateJwkStr, signRequest } from "./signature.js";
 
-export * from "./digest.js";
-export { ServiceNotAllowedError } from "./lexicons/types/win/tomo-x/pushat/pushNotify.js";
-export * from "./signature.js";
-
 interface SessionManager extends FetchHandlerObject {
 	readonly did?: string;
 }
@@ -24,8 +20,8 @@ export class PushatRequesterClient {
 	public did: string;
 	public serviceDid: string;
 	/**
-	 * @param session
-	 * @param serviceDid
+	 * @param session OAuth SessionかCredential Sessionなど
+	 * @param serviceDid サービスのDID
 	 */
 	constructor(session: SessionManager, serviceDid: string) {
 		if (session.did == null) throw new Error("Login required");
@@ -34,16 +30,20 @@ export class PushatRequesterClient {
 		this.base = new AtpBaseClient((...p) => session.fetchHandler(...p));
 		this.base.setHeader("atproto-proxy", "did:web:pushat.tomo-x.win#pushat");
 	}
+	/**サービスがpush通知を送信することを許可する */
 	async allow() {
 		return await this.base.win.tomoX.pushat.allow.put(
 			{ repo: this.did, rkey: this.serviceDid },
 			{ createdAt: new Date().toISOString() },
 		);
 	}
+	/**許可を取り消す */
 	async disallow() {
-		return await this.base.win.tomoX.pushat.allow.delete({ repo: this.did, rkey: this.serviceDid });
+		await this.base.win.tomoX.pushat.allow.delete({ repo: this.did, rkey: this.serviceDid });
 	}
-	async isAllowed() {
+	/**許可済みかを確認
+	 */
+	async isAllowed(): Promise<boolean> {
 		try {
 			// 取得できない場合例外を投げる
 			await this.base.win.tomoX.pushat.allow.get({ repo: this.did, rkey: this.serviceDid });
@@ -108,3 +108,5 @@ export class PushatRequester {
 			});
 	}
 }
+
+export { ServiceNotAllowedError } from "./lexicons/types/win/tomo-x/pushat/pushNotify.js";

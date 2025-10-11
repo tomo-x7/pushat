@@ -22,7 +22,7 @@ SDKを使う例
 ```TS
 import { PushatRequesterClient } from "@tomo-x/pushat";
 
-const requesterClient=new PushatRequesterClient(session,"did:web:pushat-test.tomo-x.win");
+const requesterClient=new PushatRequesterClient(session,"did:web:pushat-test.example");
 allowButton.onclick = () => {
 	await requesterClient.allow();
 }

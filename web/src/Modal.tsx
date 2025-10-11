@@ -100,7 +100,7 @@ const TextInput = createCallable<TextInputProps, string | null>(
 						onClick={() => call.end(null)}
 						className="px-4 py-2 text-neutral-700 bg-neutral-100 rounded-lg hover:bg-neutral-200 transition-colors font-medium"
 					>
-						{cancelText}
+						{actualCancelText}
 					</button>
 					<button
 						type="button"
@@ -108,7 +108,7 @@ const TextInput = createCallable<TextInputProps, string | null>(
 						disabled={!value}
 						className="px-4 py-2 text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:bg-neutral-300 disabled:cursor-not-allowed transition-colors font-medium"
 					>
-						{submitText}
+						{actualSubmitText}
 					</button>
 				</div>
 			</Modal>

@@ -1,6 +1,7 @@
 import { AtUri } from "@atproto/syntax";
 import { useMemo, useState } from "react";
 import { useAsync, useAsyncCallback } from "react-async-hook";
+import { useTranslation } from "react-i18next";
 import { FiTrash2 } from "react-icons/fi";
 import { useAgent, useSession } from "./atproto";
 import { Loading } from "./Loading";
@@ -8,23 +9,24 @@ import type { AtpBaseClient, WinTomoXPushatAllow } from "./lexicons";
 
 type Data = { uri: string; record: WinTomoXPushatAllow.Record };
 export function Allowlist({ data }: { data: Data[] | null }) {
+	const { t } = useTranslation();
 	if (data == null) return <Loading />;
 	return (
 		<div className="bg-white rounded-lg shadow-md p-6 max-h-[70vh] flex flex-col">
-			<h2 className="text-lg font-semibold text-neutral-900 mb-4 flex-shrink-0">許可済みサービス一覧</h2>
+			<h2 className="text-lg font-semibold text-neutral-900 mb-4 flex-shrink-0">{t("allowList.title")}</h2>
 			<div className="space-y-2 overflow-y-auto flex-1">
 				{data.length === 0 ? (
-					<p className="text-neutral-500 text-sm text-center py-4">許可済みサービスはありません</p>
+					<p className="text-neutral-500 text-sm text-center py-4">{t("allowList.empty")}</p>
 				) : (
-					data.map((item) => <AllowListItem key={item.uri} item={item} />)
+					data.map((item) => <AllowListItem key={item.uri} serviceDid={new AtUri(item.uri).rkey} />)
 				)}
 			</div>
 		</div>
 	);
 }
-function AllowListItem({ item }: { item: Data }) {
+function AllowListItem({ serviceDid }: { serviceDid: string }) {
+	const { t } = useTranslation();
 	const [deleted, setDeleted] = useState(false);
-	const { rkey: serviceDid } = useMemo(() => new AtUri(item.uri), [item.uri]);
 	const agent = useAgent();
 	const session = useSession();
 	const del = useAsyncCallback(async () => {
@@ -42,7 +44,7 @@ function AllowListItem({ item }: { item: Data }) {
 				onClick={del.execute}
 				disabled={del.loading}
 				className="ml-3 p-2 text-danger-600 hover:bg-danger-50 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
-				aria-label={`${serviceDid}を削除`}
+				aria-label={t("allowList.deleteService", { service: serviceDid })}
 			>
 				<FiTrash2 size={16} />
 			</button>

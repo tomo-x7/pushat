@@ -1,13 +1,12 @@
+import { useTranslation } from "react-i18next";
 import { useCheckUpdateSw } from "./fcm";
 
 export function About({ hiddenFooter }: { hiddenFooter?: boolean }) {
+	const { t } = useTranslation();
 	const { latest, update, chackLatest } = useCheckUpdateSw();
 	return (
 		<div className="space-y-4">
-			<p className="text-neutral-700 leading-relaxed">
-				PushAtは、atprotoサービス向けの汎用プッシュ通知サービスです。
-				PushAtにデバイスを登録すれば、対応サービスからのプッシュ通知を簡単に受け取ることができます。
-			</p>
+			<p className="text-neutral-700 leading-relaxed">{t("about.description")}</p>
 			<div>
 				<a
 					href="https://github.com/tomo-x7/pushat/blob/main/readme.md"
@@ -15,13 +14,13 @@ export function About({ hiddenFooter }: { hiddenFooter?: boolean }) {
 					rel="noopener noreferrer"
 					className="text-primary-600 hover:text-primary-700 underline transition-colors"
 				>
-					開発者向けドキュメント
+					{t("about.devDocs")}
 				</a>
 			</div>
 			{!hiddenFooter && (
 				<div className="mt-6 pt-4 border-t border-neutral-200 space-y-2">
 					<div className="text-sm text-neutral-600">
-						© 2025{" "}
+						{t("about.copyright")}{" "}
 						<a
 							href="https://bsky.app/profile/did:plc:qcwvyds5tixmcwkwrg3hxgxd"
 							target="_blank"
@@ -37,7 +36,7 @@ export function About({ hiddenFooter }: { hiddenFooter?: boolean }) {
 							onClick={latest ? chackLatest : update}
 							className="text-sm text-neutral-600 hover:text-neutral-900 underline transition-colors"
 						>
-							{latest ? "更新を確認" : "更新する"}
+							{latest ? t("about.checkUpdate") : t("about.update")}
 						</button>
 					</div>
 				</div>

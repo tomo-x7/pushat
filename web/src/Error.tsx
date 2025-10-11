@@ -1,6 +1,7 @@
 import { type PropsWithChildren, useState } from "react";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
 import { FiAlertTriangle, FiRefreshCw } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 // カスタムエラー
 export class MessagingNotSupportedError extends Error {}
@@ -18,30 +19,26 @@ function Fallback({ error, resetErrorBoundary }: FallbackProps) {
 }
 
 function MessagingNotSupported() {
+	const { t } = useTranslation();
 	const [openIos, setOpenIos] = useState(false);
 	const [openAndroid, setOpenAndroid] = useState(false);
 	return (
 		<div>
 			<div>
 				<div>
-					<h2>プッシュ通知がサポートされていません</h2>
-					<div>
-						お使いのブラウザまたはデバイスはプッシュ通知に対応していません。
-						スマートフォンをご利用の場合、PWAをインストールする必要があります。
-					</div>
+					<h2>{t("notification.notSupported")}</h2>
+					<div>{t("notification.notSupportedDescription")}</div>
 					<br />
 					<div>
-						PWAのインストール方法
+						{t("notification.pwaInstallTitle")}
 						<button type="button" onClick={() => setOpenIos((b) => !b)}>
-							▶iOS
+							▶{t("notification.ios")}
 						</button>
-						{openIos && (
-							<div>Safariで開いた後共有ボタンをタップして、「ホーム画面に追加」を選択してください</div>
-						)}
+						{openIos && <div>{t("notification.iosInstall")}</div>}
 						<button type="button" onClick={() => setOpenAndroid((b) => !b)}>
-							▶Android
+							▶{t("notification.android")}
 						</button>
-						{openAndroid && <div>Chromeのメニューから「ホーム画面に追加」を選択してください</div>}
+						{openAndroid && <div>{t("notification.androidInstall")}</div>}
 					</div>
 				</div>
 			</div>
@@ -50,18 +47,20 @@ function MessagingNotSupported() {
 }
 
 function ServiceWorkerNotSupported() {
+	const { t } = useTranslation();
 	return (
 		<div>
 			<div>
 				<div>
-					<h2>Service Workerがサポートされていません</h2>
-					<p>お使いのブラウザはService Workerに対応していません。</p>
+					<h2>{t("notification.swNotSupported")}</h2>
+					<p>{t("notification.swNotSupportedDescription")}</p>
 				</div>
 			</div>
 		</div>
 	);
 }
 function NormalError({ error }: { error: Error }) {
+	const { t } = useTranslation();
 	console.error(error);
 	const reload = () => window.location.reload();
 
@@ -70,11 +69,11 @@ function NormalError({ error }: { error: Error }) {
 			<div>
 				<div>
 					<FiAlertTriangle size={48} />
-					<h2>エラーが発生しました</h2>
-					<p>{error.message || "予期しないエラーが発生しました"}</p>
+					<h2>{t("error.occurred")}</h2>
+					<p>{error.message || t("error.unexpected")}</p>
 					<button type="button" onClick={reload}>
 						<FiRefreshCw size={16} />
-						再読み込み
+						{t("error.reload")}
 					</button>
 				</div>
 			</div>
@@ -82,6 +81,7 @@ function NormalError({ error }: { error: Error }) {
 	);
 }
 function UnknownError({ error }: { error: unknown }) {
+	const { t } = useTranslation();
 	console.error(error);
 	const reload = () => window.location.reload();
 
@@ -91,11 +91,11 @@ function UnknownError({ error }: { error: unknown }) {
 				<div>
 					<div>
 						<FiAlertTriangle size={48} />
-						<h2>不明なエラー</h2>
+						<h2>{t("error.unknown")}</h2>
 						<p>{JSON.stringify(error)}</p>
 						<button type="button" onClick={reload}>
 							<FiRefreshCw size={16} />
-							再読み込み
+							{t("error.reload")}
 						</button>
 					</div>
 				</div>
@@ -107,11 +107,11 @@ function UnknownError({ error }: { error: unknown }) {
 				<div>
 					<div>
 						<FiAlertTriangle size={48} />
-						<h2>不明なエラー</h2>
+						<h2>{t("error.unknown")}</h2>
 						<p>{String(error)}</p>
 						<button type="button" onClick={reload}>
 							<FiRefreshCw size={16} />
-							再読み込み
+							{t("error.reload")}
 						</button>
 					</div>
 				</div>
@@ -124,6 +124,7 @@ export function GeneralErrorBoundary({ children }: PropsWithChildren) {
 	return <ErrorBoundary fallbackRender={GeneralFallback}>{children}</ErrorBoundary>;
 }
 function GeneralFallback({ error, resetErrorBoundary }: FallbackProps) {
+	const { t } = useTranslation();
 	return (
 		<div className="flex flex-col items-center justify-center p-6 bg-danger-50 border border-danger-200 rounded-lg">
 			<FiAlertTriangle size={32} className="text-danger-600 mb-3" />
@@ -134,7 +135,7 @@ function GeneralFallback({ error, resetErrorBoundary }: FallbackProps) {
 				className="flex items-center gap-2 px-4 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 transition-colors font-medium text-sm"
 			>
 				<FiRefreshCw size={16} />
-				再読み込み
+				{t("error.reload")}
 			</button>
 		</div>
 	);

@@ -1,7 +1,9 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: <> */
-import { type PropsWithChildren, type ReactNode, useState } from "react";
-import { createCallable } from "react-call";
+import type { ReactNode } from "react";
+import { type PropsWithChildren, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MdClose } from "react-icons/md";
+import { createCallable } from "react-call";
 
 interface TextInputProps {
 	title: string;
@@ -66,8 +68,11 @@ function SimpleModal({ children, close }: PropsWithChildren<{ close: () => void 
 	);
 }
 const TextInput = createCallable<TextInputProps, string | null>(
-	({ title, call, placeholder, cancelText = "cancel", submitText = "enter", prefix }) => {
+	({ title, call, placeholder, cancelText, submitText, prefix }) => {
+		const { t } = useTranslation();
 		const [value, setValue] = useState("");
+		const actualCancelText = cancelText ?? t("modal.cancel");
+		const actualSubmitText = submitText ?? t("modal.enter");
 		return (
 			<Modal close={() => call.end(null)}>
 				<h2 className="text-xl font-semibold text-neutral-900 mb-4">{title}</h2>

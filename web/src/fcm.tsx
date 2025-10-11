@@ -4,6 +4,7 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 import { useErrorBoundary } from "react-error-boundary";
 import { toast } from "react-hot-toast";
 import { FiBell } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 import { FIREBASE_CONFIG, VAPID_KEY } from "./const";
 import { MessagingNotSupportedError, ServiceWorkerNotSupportedError } from "./Error";
 import { Loading } from "./Loading";
@@ -110,6 +111,7 @@ export function FcmTokenProvider({ children }: PropsWithChildren) {
 
 type RequestTokenResult = { ok: true } | { ok: false; error: string };
 function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<RequestTokenResult> }) {
+	const { t } = useTranslation();
 	const [isRequesting, setIsRequesting] = useState(false);
 
 	const onClick = async () => {
@@ -117,7 +119,7 @@ function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<Requ
 		try {
 			const result = await requestToken();
 			if (!result.ok) {
-				toast.error(`通知の許可に失敗しました: ${result.error}`);
+				toast.error(t("notification.permissionDenied", { error: result.error }));
 			}
 		} finally {
 			setIsRequesting(false);
@@ -131,7 +133,7 @@ function RequestTokenScreen({ requestToken }: { requestToken: () => Promise<Requ
 					<FiBell size={48} className="text-blue-600 mb-4 mx-auto" />
 					<button type="button" onClick={onClick} className="btn btn-primary" disabled={isRequesting}>
 						<FiBell size={16} />
-						通知を許可
+						{t("notification.requestPermission")}
 					</button>
 				</div>
 			</div>

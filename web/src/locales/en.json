@@ -1,0 +1,84 @@
+{
+	"header": {
+		"title": "PushAt",
+		"about": "About",
+		"switchUser": "Switch User"
+	},
+	"login": {
+		"title": "Login",
+		"welcome": "Welcome to PushAt",
+		"placeholder": "example.bsky.social",
+		"submit": "Login",
+		"cancel": "Cancel",
+		"loggingIn": "Logging in...",
+		"loginFailed": "Login failed"
+	},
+	"about": {
+		"title": "About PushAt",
+		"description": "PushAt is a generic push notification service for atproto services. Register your device with PushAt to easily receive push notifications from supported services.",
+		"devDocs": "Developer Documentation",
+		"copyright": "© 2025",
+		"checkUpdate": "Check for updates",
+		"update": "Update"
+	},
+	"device": {
+		"title": "Registered Devices",
+		"currentDevice": "Current Device",
+		"registered": "Registered",
+		"notRegistered": "Not Registered",
+		"register": "Register",
+		"registerPrompt": "Register this device",
+		"namePlaceholder": "Enter device name",
+		"deleteConfirm": "Delete device \"{{name}}\"?",
+		"delete": "Delete",
+		"cancel": "Cancel",
+		"registerFailed": "Failed to register device",
+		"deleteFailed": "Failed to delete device",
+		"thisDevice": "This Device",
+		"registerDescription": "Register this device to receive push notifications",
+		"noDevices": "No devices registered",
+		"fetchFailed": "Failed to fetch device list",
+		"deleteThisDevice": "Delete this device",
+		"deleteDevice": "Delete {{name}}",
+		"notRegisteredDescription": "This device is not registered yet"
+	},
+	"allowList": {
+		"title": "Allowed Services",
+		"empty": "No allowed services",
+		"fetchFailed": "Failed to fetch device list",
+		"deleteService": "Delete {{service}}"
+	},
+	"modal": {
+		"enter": "Enter",
+		"ok": "OK",
+		"cancel": "Cancel"
+	},
+	"notification": {
+		"notSupported": "Push notifications not supported",
+		"notSupportedDescription": "Your browser or device does not support push notifications. If you are using a smartphone, you need to install the PWA.",
+		"pwaInstallTitle": "How to install PWA",
+		"ios": "iOS",
+		"iosInstall": "Open in Safari, tap the share button, and select \"Add to Home Screen\"",
+		"android": "Android",
+		"androidInstall": "Select \"Add to Home Screen\" from the Chrome menu",
+		"swNotSupported": "Service Worker not supported",
+		"swNotSupportedDescription": "Your browser does not support Service Worker.",
+		"requestPermission": "Allow notifications",
+		"requestDescription": "Permission is required to receive push notifications.",
+		"permissionDenied": "Failed to allow notifications: {{error}}"
+	},
+	"error": {
+		"occurred": "An error occurred",
+		"unknown": "Unknown error",
+		"unexpected": "An unexpected error occurred",
+		"reload": "Reload",
+		"applicationError": "Application Error"
+	},
+	"button": {
+		"openDeviceList": "Open Device List",
+		"openAllowList": "Open Allowed Services"
+	},
+	"common": {
+		"loading": "Loading..."
+	}
+}

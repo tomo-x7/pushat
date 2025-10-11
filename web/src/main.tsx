@@ -7,6 +7,7 @@ import { TopLevelErrorBoundary } from "./Error";
 import { FcmBaseProvider, FcmTokenProvider } from "./fcm";
 import { CallRoot } from "./Modal";
 import "./globals.css";
+import "./i18n";
 
 if (new URL(location.href).searchParams.has("redirect")) {
 	const rawurl = new URL(location.href).searchParams.get("redirect");

@@ -2,9 +2,11 @@ import { BrowserOAuthClient, type OAuthSession } from "@atproto/oauth-client-bro
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { IoAt } from "react-icons/io5";
 import { About } from "./About";
 import bskyJa from "./assets/bsky-ja.svg";
+import bskyEn from "./assets/bsky-en.svg";
 import { Header } from "./Header";
 import { Loading } from "./Loading";
 import { AtpBaseClient } from "./lexicons";
@@ -63,24 +65,27 @@ export function ATPProvider({ children }: PropsWithChildren) {
 }
 
 function LoginScreen({ client }: { client: BrowserOAuthClient }) {
+	const { t, i18n } = useTranslation();
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
+	const bskyLogo = i18n.language === "ja" ? bskyJa : bskyEn;
+	
 	return (
 		<div className="min-h-screen flex flex-col bg-neutral-50">
 			<Header client={client} />
 			<div className="flex-1 flex items-center justify-center px-4">
 				<div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 space-y-6">
 					<div className="text-center">
-						<h2 className="text-2xl font-bold text-neutral-900 mb-2">PushAtへようこそ</h2>
+						<h2 className="text-2xl font-bold text-neutral-900 mb-2">{t("login.welcome")}</h2>
 					</div>
 					<About hiddenFooter />
 					<div className="pt-4">
 						<button
 							type="button"
-							onClick={handleLogin(client, setIsLoggingIn)}
+							onClick={handleLogin(client, t, i18n.language, setIsLoggingIn)}
 							disabled={isLoggingIn}
 							className="w-full flex items-center justify-center py-3 rounded-lg hover:bg-neutral-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-neutral-200"
 						>
-							<img src={bskyJa} alt="login with Bluesky" width={180} />
+							<img src={bskyLogo} alt="login with Bluesky" width={180} />
 						</button>
 					</div>
 				</div>
@@ -89,22 +94,27 @@ function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 	);
 }
 
-export function handleLogin(client: BrowserOAuthClient, setLoading?: (v: boolean) => void) {
+export function handleLogin(
+	client: BrowserOAuthClient,
+	t: (key: string) => string,
+	currentLang: string,
+	setLoading?: (v: boolean) => void,
+) {
 	return async () => {
 		const handle = await showTextInput({
-			title: "ログイン",
-			placeholder: "example.bsky.social",
-			submitText: "ログイン",
-			cancelText: "キャンセル",
+			title: t("login.title"),
+			placeholder: t("login.placeholder"),
+			submitText: t("login.submit"),
+			cancelText: t("login.cancel"),
 			prefix: <IoAt />,
 		});
 		if (handle == null) return;
 		setLoading?.(true);
 		try {
-			const p = client.signIn(handle, { ui_locales: "ja" });
+			const p = client.signIn(handle, { ui_locales: currentLang });
 			toast.promise(
 				p,
-				{ loading: "ログイン中...", error: (e) => `ログインに失敗しました: ${String(e)}` },
+				{ loading: t("login.loggingIn"), error: (e) => `${t("login.loginFailed")}: ${String(e)}` },
 				{ style: { minWidth: "200px" } },
 			);
 			await p;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAsync, useAsyncCallback } from "react-async-hook";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { FiPlus, FiSmartphone, FiTrash2 } from "react-icons/fi";
 import { useAgent } from "./atproto";
 import { useToken } from "./fcm";
@@ -22,16 +23,17 @@ type Data =
 	  };
 export function useDevices(): Data {
 	const agent = useAgent();
+	const { t } = useTranslation();
 	const token = useToken();
 	const data = useAsync(async () => {
 		try {
 			const res = await agent.win.tomoX.pushat.getDevices({ token });
 			return { list: res.data.devices, current: res.data.current };
 		} catch (error) {
-			toast.error("デバイス一覧の取得に失敗しました");
+			toast.error(t("device.fetchFailed"));
 			throw error;
 		}
-	}, [token, agent]);
+	}, [token, agent, t]);
 
 	if (data.error != null) throw data.error;
 	if (data.loading || data.result == null) return { loading: true };
@@ -49,12 +51,13 @@ export interface CurrentDeviceProps {
 	current: $Typed<RegisteredDevice> | $Typed<UnregisteredDevice> | { $type: string };
 }
 export function DeviceList({ list }: DeviceListProps) {
+	const { t } = useTranslation();
 	return (
 		<div className="bg-white rounded-lg shadow-md p-6 max-h-[70vh] flex flex-col">
-			<h2 className="text-lg font-semibold text-neutral-900 mb-4 flex-shrink-0">登録済みデバイス一覧</h2>
+			<h2 className="text-lg font-semibold text-neutral-900 mb-4 flex-shrink-0">{t("device.title")}</h2>
 			<div className="space-y-2 overflow-y-auto flex-1">
 				{list.filter((d) => !d.current).length === 0 && (
-					<p className="text-neutral-500 text-sm text-center py-4">登録されているデバイスはありません</p>
+					<p className="text-neutral-500 text-sm text-center py-4">{t("device.noDevices")}</p>
 				)}
 				{list
 					.filter((d) => !d.current)
@@ -66,13 +69,14 @@ export function DeviceList({ list }: DeviceListProps) {
 	);
 }
 function DeviceListItem({ item }: { item: DeviceListItemType }) {
+	const { t } = useTranslation();
 	const agent = useAgent();
 	const [deleted, setDeleted] = useState(false);
 	const del = useAsyncCallback(async () => {
 		const confirm = await showConfirm({
-			title: `デバイス「${item.name}」を削除します。よろしいですか？`,
-			confirmText: "削除",
-			cancelText: "キャンセル",
+			title: t("device.deleteConfirm", { name: item.name }),
+			confirmText: t("device.delete"),
+			cancelText: t("device.cancel"),
 			confirmColor: "danger",
 		});
 		if (!confirm) return;
@@ -91,7 +95,7 @@ function DeviceListItem({ item }: { item: DeviceListItemType }) {
 				type="button"
 				onClick={() => del.execute()}
 				className="p-2 text-danger-600 hover:bg-danger-50 rounded-lg transition-colors disabled:opacity-50"
-				aria-label={`${item.name}を削除`}
+				aria-label={t("device.deleteDevice", { name: item.name })}
 			>
 				<FiTrash2 size={16} />
 			</button>
@@ -99,19 +103,20 @@ function DeviceListItem({ item }: { item: DeviceListItemType }) {
 	);
 }
 export function CurrentDevice({ current }: CurrentDeviceProps) {
+	const { t } = useTranslation();
 	const token = useToken();
 	const agent = useAgent();
 	const [cur, setCur] = useState<RegisteredDevice | null>(isRegisteredDevice(current) ? current : null);
 	const register = useAsyncCallback(async () => {
 		const name = await showTextInput({
-			title: "デバイスを登録します",
-			placeholder: "デバイス名を入力",
-			submitText: "登録",
-			cancelText: "キャンセル",
+			title: t("device.registerPrompt"),
+			placeholder: t("device.namePlaceholder"),
+			submitText: t("device.register"),
+			cancelText: t("device.cancel"),
 		});
 		if (name == null) return;
 		const res = await agent.win.tomoX.pushat.addDevice({ name, token }).catch((e) => {
-			toast.error("デバイスの登録に失敗しました");
+			toast.error(t("device.registerFailed"));
 			console.error(e);
 		});
 		if (res != null) setCur({ id: res.data.id, name });
@@ -119,14 +124,14 @@ export function CurrentDevice({ current }: CurrentDeviceProps) {
 	const del = useAsyncCallback(async () => {
 		if (cur == null) return;
 		const confirm = await showConfirm({
-			title: `デバイス「${cur.name}」を削除します。よろしいですか？`,
-			confirmText: "削除",
-			cancelText: "キャンセル",
+			title: t("device.deleteConfirm", { name: cur.name }),
+			confirmText: t("device.delete"),
+			cancelText: t("device.cancel"),
 			confirmColor: "danger",
 		});
 		if (!confirm) return;
 		await agent.win.tomoX.pushat.deleteDevice({ id: cur.id }).catch((e) => {
-			toast.error("デバイスの削除に失敗しました");
+			toast.error(t("device.deleteFailed"));
 			console.error(e);
 		});
 		setCur(null);
@@ -135,7 +140,7 @@ export function CurrentDevice({ current }: CurrentDeviceProps) {
 		<div className="bg-white rounded-lg shadow-md p-6">
 			<h2 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
 				<FiSmartphone size={20} className="text-primary-600" />
-				現在のデバイス
+				{t("device.currentDevice")}
 			</h2>
 			{cur != null ? (
 				<RegisteredCurrent name={cur.name} disable={del.loading} del={del.execute} />
@@ -146,6 +151,7 @@ export function CurrentDevice({ current }: CurrentDeviceProps) {
 	);
 }
 function RegisteredCurrent({ name, disable, del }: { name: string; disable: boolean; del: () => void }) {
+	const { t } = useTranslation();
 	return (
 		<div className="flex items-center justify-between p-4 bg-primary-50 border-2 border-primary-200 rounded-lg">
 			<div className="flex items-center gap-3">
@@ -154,7 +160,7 @@ function RegisteredCurrent({ name, disable, del }: { name: string; disable: bool
 				</div>
 				<div>
 					<span className="text-neutral-900 font-semibold text-lg">{name}</span>
-					<p className="text-xs text-neutral-600 mt-1">このデバイス</p>
+					<p className="text-xs text-neutral-600 mt-1">{t("device.thisDevice")}</p>
 				</div>
 			</div>
 			<button
@@ -162,7 +168,7 @@ function RegisteredCurrent({ name, disable, del }: { name: string; disable: bool
 				type="button"
 				onClick={del}
 				className="p-2 text-danger-600 hover:bg-danger-50 rounded-lg transition-colors disabled:opacity-50"
-				aria-label="このデバイスを削除"
+				aria-label={t("device.deleteThisDevice")}
 			>
 				<FiTrash2 size={18} />
 			</button>
@@ -170,12 +176,13 @@ function RegisteredCurrent({ name, disable, del }: { name: string; disable: bool
 	);
 }
 function UnRegisteredCurrent({ register, disable }: { register: () => void; disable: boolean }) {
+	const { t } = useTranslation();
 	return (
 		<div className="flex flex-col items-center justify-center p-4 sm:p-6 border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50">
 			<div className="p-3 bg-neutral-200 rounded-full mb-3">
 				<FiSmartphone size={32} className="text-neutral-500" />
 			</div>
-			<p className="text-sm text-neutral-700 text-center mb-4">このデバイスはまだ登録されていません</p>
+			<p className="text-sm text-neutral-700 text-center mb-4">{t("device.notRegisteredDescription")}</p>
 			<button
 				disabled={disable}
 				type="button"
@@ -183,7 +190,7 @@ function UnRegisteredCurrent({ register, disable }: { register: () => void; disa
 				className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
 			>
 				<FiPlus size={18} />
-				デバイスを登録
+				{t("device.register")}
 			</button>
 		</div>
 	);

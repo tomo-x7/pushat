@@ -1,0 +1,84 @@
+{
+	"header": {
+		"title": "PushAt",
+		"about": "About",
+		"switchUser": "ユーザー切り替え"
+	},
+	"login": {
+		"title": "ログイン",
+		"welcome": "PushAtへようこそ",
+		"placeholder": "example.bsky.social",
+		"submit": "ログイン",
+		"cancel": "キャンセル",
+		"loggingIn": "ログイン中...",
+		"loginFailed": "ログインに失敗しました"
+	},
+	"about": {
+		"title": "About PushAt",
+		"description": "PushAtは、atprotoサービス向けの汎用プッシュ通知サービスです。PushAtにデバイスを登録すれば、対応サービスからのプッシュ通知を簡単に受け取ることができます。",
+		"devDocs": "開発者向けドキュメント",
+		"copyright": "© 2025",
+		"checkUpdate": "更新を確認",
+		"update": "更新する"
+	},
+	"device": {
+		"title": "登録済みデバイス一覧",
+		"currentDevice": "現在のデバイス",
+		"registered": "登録済み",
+		"notRegistered": "未登録",
+		"register": "登録する",
+		"registerPrompt": "デバイスを登録します",
+		"namePlaceholder": "デバイス名を入力",
+		"deleteConfirm": "デバイス「{{name}}」を削除します。よろしいですか?",
+		"delete": "削除",
+		"cancel": "キャンセル",
+		"registerFailed": "デバイスの登録に失敗しました",
+		"deleteFailed": "デバイスの削除に失敗しました",
+		"thisDevice": "このデバイス",
+		"registerDescription": "このデバイスを登録してプッシュ通知を受け取りましょう",
+		"noDevices": "登録されているデバイスはありません",
+		"fetchFailed": "デバイス一覧の取得に失敗しました",
+		"deleteThisDevice": "このデバイスを削除",
+		"deleteDevice": "{{name}}を削除",
+		"notRegisteredDescription": "このデバイスはまだ登録されていません"
+	},
+	"allowList": {
+		"title": "許可済みサービス一覧",
+		"empty": "許可済みサービスはありません",
+		"fetchFailed": "デバイス一覧の取得に失敗しました",
+		"deleteService": "{{service}}を削除"
+	},
+	"modal": {
+		"enter": "入力",
+		"ok": "OK",
+		"cancel": "キャンセル"
+	},
+	"notification": {
+		"notSupported": "プッシュ通知がサポートされていません",
+		"notSupportedDescription": "お使いのブラウザまたはデバイスはプッシュ通知に対応していません。スマートフォンをご利用の場合、PWAをインストールする必要があります。",
+		"pwaInstallTitle": "PWAのインストール方法",
+		"ios": "iOS",
+		"iosInstall": "Safariで開いた後共有ボタンをタップして、「ホーム画面に追加」を選択してください",
+		"android": "Android",
+		"androidInstall": "Chromeのメニューから「ホーム画面に追加」を選択してください",
+		"swNotSupported": "Service Workerがサポートされていません",
+		"swNotSupportedDescription": "お使いのブラウザはService Workerに対応していません。",
+		"requestPermission": "通知を許可",
+		"requestDescription": "プッシュ通知を受け取るには、通知の許可が必要です。",
+		"permissionDenied": "通知の許可に失敗しました: {{error}}"
+	},
+	"error": {
+		"occurred": "エラーが発生しました",
+		"unknown": "不明なエラー",
+		"unexpected": "予期しないエラーが発生しました",
+		"reload": "再読み込み",
+		"applicationError": "アプリケーションエラー"
+	},
+	"button": {
+		"openDeviceList": "デバイス一覧を開く",
+		"openAllowList": "許可済みサービス一覧を開く"
+	},
+	"common": {
+		"loading": "読み込み中..."
+	}
+}

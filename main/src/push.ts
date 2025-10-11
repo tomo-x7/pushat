@@ -32,7 +32,7 @@ export function pushMethods(server: Server<Env>) {
 			const did = input.body.target;
 			const db = c.get("db");
 			const tokens = (await db.select().from(devicesTable).where(eq(devicesTable.did, did))).map((d) => d.token);
-			if (tokens.length === 0) throw new BadRequest("no devices registered");
+			if (tokens.length === 0) return { error: "DeviceNotFoundError", status: 400 };
 			const firebaseApp = c.get("firebase");
 			const messaging = getMessaging(firebaseApp);
 			messaging.enableLegacyHttpTransport();

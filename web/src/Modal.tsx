@@ -1,9 +1,9 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: <> */
 import type { ReactNode } from "react";
 import { type PropsWithChildren, useState } from "react";
+import { createCallable } from "react-call";
 import { useTranslation } from "react-i18next";
 import { MdClose } from "react-icons/md";
-import { createCallable } from "react-call";
 
 interface TextInputProps {
 	title: string;

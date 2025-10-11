@@ -41,10 +41,10 @@ export class PushatRequesterClient {
 	 * @param config - Optional configuration object supplied by the service.
 	 * @returns Promise resolving to the created record response from the AT Protocol endpoint.
 	 */
-	async allow(config?:{[_:string]:unknown}) {
+	async allow(config?: { [_: string]: unknown }) {
 		return await this.base.win.tomoX.pushat.allow.put(
 			{ repo: this.did, rkey: this.serviceDid },
-			{ createdAt: new Date().toISOString(),config },
+			{ createdAt: new Date().toISOString(), config },
 		);
 	}
 
@@ -75,9 +75,9 @@ export class PushatRequesterClient {
 	 * Get the configuration object for the configured service.
 	 * @returns A Promise that resolves to the config object if allowed, undefined if no config is stored, or null if not allowed.
 	 */
-	async getConfig(){
+	async getConfig() {
 		try {
-			const res=await this.base.win.tomoX.pushat.allow.get({ repo: this.did, rkey: this.serviceDid });
+			const res = await this.base.win.tomoX.pushat.allow.get({ repo: this.did, rkey: this.serviceDid });
 			return res.value.config;
 		} catch {
 			return null;

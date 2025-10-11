@@ -5,8 +5,8 @@ import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { IoAt } from "react-icons/io5";
 import { About } from "./About";
-import bskyJa from "./assets/bsky-ja.svg";
 import bskyEn from "./assets/bsky-en.svg";
+import bskyJa from "./assets/bsky-ja.svg";
 import { Header } from "./Header";
 import { Loading } from "./Loading";
 import { AtpBaseClient } from "./lexicons";
@@ -68,7 +68,7 @@ function LoginScreen({ client }: { client: BrowserOAuthClient }) {
 	const { t, i18n } = useTranslation();
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 	const bskyLogo = i18n.language === "ja" ? bskyJa : bskyEn;
-	
+
 	return (
 		<div className="min-h-screen flex flex-col bg-neutral-50">
 			<Header client={client} />

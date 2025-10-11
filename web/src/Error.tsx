@@ -1,7 +1,7 @@
 import { type PropsWithChildren, useState } from "react";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
-import { FiAlertTriangle, FiRefreshCw } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
+import { FiAlertTriangle, FiRefreshCw } from "react-icons/fi";
 
 // カスタムエラー
 export class MessagingNotSupportedError extends Error {}

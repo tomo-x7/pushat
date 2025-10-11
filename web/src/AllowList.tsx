@@ -1,5 +1,5 @@
 import { AtUri } from "@atproto/syntax";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useAsync, useAsyncCallback } from "react-async-hook";
 import { useTranslation } from "react-i18next";
 import { FiTrash2 } from "react-icons/fi";

@@ -1,5 +1,6 @@
 import { TID } from "@atproto/common-web";
 import { and, eq } from "drizzle-orm";
+import { InternalServerError } from "http-errors";
 import { normalBearerAuth } from "./auth";
 import { devicesTable } from "./db/schema";
 import type { Server } from "./lexicons";
@@ -20,7 +21,7 @@ export function deviceMethods(server: Server<Env>) {
 						.returning({ id: devicesTable.id })
 						.onConflictDoNothing({ target: devicesTable.id });
 					if (res?.[0]?.id != null) return res[0].id;
-					if (isSecond) throw new Error("Cannot add device");
+					if (isSecond) throw new InternalServerError("Cannot add device");
 					return addDB(TID.nextStr(id), true);
 				} catch (e) {
 					if (/unique/i.test(String(e))) {

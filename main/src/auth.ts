@@ -1,9 +1,10 @@
 import type { DidDocument } from "@atproto/common-web";
 import { verifySignature } from "@atproto/crypto";
 import type { ErrorResult } from "@evex-dev/xrpc-hono";
-import { type CryptoKeyWithKid, importPublicJwk, validateContentDigest, verifyRequest } from "@tomo-x/pushat";
+import { validateContentDigest } from "@tomo-x/pushat/digest";
+import { type CryptoKeyWithKid, importPublicJwk, verifyRequest } from "@tomo-x/pushat/signature";
 import type { Context } from "hono";
-import { isHttpError, Unauthorized } from "http-errors";
+import { BadRequest, isHttpError, Unauthorized } from "http-errors";
 import { AUD } from "./consts";
 import { getDidDoc } from "./identity";
 import type { Env } from "./types";
@@ -105,8 +106,8 @@ async function getKey(kid: string): Promise<CryptoKeyWithKid> {
 	} else {
 		key = authKeys.find((k): k is DidVerifyMethod => typeof k === "object" && k.id === kid);
 	}
-	if (key == null) throw new Error("cannot get key from did doc");
-	if (key.type !== "JsonWebKey2020") throw new Error("invalid key type: only support JsonWebKey2020");
+	if (key == null) throw new BadRequest("cannot get key from did doc");
+	if (key.type !== "JsonWebKey2020") throw new BadRequest("invalid key type: only support JsonWebKey2020");
 	return importPublicJwk(key.publicKeyJwk, kid);
 }
 

@@ -32,6 +32,9 @@
 			"errors": [
 				{
 					"name": "ServiceNotAllowedError"
+				},
+				{
+					"name": "DeviceNotFoundError"
 				}
 			]
 		}

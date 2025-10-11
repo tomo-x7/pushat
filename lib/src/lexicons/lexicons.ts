@@ -637,6 +637,9 @@ export const schemaDict = {
 					{
 						name: "ServiceNotAllowedError",
 					},
+					{
+						name: "DeviceNotFoundError",
+					},
 				],
 			},
 		},

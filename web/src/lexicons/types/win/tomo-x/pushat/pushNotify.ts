@@ -40,9 +40,16 @@ export class ServiceNotAllowedError extends XRPCError {
 	}
 }
 
+export class DeviceNotFoundError extends XRPCError {
+	constructor(src: XRPCError) {
+		super(src.status, src.error, src.message, src.headers, { cause: src });
+	}
+}
+
 export function toKnownErr(e: any) {
 	if (e instanceof XRPCError) {
 		if (e.error === "ServiceNotAllowedError") return new ServiceNotAllowedError(e);
+		if (e.error === "DeviceNotFoundError") return new DeviceNotFoundError(e);
 	}
 
 	return e;

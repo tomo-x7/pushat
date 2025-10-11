@@ -30,7 +30,7 @@ export interface HandlerSuccess {
 export interface HandlerError {
 	status: number;
 	message?: string;
-	error?: "ServiceNotAllowedError";
+	error?: "ServiceNotAllowedError" | "DeviceNotFoundError";
 }
 
 export type HandlerOutput = HandlerError | HandlerSuccess;

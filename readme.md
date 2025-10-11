@@ -1,39 +1,64 @@
-atproto汎用プッシュサーバー PushAt
+# PushAt — Generic atproto Push Server
+This repository provides a generic push server implementation for atproto services.
 
-送信する側のサービスを以下requesterと呼びます。
-事前準備
-requesterは署名用の秘密鍵を生成して、公開鍵をDID Docの`authentication`に公開する必要があります。
-制約
-以下の制約は今後の実装に応じて(主に緩くなる方向に)変化する可能性があります。強い理由がない限り互換性は担保されます。各RFCへの準拠度を上げる貢献は歓迎されます。
-- DID Docに公開鍵を含めるときの形式は`JsonWebKey2020`である必要があります。
-- ダイジェストはRFC9530ベースで行います。
-- 署名はRFC9421ベースで行いますが、署名ベースは以下のものしか許可されません。
+[日本語版 (Japanese)](./readme-ja.md)
+
+## Contents
+- [Terminology](#terminology)
+- [Prerequisites](#prerequisites)
+- [Constraints](#constraints)
+- [Granting permission (Allow)](#granting-permission-allow)
+- [Sending a Notification](#sending-a-notification)
+
+## Terminology
+- The sending service is referred to as the "requester" below.
+
+## Prerequisites
+The requester must generate a private key for signing and publish the corresponding public key in the DID Document's `authentication` field.
+
+### CLI (included with the SDK) example
+```sh
+pushat-gen did:web:pushat-text.example
 ```
+
+## Constraints
+The following constraints are primarily due to implementation cost. They may be relaxed in the future as the project evolves. Contributions that increase RFC compliance are welcome.
+
+- The public key included in the DID Document must use the `JsonWebKey2020` format.
+- Content digests are computed according to RFC9530.
+- Signatures follow RFC9421, but only the signature parameter form below is allowed:
+
+```text
 ("@target-uri" "content-digest");created=1618884473;keyid="did:web:example.com#pushat"
 ```
-- 署名パラメーターは`created`と`keyid`がこの順で必要です。またそれ以外は許可されません。
-- 複数のダイジェストや複数の署名は許可されません。
-- 署名に利用する鍵は`P-521`曲線の`ECDSA`である必要があります。
-- ダイジェストのハッシュアルゴリズムは`SHA-512`である必要があります。
 
-許可の作成
-requesterは送信対象のユーザーのリポジトリにrequesterのDIDをキーとして`win.tomo-x.pushat.allow`レコードを作成します。(この操作はユーザーの明示的な同意の後に行うことを推奨)
-SDKを使う例
-```TS
+- The signature parameters must include `created` and `keyid` in that order (no other parameters are allowed).
+- Multiple digests or multiple signatures are not permitted.
+- The signature algorithm used is ES512 (ECDSA on curve P-521 with SHA-512).
+- The digest hash algorithm must be `SHA-512`.
+
+## Granting permission (Allow)
+The requester creates a `win.tomo-x.pushat.allow` record in the recipient user's repository, using the requester's DID as the key.
+(This operation is recommended only after explicit consent from the user.)
+
+### SDK example
+```ts
 import { PushatRequesterClient } from "@tomo-x/pushat";
 
-const requesterClient=new PushatRequesterClient(session,"did:web:pushat-test.example");
+const requesterClient = new PushatRequesterClient(session, "did:web:pushat-test.example");
 allowButton.onclick = () => {
 	await requesterClient.allow();
 }
 ```
-通知の送信
-`win.tomo-x.pushat.pushNotify`への署名付きリクエストによって行います。リクエストの内容についてはlexiconを参照してください。ダイジェストの計算と署名については上記の制約を参照してください。
-SDKを使う例
-```TS
+
+## Sending a Notification
+Notifications are sent via a signed request to `win.tomo-x.pushat.pushNotify`. See the lexicon for request details. Refer to the Constraints section above for digest calculation and signing requirements.
+
+### SDK example
+```ts
 import { PushatRequester } from "@tomo-x/pushat";
 
-const requester=await PushatRequester.create({
+const requester = await PushatRequester.create({
 	PrivateJwkStr: process.env.PRIVATE_KEY!,
 	serviceDid: "did:web:pushat-test.example",
 });

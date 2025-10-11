@@ -2,16 +2,22 @@ import { Buffer } from "buffer";
 import { toBuffer } from "./util.js";
 
 /**
- * SHA-512 only
- * @returns base64 encoded
+ * Compute SHA-512 digest and return base64-encoded bytes.
+ *
+ * @param input - Input data as ArrayBufferLike or Buffer.
+ * @returns Base64 encoded SHA-512 digest string.
  */
 async function generateContentDigest(input: ArrayBufferLike | Buffer) {
 	const buf = toBuffer(input);
 	return await crypto.subtle.digest("SHA-512", Buffer.from(buf)).then((hash) => Buffer.from(hash).toString("base64"));
 }
 /**
- * SHA-512 only
- * @returns value of Content-Digest header
+ * Compute the Content-Digest header value for a request.
+ *
+ * The returned value uses the format `sha-512=:<base64>:`.
+ *
+ * @param req - Request whose body will be used to compute the digest.
+ * @returns A string suitable for the Content-Digest header.
  */
 export async function getContentDigest(req: Request): Promise<string> {
 	const data = await req.clone().arrayBuffer();
@@ -19,8 +25,10 @@ export async function getContentDigest(req: Request): Promise<string> {
 	return `sha-512=:${digest}:`;
 }
 /**
- * SHA-512 only
- * validate content digest header
+ * Validate the Content-Digest header against the request body.
+ *
+ * @param req - Incoming request to validate.
+ * @returns `true` if the header matches the computed digest, otherwise an error string describing the problem.
  */
 export async function validateContentDigest(req: Request): Promise<true | string> {
 	const headerValue = req.headers.get("Content-Digest") ?? req.headers.get("content-digest");

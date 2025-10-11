@@ -41,6 +41,13 @@ const main = defineCommand({
 });
 runMain(main);
 
+/**
+ * Generate a minimal DID Document containing a JsonWebKey2020 verification method.
+ *
+ * @param did - DID string for the service (e.g. "did:web:example.com").
+ * @param jwk - Public JWK object produced by WebCrypto export.
+ * @returns A DID Document object ready to be written to disk.
+ */
 function genDidDoc(did: string, jwk: JsonWebKey) {
 	if (jwk.d != null) throw new Error("private key not allowed");
 	return {

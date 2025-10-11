@@ -20,8 +20,12 @@ export class PushatRequesterClient {
 	public did: string;
 	public serviceDid: string;
 	/**
-	 * @param session OAuth SessionかCredential Sessionなど
-	 * @param serviceDid サービスのDID
+	 * Create a client that can call server-side endpoints to manage allow records.
+	 *
+	 * @param session - An object providing fetch handler and session information (e.g. OAuth or credential session).
+	 *                  Must include `did` for the currently authenticated user.
+	 * @param serviceDid - DID of the requester/service (used as rkey when writing allow records).
+	 * @throws Error if `session.did` is not present.
 	 */
 	constructor(session: SessionManager, serviceDid: string) {
 		if (session.did == null) throw new Error("Login required");
@@ -30,22 +34,36 @@ export class PushatRequesterClient {
 		this.base = new AtpBaseClient((...p) => session.fetchHandler(...p));
 		this.base.setHeader("atproto-proxy", "did:web:pushat.tomo-x.win#pushat");
 	}
-	/**サービスがpush通知を送信することを許可する */
+
+	/**
+	 * Grant permission for the configured service to send push notifications for the current user.
+	 *
+	 * @returns Promise resolving to the created record response from the AT Proto endpoint.
+	 */
 	async allow() {
 		return await this.base.win.tomoX.pushat.allow.put(
 			{ repo: this.did, rkey: this.serviceDid },
 			{ createdAt: new Date().toISOString() },
 		);
 	}
-	/**許可を取り消す */
+
+	/**
+	 * Revoke previously granted permission.
+	 *
+	 * @returns Promise that resolves when the allow record is deleted.
+	 */
 	async disallow() {
 		await this.base.win.tomoX.pushat.allow.delete({ repo: this.did, rkey: this.serviceDid });
 	}
-	/**許可済みかを確認
+
+	/**
+	 * Check whether the configured service is currently allowed to send push notifications.
+	 *
+	 * @returns Promise resolving to true if allowed, false otherwise.
 	 */
 	async isAllowed(): Promise<boolean> {
 		try {
-			// 取得できない場合例外を投げる
+			// If the record cannot be retrieved the endpoint will throw; treat that as not allowed
 			await this.base.win.tomoX.pushat.allow.get({ repo: this.did, rkey: this.serviceDid });
 			return true;
 		} catch {
@@ -63,12 +81,29 @@ export class PushatRequester {
 		public serviceDid: string,
 		private keyobj: CryptoKeyWithKid,
 	) {}
+
+	/**
+	 * Create a PushatRequester instance from configuration.
+	 *
+	 * @param config.PrivateJwkStr - Private JWK string used for signing requests.
+	 * @param config.serviceDid - Service DID; the key's kid must start with this DID.
+	 * @returns A new PushatRequester instance.
+	 * @throws Error if the key's kid does not match serviceDid.
+	 */
 	static async create({ PrivateJwkStr, serviceDid }: RequesterConfig) {
 		const keyobj = await importPrivateJwkStr(PrivateJwkStr);
 		if (!keyobj.kid.startsWith(serviceDid)) throw new Error("kid and serviceDid mismatch");
 		return new PushatRequester(serviceDid, keyobj);
 	}
 
+	/**
+	 * Send a push notification to a target DID using the pushat server.
+	 *
+	 * @param targetDid - The DID of the notification recipient.
+	 * @param body - Notification body matching the lexicon schema.
+	 * @returns The parsed XRPC response on success.
+	 * @throws XRPCError or mapped known errors on failure.
+	 */
 	async push(targetDid: string, body: WinTomoXPushatDefs.NotifyBody) {
 		const reqBody = { target: targetDid, body } satisfies WinTomoXPushatPushNotify.InputSchema;
 		const header = new Headers();

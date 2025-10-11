@@ -1,11 +1,19 @@
 {
 	"name": "@tomo-x/pushat",
 	"version": "0.0.3",
-	"description": "",
+	"description": "PushAt SDK",
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
 			"types": "./dist/index.d.ts"
+		},
+		"./signature": {
+			"import": "./dist/signature.js",
+			"types": "./dist/signature.d.ts"
+		},
+		"./digest": {
+			"import": "./dist/digest.js",
+			"types": "./dist/digest.d.ts"
 		}
 	},
 	"bin": {
@@ -18,7 +26,11 @@
 		"prepublishOnly": "pnpm run build",
 		"gen": "lex gen-api ./src/lexicons/ ../lexicons/win/tomo-x/pushat/*.json ../lexicons/com/atproto/**/*.json"
 	},
-	"keywords": [],
+	"keywords": [
+		"PushAt",
+		"atproto",
+		"push notification"
+	],
 	"author": "tomo-x",
 	"license": "MIT",
 	"devDependencies": {

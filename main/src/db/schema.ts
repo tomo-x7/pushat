@@ -26,3 +26,15 @@ export const devicesTable = sqliteTable(
 	},
 	(table) => [unique().on(table.did, table.token), index("devices_did_idx").on(table.did)],
 );
+
+export const allowTable = sqliteTable(
+	"allow",
+	{
+		did: text().notNull(),
+		serviceDid: text().notNull(),
+		createdAt: isoDateTime("created_at")
+			.notNull()
+			.$defaultFn(() => new Date()),
+	},
+	(table) => [unique().on(table.did, table.serviceDid)],
+);

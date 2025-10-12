@@ -1,3 +1,4 @@
+import { safeFetchWrap } from "@atproto-labs/fetch-node";
 import { eq } from "drizzle-orm";
 import { getMessaging } from "firebase-admin/messaging";
 import { BadRequest, InternalServerError } from "http-errors";
@@ -18,8 +19,10 @@ export function pushMethods(server: Server<Env>) {
 			} else if (auth.artifacts.type === "Server") {
 				const targetDoc = await getDidDoc(input.body.target);
 				if (targetDoc == null || targetDoc.pds == null) throw new BadRequest("invalid target did");
-				const res = await fetch(
+				const safeFetch = safeFetchWrap({});
+				const res = await safeFetch(
 					`${targetDoc.pds}/xrpc/com.atproto.repo.getRecord?repo=${encodeURIComponent(input.body.target)}&collection=win.tomo-x.pushat.allow&rkey=${auth.credentials.did}`,
+					{ redirect: "manual" },
 				)
 					.then((res) => (res.ok ? (res.json() as Promise<{ value: allow.Record }>) : null))
 					.catch(() => null);

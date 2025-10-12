@@ -47,6 +47,9 @@ importers:
 
   main:
     dependencies:
+      '@atproto-labs/fetch-node':
+        specifier: ^0.1.10
+        version: 0.1.10
       '@atproto/common-web':
         specifier: ^0.4.3
         version: 0.4.3
@@ -198,6 +201,10 @@ packages:
 
   '@atproto-labs/did-resolver@0.2.1':
     resolution: {integrity: sha512-zSoHyqwwRYUtMNLW+RrWsImt1U5S47nJv5FfmAXTmon6wVKjxKD/PFrD1pg/4G6THqJmQHTs1Hj+54XVupYnvQ==}
+
+  '@atproto-labs/fetch-node@0.1.10':
+    resolution: {integrity: sha512-o7hGaonA71A6p7O107VhM6UBUN/g9tTyYohMp1q0Kf6xQ4npnuZYRSHSf2g6reSfGQJ1GoFNjBObETTT1ge/jQ==}
+    engines: {node: '>=18.7.0'}
 
   '@atproto-labs/fetch@0.2.3':
     resolution: {integrity: sha512-NZtbJOCbxKUFRFKMpamT38PUQMY0hX0p7TG5AEYOPhZKZEP7dHZ1K2s1aB8MdVH0qxmqX7nQleNrrvLf09Zfdw==}
@@ -2900,6 +2907,10 @@ packages:
     resolution: {integrity: sha512-4gd7VpWNQNB4UKKCFFVcp1AVv+FMOgs9NKzjHKusc8jTMhd5eL1NqQqOpE0KzMds804/yHlglp3uxgluOqAPLw==}
     engines: {node: '>= 0.4'}
 
+  ipaddr.js@2.2.0:
+    resolution: {integrity: sha512-Ag3wB2o37wslZS19hZqorUnrnzSkpOVy+IiiDEiTqNubEYpYuHWIf6K4psgN2ZWKExS4xhVCrRVfb/wfW8fWJA==}
+    engines: {node: '>= 10'}
+
   is-array-buffer@3.0.5:
     resolution: {integrity: sha512-DDfANUiiG2wC1qawP66qlTugJeL5HyzMpfr8lLK+jMQirGzNod0B12cFB/9q838Ru27sBwfw78/rdoU7RERz6A==}
     engines: {node: '>= 0.4'}
@@ -3783,6 +3794,10 @@ packages:
   undici-types@7.13.0:
     resolution: {integrity: sha512-Ov2Rr9Sx+fRgagJ5AX0qvItZG/JKKoBRAVITs1zk7IqZGTJUwgUr7qoYBpWwakpWilTZFM98rG/AFRocu10iIQ==}
 
+  undici@6.22.0:
+    resolution: {integrity: sha512-hU/10obOIu62MGYjdskASR3CUAiYaFTtC9Pa6vHyf//mAipSvSQg6od2CnJswq7fvzNS3zJhxoRkgNVaHurWKw==}
+    engines: {node: '>=18.17'}
+
   undici@7.14.0:
     resolution: {integrity: sha512-Vqs8HTzjpQXZeXdpsfChQTlafcMQaaIwnGwLam1wudSSjlJeQ3bw1j+TLPePgrCnCpUXx7Ba5Pdpf5OBih62NQ==}
     engines: {node: '>=20.18.1'}
@@ -4078,6 +4093,13 @@ snapshots:
       '@atproto-labs/simple-store-memory': 0.1.4
       '@atproto/did': 0.2.0
       zod: 3.25.76
+
+  '@atproto-labs/fetch-node@0.1.10':
+    dependencies:
+      '@atproto-labs/fetch': 0.2.3
+      '@atproto-labs/pipe': 0.1.1
+      ipaddr.js: 2.2.0
+      undici: 6.22.0
 
   '@atproto-labs/fetch@0.2.3':
     dependencies:
@@ -6923,6 +6945,8 @@ snapshots:
       hasown: 2.0.2
       side-channel: 1.1.0
 
+  ipaddr.js@2.2.0: {}
+
   is-array-buffer@3.0.5:
     dependencies:
       call-bind: 1.0.8
@@ -7893,6 +7917,8 @@ snapshots:
   undici-types@6.21.0: {}
 
   undici-types@7.13.0: {}
+
+  undici@6.22.0: {}
 
   undici@7.14.0: {}
 

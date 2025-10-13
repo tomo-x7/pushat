@@ -38,3 +38,8 @@ export const allowTable = sqliteTable(
 	},
 	(table) => [unique().on(table.did, table.serviceDid)],
 );
+
+export const cursorsTable = sqliteTable("cursors", {
+	id: text().primaryKey(),
+	cursor: text().notNull(),
+});

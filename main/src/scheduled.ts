@@ -15,7 +15,6 @@ export async function scheduled(db: MyDB) {
 	const ws = new WebSocket(
 		`wss://jetstream1.us-east.bsky.network/subscribe?wantedCollections=win.tomo-x.pushat.allow&cursor=${cursor}`,
 	);
-	console.log("wsurl",`wss://jetstream1.us-east.bsky.network/subscribe?wantedCollections=win.tomo-x.pushat.allow&cursor=${cursor}`)
 	const stack = new MessageStack(db);
 	const finishCursor = Date.now() * 1000;
 	ws.addEventListener("message", async (ev) => {
@@ -79,7 +78,6 @@ class MessageStack {
 		if (this.insertMap.size + this.deleteMap.size > this.maxSize) this.flush();
 	}
 	flush() {
-		console.log("flush")
 		const inserts = batch(this.insertMap.values().toArray(), 200, (value) =>
 			this.db
 				.insert(allowTable)

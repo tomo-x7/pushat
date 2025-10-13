@@ -14,10 +14,12 @@ export async function scheduled(db: MyDB) {
 	const ws = new WebSocket(
 		`wss://jetstream1.us-east.bsky.network/subscribe?wantedCollections=win.tomo-x.pushat.allow&cursor=${cursor}`,
 	);
+	console.log("wsurl",`wss://jetstream1.us-east.bsky.network/subscribe?wantedCollections=win.tomo-x.pushat.allow&cursor=${cursor}`)
 	const stack = new MessageStack(db);
 	const finishCursor = Date.now() * 1000;
 	ws.addEventListener("message", async (ev) => {
 		try {
+			console.log("message",ev)
 			const data = JSON.parse(ev.data) as CreateAllow | DeleteAllow;
 			if (data.time_us > finishCursor) {
 				ws.close();
@@ -37,7 +39,7 @@ export async function scheduled(db: MyDB) {
 	await new Promise<void>((resolve) =>
 		ws.addEventListener("close", (ev) => {
 			if(ev.code !== 1000) {
-				console.error(`WebSocket closed abnormally: ${ev.code} ${ev.reason}`);
+				console.error(`WebSocket closed abnormally`,ev);
 			}
 			resolve();
 		}),

@@ -8,6 +8,7 @@ const DB_KEY = "jetstream_scheduled";
 
 export async function scheduled(db: MyDB) {
 	const raw = await db.select().from(cursorsTable).where(eq(cursorsTable.id, DB_KEY)).limit(1).catch(console.error);
+	console.log("load cursor" ,JSON.stringify(raw));
 	// cursorはマイクロ秒 (A unix microseconds timestamp cursor to begin playback from)
 	// 存在しない場合は前回を推定
 	const cursor = numOrNull(raw?.[0]?.cursor) ?? (Date.now() - CRON_INTERVAL_MS) * 1000;
@@ -19,10 +20,9 @@ export async function scheduled(db: MyDB) {
 	const finishCursor = Date.now() * 1000;
 	ws.addEventListener("message", async (ev) => {
 		try {
-			console.log("message",ev)
 			const data = JSON.parse(ev.data) as CreateAllow | DeleteAllow;
 			if (data.time_us > finishCursor) {
-				ws.close();
+				ws.close(1000,"done");
 				return;
 			}
 			if (data.kind !== "commit") return;
@@ -39,7 +39,8 @@ export async function scheduled(db: MyDB) {
 	await new Promise<void>((resolve) =>
 		ws.addEventListener("close", (ev) => {
 			if(ev.code !== 1000) {
-				console.error(`WebSocket closed abnormally`,ev);
+				console.error(`WebSocket closed abnormally`);
+				console.dir(ev)
 			}
 			resolve();
 		}),
@@ -78,6 +79,7 @@ class MessageStack {
 		if (this.insertMap.size + this.deleteMap.size > this.maxSize) this.flush();
 	}
 	flush() {
+		console.log("flush")
 		const inserts = batch(this.insertMap.values().toArray(), 200, (value) =>
 			this.db
 				.insert(allowTable)
@@ -122,6 +124,7 @@ class MessageStack {
 	async waitAll() {
 		this.flush();
 		await Promise.allSettled(this.flushSet);
+		console.log("waitAll done");
 	}
 }
 

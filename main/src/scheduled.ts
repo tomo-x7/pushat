@@ -16,7 +16,7 @@ export async function scheduled(db: MyDB) {
 		`wss://jetstream1.us-east.bsky.network/subscribe?wantedCollections=win.tomo-x.pushat.allow&cursor=${cursor}`,
 	);
 	const stack = new MessageStack(db);
-	const finishCursor = Date.now() * 1000;
+	const finishCursor = Date.now() * 1000 - 500*1000; //500ms前まで
 	ws.addEventListener("message", async (ev) => {
 		try {
 			const data = JSON.parse(ev.data) as CreateAllow | DeleteAllow;
@@ -24,6 +24,8 @@ export async function scheduled(db: MyDB) {
 				ws.close(1000,"done");
 				return;
 			}
+			if(typeof data?.time_us==="number")stack.updateCursor(data.time_us);
+
 			if (data.kind !== "commit") return;
 			if (data.commit.collection !== "win.tomo-x.pushat.allow") return;
 			if (data.commit.operation === "create") {
@@ -123,6 +125,9 @@ class MessageStack {
 		this.flush();
 		await Promise.allSettled(this.flushSet);
 		console.log("waitAll done");
+	}
+	updateCursor(cursor: number) {
+		this.latestCursor = Math.max(this.latestCursor, cursor);
 	}
 }
 

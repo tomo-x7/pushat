@@ -1,0 +1,118 @@
+{
+	"version": "6",
+	"dialect": "sqlite",
+	"id": "b9f85840-7755-4114-89d4-c83b0ca3cef6",
+	"prevId": "4b70a269-5c17-4741-861c-74b7705e76fe",
+	"tables": {
+		"allow": {
+			"name": "allow",
+			"columns": {
+				"did": {
+					"name": "did",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"serviceDid": {
+					"name": "serviceDid",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {
+				"allow_did_serviceDid_unique": {
+					"name": "allow_did_serviceDid_unique",
+					"columns": ["did", "serviceDid"],
+					"isUnique": true
+				}
+			},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"devices": {
+			"name": "devices",
+			"columns": {
+				"did": {
+					"name": "did",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"token": {
+					"name": "token",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {
+				"devices_did_idx": {
+					"name": "devices_did_idx",
+					"columns": ["did"],
+					"isUnique": false
+				},
+				"devices_did_token_unique": {
+					"name": "devices_did_token_unique",
+					"columns": ["did", "token"],
+					"isUnique": true
+				}
+			},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		}
+	},
+	"views": {},
+	"enums": {},
+	"_meta": {
+		"schemas": {},
+		"tables": {},
+		"columns": {}
+	},
+	"internal": {
+		"indexes": {}
+	}
+}

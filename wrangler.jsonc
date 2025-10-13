@@ -29,5 +29,8 @@
 			"pattern": "pushat.tomo-x.win",
 			"custom_domain": true
 		}
-	]
+	],
+	"triggers": {
+		"crons": ["*/5 * * * *"]
+	}
 }
